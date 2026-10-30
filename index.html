@@ -133,74 +133,87 @@ h1 span{display:block;color:#8056d9}
  .peluang-module .pm-grid{grid-template-columns:1fr}
  .peluang-module .pm-card{padding:13px}
 }
+
+/* Dadu 3D interaktif */
+.peluang-module .pm-die-stage{height:150px;display:flex;align-items:center;justify-content:center;perspective:700px;margin:12px auto}
+.peluang-module .pm-cube{position:relative;width:76px;height:76px;transform-style:preserve-3d;transform:rotateX(-25deg) rotateY(-35deg);transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.peluang-module .pm-face{position:absolute;width:76px;height:76px;border:2px solid #7652bd;border-radius:13px;background:linear-gradient(145deg,#fff,#eee7ff);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:10px;gap:3px;backface-visibility:hidden;box-shadow:inset 0 0 12px #bba4e9}
+.peluang-module .pm-face.pm-front{transform:translateZ(38px)}
+.peluang-module .pm-face.pm-back{transform:rotateY(180deg) translateZ(38px)}
+.peluang-module .pm-face.pm-right{transform:rotateY(90deg) translateZ(38px)}
+.peluang-module .pm-face.pm-left{transform:rotateY(-90deg) translateZ(38px)}
+.peluang-module .pm-face.pm-top{transform:rotateX(90deg) translateZ(38px)}
+.peluang-module .pm-face.pm-bottom{transform:rotateX(-90deg) translateZ(38px)}
+.peluang-module .pm-pip{width:10px;height:10px;border-radius:50%;background:#6845ae;align-self:center;justify-self:center}
 </style>
 </head>
-
 <body>
-<div id="landing">
-<main class="page">
-<section class="left">
- <div class="pill">✦ RUANG BELAJAR DIGITAL</div>
- <h1>Ayo Dalami <span>Peluang!</span></h1>
- <p class="description">Belajar matematika jadi lebih seru, interaktif, dan dekat dengan kehidupan sehari-hari.</p>
- <div class="math">P(A) = ?</div>
- <svg class="left-art" viewBox="0 0 390 250">
-  <ellipse cx="190" cy="220" rx="172" ry="24" fill="#e8dcff"/>
-  <ellipse cx="200" cy="194" rx="126" ry="75" fill="#eee5ff"/>
-  <path d="M104 102Q102 42 150 37Q201 37 203 99L207 135L107 139Z" fill="#52318e"/>
-  <ellipse cx="153" cy="102" rx="36" ry="43" fill="#ffd9b9"/>
-  <path d="M117 94Q119 55 153 55Q187 57 189 92L178 75Q148 85 122 72Z" fill="#52318e"/>
-  <circle cx="140" cy="102" r="3" fill="#35256c"/>
-  <circle cx="166" cy="102" r="3" fill="#35256c"/>
-  <path d="M122 143Q153 128 182 144L205 194L101 194Z" fill="#a27ae9"/>
-  <rect x="139" y="177" width="111" height="53" rx="7" fill="#6845ae"/>
-  <rect x="145" y="182" width="99" height="42" rx="4" fill="#dff3ff"/>
-  <path d="M185 200L194 209L212 191" fill="none" stroke="#8e70d4" stroke-width="4"/>
- </svg>
-</section>
-
-<section class="center">
- <h2>Selamat datang!</h2>
- <p class="sub">Pilih ruang belajarmu.</p>
- <div class="rooms">
-  <button class="room teacher" onclick="openTeacher()">
-   <div class="avatar">👩🏻‍🏫</div><h3>Ruang Guru</h3>
-   <p>Kelola kelas dengan kode kelas</p><div class="arrow">➜</div>
-  </button>
-  <button class="room student" onclick="openStudent()">
-   <div class="avatar">🧑🏻‍🎓</div><h3>Ruang Murid</h3>
-   <p>Masuk dengan nama dan kode kelas</p><div class="arrow">➜</div>
-  </button>
- </div>
- <div class="register">Guru belum punya akun?<button onclick="openRegister()">Daftar sekarang</button></div>
-</section>
-
-<section class="right">
- <p class="quote">Peluang hari ini,<br>kesempatan masa depan ♡</p>
- <div class="formula">P(A)</div>
- <svg class="right-art" viewBox="0 0 370 320">
-  <ellipse cx="185" cy="287" rx="162" ry="23" fill="#e9dcff"/>
-  <path d="M78 234L278 218L322 238L123 258Z" fill="#7b4dbd"/>
-  <path d="M78 234L123 258L123 280L78 255Z" fill="#a47ae1"/>
-  <path d="M123 258L322 238L322 258L123 280Z" fill="#8c5bd0"/>
- </svg>
-</section>
-</main>
+<div class="page" id="landing">
+ <section class="left">
+  <div class="pill">✦ MEDIA PEMBELAJARAN MATEMATIKA</div>
+  <h1>Ayo Dalami <span>Peluang!</span></h1>
+  <p class="description">Belajar matematika jadi lebih menyenangkan. Jelajahi konsep peluang melalui simulasi, permainan, dan tantangan interaktif.</p>
+  <div class="math">P(A) = n(A) / n(S)</div>
+ </section>
+ <section class="center">
+  <h2>Selamat Datang di ADALUANG!</h2>
+  <p class="sub">Pilih ruang belajarmu</p>
+  <div class="rooms">
+   <button class="room teacher" onclick="openLogin('guru')">
+    <div class="avatar">👩‍🏫</div>
+    <h3>Guru</h3>
+    <p>Kelola kelas dan pantau pembelajaran.</p>
+    <div class="arrow">›</div>
+   </button>
+   <button class="room student" onclick="openLogin('murid')">
+    <div class="avatar">🧑‍🎓</div>
+    <h3>Murid</h3>
+    <p>Belajar dan kerjakan aktivitas peluang.</p>
+    <div class="arrow">›</div>
+   </button>
+  </div>
+  <div class="register">Belum punya akun?
+   <button onclick="openRegister()">Daftar di sini</button>
+  </div>
+ </section>
+ <section class="right">
+  <p class="quote">“Matematika bukan hanya tentang angka, tetapi juga tentang cara berpikir.”</p>
+  <div class="formula">P(A) = peluang kejadian A</div>
+ </section>
 </div>
 
-<div class="modal" id="modal">
+<div class="modal" id="loginModal">
  <div class="modal-card">
-  <h2 id="modalTitle"></h2>
-  <p id="modalSubtitle"></p>
-  <form id="form">
-   <div class="field" id="nameBox"><label>Nama</label><input id="name"></div>
-   <div class="field" id="emailBox"><label>Email</label><input id="email" type="email"></div>
-   <div class="field" id="passBox"><label>Kata sandi</label><input id="password" type="password"></div>
-   <div class="field" id="codeBox"><label>Kode kelas</label><input id="code"></div>
-   <button class="submit" id="submit">Masuk</button>
-   <p id="message" class="message"></p>
-   <button type="button" class="cancel" onclick="closeModal()">Batal</button>
+  <h2>Masuk ADALUANG</h2>
+  <p id="loginSubtitle">Silakan masuk ke akunmu.</p>
+  <form onsubmit="login(event)">
+   <div class="field"><label>Email</label><input id="loginEmail" type="email" required placeholder="Masukkan email"></div>
+   <div class="field"><label>Kata sandi</label><input id="loginPassword" type="password" required placeholder="Masukkan kata sandi"></div>
+   <button class="submit" type="submit">Masuk</button>
   </form>
+  <div id="loginMessage" class="message"></div>
+  <button class="cancel" onclick="closeModal('loginModal')">Batal</button>
+ </div>
+</div>
+
+<div class="modal" id="registerModal">
+ <div class="modal-card">
+  <h2>Daftar Akun</h2>
+  <p>Buat akun ADALUANG untuk mulai belajar.</p>
+  <form onsubmit="register(event)">
+   <div class="field"><label>Nama lengkap</label><input id="regName" required placeholder="Nama lengkap"></div>
+   <div class="field"><label>Email</label><input id="regEmail" type="email" required placeholder="Email aktif"></div>
+   <div class="field"><label>Kata sandi</label><input id="regPassword" type="password" minlength="6" required placeholder="Minimal 6 karakter"></div>
+   <div class="field"><label>Daftar sebagai</label>
+    <select id="regRole" style="width:100%;padding:12px;border:1px solid #e6def4;border-radius:12px">
+     <option value="murid">Murid</option>
+     <option value="guru">Guru</option>
+    </select>
+   </div>
+   <button class="submit" type="submit">Daftar</button>
+  </form>
+  <div id="registerMessage" class="message"></div>
+  <button class="cancel" onclick="closeModal('registerModal')">Batal</button>
  </div>
 </div>
 
@@ -208,580 +221,581 @@ h1 span{display:block;color:#8056d9}
  <div class="app-top">
   <div class="brand">ADA<span>LUANG</span></div>
   <div>
-   <span id="userLine"></span>
+   <span id="userLabel" class="muted"></span>
    <button class="danger" onclick="logout()">Keluar</button>
   </div>
  </div>
- <div class="content" id="content"></div>
+ <main class="content" id="appContent"></main>
 </div>
 
-  <script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import{getFirestore,collection,doc,getDoc,getDocs,addDoc,setDoc,updateDoc,deleteDoc,query,where,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+ getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+ signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+ getFirestore, doc, setDoc, getDoc, collection, getDocs,
+ addDoc, updateDoc, deleteDoc, query, where, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const ADMIN_EMAIL='umumbgt5@gmail.com';
-const firebaseConfig={
- apiKey:'AIzaSyDuVGHdk05SzOdTGuXsqfKZZwF1dYsmQDU',
- authDomain:'adaluang.firebaseapp.com',
- projectId:'adaluang',
- storageBucket:'adaluang.firebasestorage.app',
- messagingSenderId:'970393246155',
- appId:'1:970393246155:web:e2f6971c49d85624acbe4',
- measurementId:'G-PNKBBCZLMN'
+const firebaseConfig = {
+ apiKey: "GANTI_DENGAN_API_KEY",
+ authDomain: "GANTI_DENGAN_AUTH_DOMAIN",
+ projectId: "GANTI_DENGAN_PROJECT_ID",
+ storageBucket: "GANTI_DENGAN_STORAGE_BUCKET",
+ messagingSenderId: "GANTI_DENGAN_SENDER_ID",
+ appId: "GANTI_DENGAN_APP_ID"
 };
-const appFirebase=initializeApp(firebaseConfig);
-const auth=getAuth(appFirebase);
-const db=getFirestore(appFirebase);
-const $=id=>document.getElementById(id);
-let mode='login',profile=null,student=null;
 
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
- '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[c]));
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
-function say(t,ok=false){
- $('message').textContent=t;
- $('message').classList.toggle('ok',ok);
-}
-function openModal(title,subtitle,button,fields){
- $('modalTitle').textContent=title;
- $('modalSubtitle').textContent=subtitle;
- $('submit').textContent=button;
- $('form').reset();say('');
- for(const [k,id] of Object.entries({
-  name:'nameBox',email:'emailBox',password:'passBox',code:'codeBox'
- })){
-  $(id).classList.toggle('hidden',!fields.includes(k));
-  $(k).required=fields.includes(k);
- }
- $('modal').classList.add('show');
-}
-window.closeModal=()=>$('modal').classList.remove('show');
-window.openTeacher=()=>{
- mode='login';
- openModal('Masuk Ruang Guru','Admin masuk menggunakan email admin. Guru harus memiliki akun yang disetujui admin.','Masuk',['email','password']);
-};
-window.openRegister=()=>{
- mode='register';
- openModal('Daftar Akun Guru','Akun guru harus disetujui admin sebelum membuat kelas.','Daftar',['name','email','password']);
-};
-window.openStudent=()=>{
- mode='student';
- openModal('Masuk Ruang Murid','Masukkan nama dan kode kelas dari guru.','Mulai Belajar',['name','code']);
-};
-$('modal').addEventListener('click',e=>{
- if(e.target===$('modal'))closeModal();
-});
+let currentUser = null;
+let currentProfile = null;
+let selectedRole = "murid";
 
-function errText(e){
- return({
-  'auth/invalid-credential':'Email atau kata sandi salah.',
-  'auth/email-already-in-use':'Email sudah terdaftar.',
-  'auth/weak-password':'Kata sandi minimal 6 karakter.'
- }[e.code]||e.message||'Terjadi kesalahan.');
-}
-async function getProfile(u){
- const s=await getDoc(doc(db,'users',u.uid));
- return s.exists()?s.data():null;
-}
-$('form').addEventListener('submit',async e=>{
+window.openLogin = function(role){
+ selectedRole = role;
+ document.getElementById("loginSubtitle").textContent =
+  role === "guru" ? "Masuk sebagai guru." : "Masuk sebagai murid.";
+ document.getElementById("loginModal").classList.add("show");
+};
+window.openRegister = () => document.getElementById("registerModal").classList.add("show");
+window.closeModal = id => document.getElementById(id).classList.remove("show");
+
+window.register = async function(e){
  e.preventDefault();
- $('submit').disabled=true;
+ const name = document.getElementById("regName").value.trim();
+ const email = document.getElementById("regEmail").value.trim();
+ const password = document.getElementById("regPassword").value;
+ const role = document.getElementById("regRole").value;
+ const message = document.getElementById("registerMessage");
+ message.textContent = "Memproses pendaftaran...";
  try{
-  if(mode==='register'){
-   const c=await createUserWithEmailAndPassword(auth,$('email').value.trim().toLowerCase(),$('password').value);
-   await setDoc(doc(db,'users',c.user.uid),{
-    nama:$('name').value.trim(),
-    email:$('email').value.trim().toLowerCase(),
-    role:'guru',status:'pending',createdAt:serverTimestamp()
-   });
-   say('Pendaftaran berhasil. Tunggu persetujuan admin.',true);
-   await signOut(auth);
-  }else if(mode==='student'){
-   const kode=$('code').value.trim().toUpperCase();
-   const s=await getDocs(query(collection(db,'classes'),where('kode','==',kode)));
-   if(s.empty){say('Kode kelas tidak ditemukan.');return;}
-   const d=s.docs[0];
-   student={
-    nama:$('name').value.trim(),
-    id:d.id,kode,data:d.data()
-   };
-   closeModal();showStudentDashboard();
-  }else{
-   await signInWithEmailAndPassword(auth,$('email').value.trim().toLowerCase(),$('password').value);
-   closeModal();
-  }
- }catch(e){say(errText(e))}
- finally{$('submit').disabled=false}
-});
-
-onAuthStateChanged(auth,async u=>{
- if(!u){profile=null;return}
- try{
-  let p=await getProfile(u);
-  if(!p){await signOut(auth);alert('Profil akun tidak ditemukan.');return}
-  if(u.email.toLowerCase()===ADMIN_EMAIL.toLowerCase()&&p.role!=='admin'){
-   await updateDoc(doc(db,'users',u.uid),{role:'admin',status:'approved'});
-   p.role='admin';p.status='approved';
-  }
-  if(p.role==='guru'&&p.status!=='approved'){
-   await signOut(auth);
-   alert(p.status==='rejected'?'Akun guru ditolak admin.':'Akun guru masih menunggu persetujuan admin.');
-   return;
-  }
-  if(!['admin','guru'].includes(p.role)){
-   await signOut(auth);alert('Peran akun tidak valid.');return;
-  }
-  profile={...p,uid:u.uid,email:u.email};
-  student=null;showDashboard();
- }catch(e){alert(errText(e));await signOut(auth)}
-});
-
-function showShell(label){
- $('landing').style.display='none';
- $('app').classList.add('show');
- $('userLine').textContent=label;
-}
-function showDashboard(){
- showShell((profile.nama||profile.email)+' · '+(profile.role==='admin'?'Admin':'Guru'));
- profile.role==='admin'?adminDashboard():teacherDashboard();
-}
-window.logout=async()=>{
- if(auth.currentUser)await signOut(auth);
- profile=null;student=null;
- $('app').classList.remove('show');
- $('landing').style.display='block';
-};
-function item(title,body){
- return `<article class="item"><h3>${esc(title||'Kelas')}</h3>${body}</article>`;
-}
-
-async function adminDashboard(){
- $('content').innerHTML=`
- <section class="panel">
-  <h2>Dashboard Admin</h2>
-  <p class="muted">Kelola pendaftaran guru, pantau status akun, dan atur materi pembelajaran ADALUANG.</p>
-  <div id="adminStats" class="stats"><div class="empty">Memuat statistik...</div></div>
-  <div class="tabs">
-   <button onclick="adminTab('guru')">Manajemen Guru</button>
-   <button onclick="adminTab('materi')">Manajemen Materi</button>
-   <button onclick="adminTab('kelas')">Manajemen Kelas</button>
-  </div>
-  <div id="adminSection"></div>
- </section>`;
- try{
-  const us=await getDocs(collection(db,'users'));
-  const cs=await getDocs(collection(db,'classes'));
-  const teachers=us.docs.map(d=>d.data()).filter(x=>x.role==='guru');
-  const total=teachers.length;
-  const active=teachers.filter(x=>x.status==='approved').length;
-  const pending=teachers.filter(x=>x.status==='pending').length;
-  const rejected=teachers.filter(x=>x.status==='rejected').length;
-  $('adminStats').innerHTML=`
-   <div class="stat"><strong>${total}</strong><span>Total Guru</span></div>
-   <div class="stat"><strong>${active}</strong><span>Guru Aktif</span></div>
-   <div class="stat"><strong>${pending}</strong><span>Menunggu Persetujuan</span></div>
-   <div class="stat"><strong>${rejected}</strong><span>Guru Ditolak</span></div>
-   <div class="stat"><strong>${cs.size}</strong><span>Total Kelas</span></div>`;
-  await adminTab('guru');
- }catch(e){
-  $('adminStats').innerHTML=`<div class="empty">Gagal memuat statistik: ${esc(errText(e))}</div>`;
-  $('adminSection').innerHTML='<div class="empty">Periksa izin akses Firestore lalu muat ulang halaman.</div>';
- }
-}
-
-window.adminTab=async tab=>{
- const el=$('adminSection');
- el.innerHTML='<div class="empty">Memuat…</div>';
- try{
-  if(tab==='guru'){
-   const s=await getDocs(collection(db,'users'));
-   const ts=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.role==='guru');
-   el.innerHTML=ts.length?`<div class="items">${ts.map(t=>item(t.nama,`
-    <p class="muted">${esc(t.email)}</p>
-    <span class="tag ${esc(t.status)}">${esc(t.status)}</span>
-    <div class="actions">
-     ${t.status!=='approved'?`<button class="small-btn" onclick="setStatus('${t.id}','approved')">Terima</button>`:''}
-     ${t.status!=='rejected'?`<button class="danger" onclick="setStatus('${t.id}','rejected')">Tolak</button>`:''}
-    </div>`)).join('')}</div>`:'<div class="empty">Belum ada akun guru.</div>';
-  }else if(tab==='materi'){
-   el.innerHTML=`
-   <h3>Tambah materi</h3>
-   <form id="matForm" class="inline">
-    <div class="field"><label>Judul materi</label><input id="mtitle" required maxlength="120"></div>
-    <div class="field"><label>Link materi (opsional)</label><input id="mlink" type="url" placeholder="https://..."></div>
-    <div class="field full"><label>Deskripsi</label><textarea id="mdesc" rows="3"></textarea></div>
-    <div class="full"><button class="submit">Simpan materi</button><p id="matMsg" class="message"></p></div>
-   </form><div id="materials" class="items"></div>`;
-   $('matForm').addEventListener('submit',saveMaterial);
-   await loadMaterials('materials',true);
-  }else{
-   const s=await getDocs(collection(db,'classes'));
-   el.innerHTML=s.size?`<div class="items">${s.docs.map(d=>item(d.data().nama,`
-    <p class="muted">${esc(d.data().ownerEmail)}</p>
-    <div class="code">${esc(d.data().kode)}</div>
-    <div class="actions"><button class="danger" onclick="deleteClass('${d.id}')">Hapus kelas</button></div>
-   `)).join('')}</div>`:'<div class="empty">Belum ada kelas.</div>';
-  }
- }catch(e){el.innerHTML=`<div class="empty">${esc(errText(e))}</div>`}
-};
-
-window.setStatus=async(id,status)=>{
- try{await updateDoc(doc(db,'users',id),{status});adminTab('guru')}
- catch(e){alert(errText(e))}
-};
-async function saveMaterial(e){
- e.preventDefault();
- try{
-  await addDoc(collection(db,'materials'),{
-   judul:$('mtitle').value.trim(),
-   link:$('mlink').value.trim(),
-   deskripsi:$('mdesc').value.trim(),
-   ownerUid:profile.uid,createdAt:serverTimestamp()
+  const credential = await createUserWithEmailAndPassword(auth,email,password);
+  await setDoc(doc(db,"users",credential.user.uid),{
+   name,email,role,createdAt:serverTimestamp(),status:"aktif"
   });
-  $('matMsg').textContent='Materi tersimpan.';
-  $('matMsg').classList.add('ok');
-  $('matForm').reset();
-  await loadMaterials('materials',true);
- }catch(e){$('matMsg').textContent=errText(e)}
-}
-async function loadMaterials(id,admin=false,classId=null){
- const s=await getDocs(collection(db,'materials'));
- const ms=s.docs.map(d=>({id:d.id,...d.data()}))
-  .filter(m=>!classId||!m.classId||m.classId===classId);
- $(id).innerHTML=ms.length?ms.map(m=>item(m.judul,`
-  <p class="muted">${esc(m.deskripsi||'')}</p>
-  ${m.link?`<p><a href="${esc(m.link)}" target="_blank" rel="noopener noreferrer">Buka materi ↗</a></p>`:''}
-  ${admin?`<div class="actions">
-   <button class="small-btn" onclick="editMaterial('${m.id}')">Edit</button>
-   <button class="danger" onclick="deleteMaterial('${m.id}')">Hapus</button>
-  </div>`:''}
- `)).join(''):'<div class="empty">Belum ada materi.</div>';
-}
-window.editMaterial=async id=>{
- const s=await getDoc(doc(db,'materials',id));
- if(!s.exists())return;
- const m=s.data();
- $('mtitle').value=m.judul||'';
- $('mlink').value=m.link||'';
- $('mdesc').value=m.deskripsi||'';
- $('matMsg').textContent='Mode edit: klik Simpan materi untuk memperbarui.';
- $('matForm').onsubmit=async e=>{
-  e.preventDefault();
-  try{
-   await updateDoc(doc(db,'materials',id),{
-    judul:$('mtitle').value.trim(),
-    link:$('mlink').value.trim(),
-    deskripsi:$('mdesc').value.trim()
-   });
-   $('matForm').reset();
-   $('matForm').onsubmit=saveMaterial;
-   await loadMaterials('materials',true);
-  }catch(e){$('matMsg').textContent=errText(e)}
- };
-};
-window.deleteMaterial=async id=>{
- if(!confirm('Hapus materi ini?'))return;
- try{await deleteDoc(doc(db,'materials',id));await loadMaterials('materials',true)}
- catch(e){alert(errText(e))}
-};
-window.deleteClass=async id=>{
- if(!confirm('Hapus kelas ini?'))return;
- try{await deleteDoc(doc(db,'classes',id));adminTab('kelas')}
- catch(e){alert(errText(e))}
+  message.textContent = "Pendaftaran berhasil. Silakan masuk.";
+  message.classList.add("ok");
+ }catch(error){message.textContent = error.message;}
 };
 
-async function teacherDashboard(){
- $('content').innerHTML=`
- <section class="panel">
-  <h2>Ruang Guru</h2>
-  <p class="muted">Guru yang disetujui dapat membuat kelas dan membagikan kode kepada murid. Guru tidak menambah atau mengedit materi.</p>
-  <form id="classForm" class="inline">
-   <div class="field"><label>Nama kelas</label><input id="cname" required maxlength="80" placeholder="Contoh: X-1 Peluang"></div>
-   <div class="field"><label>Keterangan (opsional)</label><input id="cdesc" maxlength="120" placeholder="Matematika"></div>
-   <div class="full"><button class="submit">+ Buat kelas</button><p id="cmsg" class="message"></p></div>
-  </form>
- </section>
- <section class="panel">
-  <h2>Kelas Saya</h2><p class="muted">Bagikan kode kelas di bawah kepada murid.</p>
-  <div id="myClasses" class="items"></div>
- </section>`;
- $('classForm').addEventListener('submit',createClass);
- await loadClasses();
-}
-function genCode(){return Math.random().toString(36).slice(2,8).toUpperCase()}
-async function createClass(e){
+window.login = async function(e){
  e.preventDefault();
+ const email = document.getElementById("loginEmail").value.trim();
+ const password = document.getElementById("loginPassword").value;
+ const message = document.getElementById("loginMessage");
+ message.textContent = "Memeriksa akun...";
  try{
-  const all=await getDocs(collection(db,'classes'));
-  let kode=genCode();
-  while(all.docs.some(d=>d.data().kode===kode))kode=genCode();
-  await addDoc(collection(db,'classes'),{
-   nama:$('cname').value.trim(),deskripsi:$('cdesc').value.trim(),
-   kode,ownerUid:profile.uid,ownerEmail:profile.email,
-   createdAt:serverTimestamp()
-  });
-  $('cmsg').textContent='Kelas berhasil dibuat. Kode: '+kode;
-  $('cmsg').classList.add('ok');
-  $('classForm').reset();await loadClasses();
- }catch(e){$('cmsg').textContent=errText(e)}
-}
-async function loadClasses(){
- const s=await getDocs(query(collection(db,'classes'),where('ownerUid','==',profile.uid)));
- $('myClasses').innerHTML=s.size?s.docs.map(d=>item(d.data().nama,`
-  <p class="muted">${esc(d.data().deskripsi||'')}</p>
-  <div class="code">${esc(d.data().kode)}</div>
-  <p class="muted">Bagikan kode ini kepada murid.</p>
-  <div class="actions">
-   <button class="small-btn" onclick="copyCode('${esc(d.data().kode)}')">Salin kode</button>
-   <button class="danger" onclick="teacherDeleteClass('${d.id}')">Hapus kelas</button>
-  </div>
- `)).join(''):'<div class="empty">Kamu belum membuat kelas.</div>';
-}
-window.copyCode=async c=>{
- try{await navigator.clipboard.writeText(c);alert('Kode kelas disalin: '+c)}
- catch{prompt('Salin kode kelas:',c)}
-};
-window.teacherDeleteClass=async id=>{
- if(!confirm('Hapus kelas ini?'))return;
- try{await deleteDoc(doc(db,'classes',id));loadClasses()}
- catch(e){alert(errText(e))}
+  const credential = await signInWithEmailAndPassword(auth,email,password);
+  const profileSnap = await getDoc(doc(db,"users",credential.user.uid));
+  if(!profileSnap.exists()) throw new Error("Data profil belum ditemukan.");
+  const profile = profileSnap.data();
+  if(profile.role !== selectedRole && profile.role !== "admin"){
+   await signOut(auth);
+   throw new Error("Akun ini tidak terdaftar sebagai "+selectedRole+".");
+  }
+  closeModal("loginModal");
+ }catch(error){message.textContent = error.message;}
 };
 
-async function showStudentDashboard(){
- showShell(student.nama+' · Murid · Kelas '+student.kode);
- $('content').innerHTML=`
- <section class="panel">
-  <h2>Halo, ${esc(student.nama)}! 👋</h2>
-  <p class="muted">Selamat datang di kelas <strong>${esc(student.data.nama)}</strong>.</p>
-  <div class="code">Kode kelas: ${esc(student.kode)}</div>
-  <p class="muted">${esc(student.data.deskripsi||'')}</p>
-  <div class="tabs">
-   <button onclick="studentTab('materi')">Materi</button>
-   <button onclick="studentTab('soal')">Soal</button>
-  </div>
- </section>
- <div id="studentSection"></div>`;
- await window.studentTab('materi');
-}
-window.studentTab=async tab=>{
- const el=$('studentSection');
- if(tab==='soal'){
-  el.innerHTML='<section class="panel"><h2>Soal Latihan</h2><div class="empty">Belum ada soal yang tersedia.</div></section>';
+window.logout = async function(){await signOut(auth);};
+onAuthStateChanged(auth,async user=>{
+ if(!user){
+  currentUser=null;currentProfile=null;
+  document.getElementById("landing").style.display="grid";
+  document.getElementById("app").classList.remove("show");
   return;
  }
- el.innerHTML=`
+ currentUser=user;
+ const snap=await getDoc(doc(db,"users",user.uid));
+ if(!snap.exists()){await signOut(auth);return;}
+ currentProfile=snap.data();
+ document.getElementById("landing").style.display="none";
+ document.getElementById("app").classList.add("show");
+ document.getElementById("userLabel").textContent=currentProfile.name||user.email;
+ renderDashboard();
+});
+
+async function renderDashboard(){
+ const root=document.getElementById("appContent");
+ const role=currentProfile.role;
+ if(role==="admin"){await renderAdmin(root);return;}
+ if(role==="guru"){await renderTeacher(root);return;}
+ await renderStudent(root);
+}
+
+async function renderStudent(root){
+ root.innerHTML=`
  <section class="panel">
-  <h2>Materi Pembelajaran</h2>
-  <p class="muted">Pelajari materi peluang melalui penjelasan dan simulasi interaktif berikut.</p>
-  <div id="studentMaterials" class="items"></div>
-  <div id="peluangMount"></div>
- </section>`;
- await loadMaterials('studentMaterials',false,student.id);
- mountPeluang();
+  <h2>Halo, ${escapeHTML(currentProfile.name||"Murid")}!</h2>
+  <p class="muted">Selamat datang di ruang belajar ADALUANG. Pilih menu untuk mulai belajar.</p>
+  <div class="tabs">
+   <button onclick="studentTab('beranda')">Beranda</button>
+   <button onclick="studentTab('materi')">Materi</button>
+   <button onclick="studentTab('tugas')">Tugas</button>
+   <button onclick="studentTab('nilai')">Nilai</button>
+  </div>
+ </section>
+ <div id="studentArea"></div>`;
+ window.studentTab("beranda");
+}
+
+window.studentTab=async function(tab){
+ const area=document.getElementById("studentArea");
+ if(!area)return;
+ if(tab==="materi"){
+  area.innerHTML=`<div id="peluangMount"></div>`;
+  mountPeluang();
+  return;
+ }
+ if(tab==="beranda"){
+  area.innerHTML=`<section class="panel"><h2>Beranda Murid</h2><p class="muted">Gunakan menu Materi untuk mempelajari peluang melalui penjelasan dan simulasi interaktif.</p></section>`;
+ }else if(tab==="tugas"){
+  area.innerHTML=`<section class="panel"><h2>Tugas</h2><p class="muted">Daftar tugas yang diberikan guru akan ditampilkan di sini.</p><div id="studentTasks" class="items"></div></section>`;
+  await loadStudentTasks();
+ }else if(tab==="nilai"){
+  area.innerHTML=`<section class="panel"><h2>Nilai Saya</h2><p class="muted">Rekap nilai tugas dan aktivitas belajar.</p><div id="studentGrades"></div></section>`;
+  await loadStudentGrades();
+ }
 };
+
+async function loadStudentTasks(){
+ const el=document.getElementById("studentTasks");if(!el)return;
+ try{
+  const snap=await getDocs(query(collection(db,"assignments"),where("status","==","aktif")));
+  if(snap.empty){el.innerHTML='<div class="empty">Belum ada tugas.</div>';return;}
+  el.innerHTML=snap.docs.map(d=>`<div class="item"><h3>${escapeHTML(d.data().title||"Tugas")}</h3><p>${escapeHTML(d.data().description||"")}</p></div>`).join("");
+ }catch(e){el.innerHTML='<div class="empty">Tugas belum dapat dimuat.</div>';}
+}
+async function loadStudentGrades(){
+ const el=document.getElementById("studentGrades");if(!el)return;
+ el.innerHTML='<div class="empty">Belum ada nilai yang ditampilkan.</div>';
+}
+ async function renderTeacher(root){
+ root.innerHTML=`
+ <section class="panel">
+  <h2>Dashboard Guru</h2>
+  <p class="muted">Kelola tugas dan pantau aktivitas pembelajaran murid.</p>
+  <div class="tabs">
+   <button onclick="teacherTab('beranda')">Beranda</button>
+   <button onclick="teacherTab('tugas')">Kelola Tugas</button>
+   <button onclick="teacherTab('murid')">Data Murid</button>
+  </div>
+ </section><div id="teacherArea"></div>`;
+ window.teacherTab("beranda");
+}
+window.teacherTab=async function(tab){
+ const area=document.getElementById("teacherArea");if(!area)return;
+ if(tab==="beranda"){
+  area.innerHTML='<section class="panel"><h2>Selamat Datang, Guru!</h2><p class="muted">Gunakan menu untuk mengelola tugas dan melihat data murid.</p></section>';
+ }else if(tab==="tugas"){
+  area.innerHTML=`
+  <section class="panel">
+   <h2>Buat Tugas</h2>
+   <form onsubmit="createAssignment(event)">
+    <div class="field"><label>Judul tugas</label><input id="taskTitle" required></div>
+    <div class="field"><label>Deskripsi</label><textarea id="taskDescription" rows="3"></textarea></div>
+    <button class="submit" type="submit">Simpan Tugas</button>
+   </form>
+  </section>
+  <section class="panel"><h2>Daftar Tugas</h2><div id="teacherTasks"></div></section>`;
+  await loadTeacherTasks();
+ }else if(tab==="murid"){
+  area.innerHTML='<section class="panel"><h2>Data Murid</h2><div id="teacherStudents"></div></section>';
+  await loadTeacherStudents();
+ }
+};
+window.createAssignment=async function(e){
+ e.preventDefault();
+ const title=document.getElementById("taskTitle").value.trim();
+ const description=document.getElementById("taskDescription").value.trim();
+ try{
+  await addDoc(collection(db,"assignments"),{
+   title,description,teacherId:currentUser.uid,
+   teacherName:currentProfile.name||"",status:"aktif",
+   createdAt:serverTimestamp()
+  });
+  alert("Tugas berhasil dibuat.");
+  await loadTeacherTasks();
+ }catch(error){alert("Gagal menyimpan tugas: "+error.message);}
+};
+async function loadTeacherTasks(){
+ const el=document.getElementById("teacherTasks");if(!el)return;
+ try{
+  const snap=await getDocs(query(collection(db,"assignments"),where("teacherId","==",currentUser.uid)));
+  if(snap.empty){el.innerHTML='<div class="empty">Belum ada tugas.</div>';return;}
+  el.innerHTML=snap.docs.map(d=>{
+   const x=d.data();
+   return `<div class="item"><h3>${escapeHTML(x.title||"Tugas")}</h3><p>${escapeHTML(x.description||"")}</p><span class="tag">${escapeHTML(x.status||"aktif")}</span></div>`;
+  }).join("");
+ }catch(e){el.innerHTML='<div class="empty">Data tugas gagal dimuat.</div>';}
+}
+async function loadTeacherStudents(){
+ const el=document.getElementById("teacherStudents");if(!el)return;
+ try{
+  const snap=await getDocs(query(collection(db,"users"),where("role","==","murid")));
+  if(snap.empty){el.innerHTML='<div class="empty">Belum ada data murid.</div>';return;}
+  el.innerHTML=snap.docs.map(d=>{
+   const x=d.data();
+   return `<div class="item"><h3>${escapeHTML(x.name||"-")}</h3><p>${escapeHTML(x.email||"-")}</p></div>`;
+  }).join("");
+ }catch(e){el.innerHTML='<div class="empty">Data murid gagal dimuat.</div>';}
+}
+async function renderAdmin(root){
+ root.innerHTML=`
+ <section class="panel">
+  <h2>Dashboard Admin</h2>
+  <p class="muted">Kelola akun pengguna ADALUANG.</p>
+  <div class="tabs">
+   <button onclick="adminTab('beranda')">Beranda</button>
+   <button onclick="adminTab('pengguna')">Pengguna</button>
+  </div>
+ </section><div id="adminArea"></div>`;
+ window.adminTab("beranda");
+}
+window.adminTab=async function(tab){
+ const area=document.getElementById("adminArea");if(!area)return;
+ if(tab==="beranda"){
+  area.innerHTML='<section class="panel"><h2>Ringkasan Admin</h2><p class="muted">Panel administrasi ADALUANG.</p></section>';
+ }else{
+  area.innerHTML='<section class="panel"><h2>Daftar Pengguna</h2><div id="adminUsers"></div></section>';
+  await loadAdminUsers();
+ }
+};
+async function loadAdminUsers(){
+ const el=document.getElementById("adminUsers");if(!el)return;
+ try{
+  const snap=await getDocs(collection(db,"users"));
+  if(snap.empty){el.innerHTML='<div class="empty">Belum ada pengguna.</div>';return;}
+  el.innerHTML=snap.docs.map(d=>{
+   const x=d.data();
+   return `<div class="item"><h3>${escapeHTML(x.name||"-")}</h3><p>${escapeHTML(x.email||"-")}</p><span class="tag">${escapeHTML(x.role||"-")}</span></div>`;
+  }).join("");
+ }catch(e){el.innerHTML='<div class="empty">Data pengguna gagal dimuat.</div>';}
+}
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,char=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[char]));
+}
 </script>
 
-  <script>
+<script>
 function mountPeluang(){
- const host=document.getElementById('peluangMount');
- if(!host||host.dataset.ready)return;
- host.dataset.ready='1';
-
- host.innerHTML=`
+ const mount=document.getElementById("peluangMount");
+ if(!mount)return;
+ mount.innerHTML=`
  <div class="peluang-module">
   <div class="pm-hero">
-   <div class="pm-small">MEDIA PEMBELAJARAN INTERAKTIF</div>
-   <h2>✨ Ayo Dalami Peluang!</h2>
-   <p>Eksplorasi ruang sampel, kejadian, peluang, frekuensi harapan, dan percobaan koin serta dadu.</p>
+   <span class="tag">MATERI INTERAKTIF</span>
+   <h2 style="font-size:30px;margin:10px 0">Ayo Dalami Peluang!</h2>
+   <p>Kenali peluang melalui percobaan, pengamatan, dan simulasi sederhana.</p>
   </div>
 
-  <div class="pm-card">
-   <h3>📘 Petunjuk penggunaan</h3>
-   <p>Baca konsep terlebih dahulu, lalu coba simulasi. Gunakan tombol untuk melakukan percobaan dan amati hasilnya.</p>
+  <section class="pm-card">
+   <h3>1. Apa Itu Peluang?</h3>
+   <p>Peluang adalah ukuran kemungkinan terjadinya suatu kejadian. Nilai peluang berada di antara 0 dan 1.</p>
+   <div class="pm-result"><strong>Rumus peluang:</strong><br>
+   P(A) = n(A) / n(S)<br>
+   <span class="pm-small">n(A) = banyak hasil yang mendukung kejadian A, n(S) = banyak seluruh ruang sampel.</span></div>
+   <p>Jika peluang 0, kejadian mustahil terjadi. Jika peluang 1, kejadian pasti terjadi.</p>
+  </section>
+
+  <section class="pm-card">
+   <h3>2. Ruang Sampel Dua Dadu</h3>
+   <p>Ketika dua dadu dilempar bersama, setiap dadu memiliki enam kemungkinan hasil. Banyak pasangan hasil yang mungkin adalah 6 × 6 = 36.</p>
+   <button onclick="pmShowSample()">Tampilkan ruang sampel</button>
+   <div id="pmSample" class="pm-result">Tekan tombol untuk melihat 36 pasangan hasil.</div>
+  </section>
+
+  <div class="pm-grid">
+   <section class="pm-card">
+    <h3>3. Simulasi Pelemparan Koin</h3>
+    <p>Koin memiliki dua sisi, yaitu angka (A) dan gambar (G). Lakukan percobaan dan amati frekuensi kemunculannya.</p>
+    <div class="pm-coins" id="pmCoin">🪙</div>
+    <button onclick="pmTossCoin()">Lempar koin</button>
+    <button class="pm-light" onclick="pmTossCoinTen()">Lempar 10 kali</button>
+    <button class="pm-light" onclick="pmResetCoin()">Reset</button>
+    <div class="pm-result" id="pmCoinResult">Belum ada percobaan.</div>
+    <div class="pm-history" id="pmCoinHistory"></div>
+   </section>
+
+   <section class="pm-card">
+    <h3>4. Frekuensi Harapan</h3>
+    <p>Frekuensi harapan adalah hasil kali peluang suatu kejadian dengan banyak percobaan.</p>
+    <p><strong>Frekuensi harapan = P(A) × banyak percobaan</strong></p>
+    <label>Peluang kejadian (0–1)</label><br>
+    <input id="pmProbability" type="number" min="0" max="1" step="0.01" value="0.5"><br>
+    <label>Banyak percobaan</label><br>
+    <input id="pmTrials" type="number" min="0" value="100"><br>
+    <button onclick="pmExpected()">Hitung frekuensi harapan</button>
+    <div class="pm-result" id="pmExpectedResult">Hasil perhitungan akan muncul di sini.</div>
+   </section>
   </div>
 
-  <div class="pm-card">
-   <h3>1. Konsep dasar peluang</h3>
-   <div class="pm-grid">
-    <div><b>Percobaan</b><p>Kegiatan yang hasilnya belum dapat dipastikan sebelum dilakukan, misalnya melempar koin atau dadu.</p></div>
-    <div><b>Ruang sampel (S)</b><p>Himpunan semua hasil yang mungkin dari suatu percobaan.</p></div>
-    <div><b>Kejadian (A)</b><p>Himpunan bagian dari ruang sampel yang menjadi perhatian.</p></div>
-    <div><b>Rumus peluang</b><p>P(A) = n(A) / n(S), untuk hasil yang memiliki kesempatan sama.</p></div>
-   </div>
-   <div class="pm-result">Contoh: pelemparan dadu, S = {1, 2, 3, 4, 5, 6}. Jika A = muncul bilangan genap, A = {2, 4, 6}, maka P(A) = 3/6 = 1/2.</div>
-  </div>
+  <section class="pm-card">
+   <h3>5. Peluang Dua Kejadian</h3>
+   <p><strong>Kejadian saling lepas:</strong> dua kejadian yang tidak dapat terjadi secara bersamaan.</p>
+   <p><strong>Kejadian tidak saling lepas:</strong> dua kejadian yang dapat terjadi secara bersamaan.</p>
+   <p><strong>Kejadian saling bebas:</strong> terjadinya kejadian pertama tidak memengaruhi peluang kejadian kedua.</p>
+   <p><strong>Kejadian bersyarat:</strong> peluang suatu kejadian dengan syarat kejadian lain telah terjadi.</p>
+  </section>
 
-  <div class="pm-card">
-   <h3>2. Ruang sampel dua dadu</h3>
-   <p>Pilih tampilan untuk memahami pasangan hasil dua dadu.</p>
-   <select id="pmTree" onchange="pmDrawTree()">
-    <option value="table">Tabel pasangan dua dadu</option>
-    <option value="sum">Kelompok berdasarkan jumlah</option>
-   </select>
-   <div id="pmTreeView"></div>
-  </div>
+  <section class="pm-card">
+   <h3>6. Simulasi Dua Kejadian: Koin dan Dadu</h3>
+   <p>Lakukan percobaan melempar koin dan dadu. Amati pasangan hasil yang muncul.</p>
+   <button onclick="pmCoinDie()">Lempar koin dan dadu</button>
+   <button class="pm-light" onclick="pmResetCoinDie()">Reset percobaan</button>
+   <div class="pm-result" id="pmCoinDieResult">Belum ada percobaan.</div>
+   <div id="pmCoinDieHistory" class="pm-history"></div>
+  </section>
 
-  <div class="pm-card">
-   <h3>3. Simulasi pelemparan koin</h3>
-   <p>Sisi koin terdiri atas angka (A) dan gambar (G). Lakukan percobaan dan bandingkan frekuensi relatifnya.</p>
-   <div class="pm-coins" id="pmCoinFace">🪙</div>
-   <button onclick="pmFlip(1)">Lempar 1 kali</button>
-   <button onclick="pmFlip(10)">Lempar 10 kali</button>
-   <button class="pm-light" onclick="pmReset()">Reset</button>
-   <div class="pm-result" id="pmCoinStats">Total: 0 kali | Angka: 0 | Gambar: 0</div>
-   <div class="pm-history" id="pmCoinHistory"></div>
-  </div>
-
-  <div class="pm-card">
-   <h3>4. Frekuensi harapan</h3>
-   <p>Frekuensi harapan = banyak percobaan × peluang kejadian.</p>
-   <label>Banyak percobaan (n) <input id="pmN" type="number" min="0" value="100"></label>
-   <label>Peluang kejadian P(A) <input id="pmP" type="number" min="0" max="1" step="0.01" value="0.5"></label>
-   <button onclick="pmExpected()">Hitung</button>
-   <div class="pm-result" id="pmExpectedResult">Hasil perhitungan akan tampil di sini.</div>
-  </div>
-
-  <div class="pm-card">
-   <h3>5. Peluang dua kejadian</h3>
-   <div class="pm-grid">
-    <div><b>Saling lepas</b><p>P(A ∪ B) = P(A) + P(B), jika A dan B tidak dapat terjadi bersamaan.</p></div>
-    <div><b>Tidak saling lepas</b><p>P(A ∪ B) = P(A) + P(B) − P(A ∩ B).</p></div>
-    <div><b>Saling bebas</b><p>P(A ∩ B) = P(A) × P(B).</p></div>
-    <div><b>Peluang bersyarat</b><p>P(A|B) = P(A ∩ B) / P(B), dengan P(B) ≠ 0.</p></div>
-   </div>
-  </div>
-
-  <div class="pm-card">
-   <h3>6. Percobaan gabungan koin dan dadu</h3>
-   <p>Setiap percobaan menghasilkan satu sisi koin (A/G) dan satu angka dadu (1–6). Kedua percobaan dianggap saling bebas.</p>
-   <button onclick="pmIndependent(1)">Coba 1 kali</button>
-   <button onclick="pmIndependent(10)">Coba 10 kali</button>
-   <button class="pm-light" onclick="pmIndReset()">Reset</button>
-   <div class="pm-result" id="pmIndResult">Belum ada percobaan.</div>
-   <div class="pm-history" id="pmIndHistory"></div>
-  </div>
-
-  <div class="pm-card">
-   <h3>7. Misi eksplorasi dadu 3D 🎲</h3>
+  <section class="pm-card">
+   <h3>7. Misi Eksperimen Dadu</h3>
+   <p>Selesaikan misi dengan melakukan percobaan pelemparan dadu. Catat hasilnya dan amati frekuensi setiap mata dadu.</p>
+   <div id="pmMissionList"></div>
    <div class="pm-mission">
-    <b id="pmMissionTitle">Misi 1 — Mengamati hasil dadu</b>
-    <p id="pmMissionDesc">Lempar dadu dan amati hasil yang muncul.</p>
-    <div class="pm-die" id="pmDie">⚄</div>
-    <div>
-     <button onclick="pmRoll()">Lempar dadu</button>
-     <button class="pm-light" onclick="pmNextMission()">Misi berikutnya</button>
+    <h3>Simulasi Dadu 3D</h3>
+    <p>Lempar dadu dan amati mata dadu yang muncul.</p>
+    <div class="pm-die-stage">
+     <div class="pm-cube" id="pmCube">
+      <div class="pm-face pm-front"></div>
+      <div class="pm-face pm-back"></div>
+      <div class="pm-face pm-right"></div>
+      <div class="pm-face pm-left"></div>
+      <div class="pm-face pm-top"></div>
+      <div class="pm-face pm-bottom"></div>
+     </div>
     </div>
-    <div class="pm-result" id="pmMissionResult">Hasil pengamatan akan muncul di sini.</div>
+    <div class="pm-result" id="pmDieResult">Dadu belum dilempar.</div>
+    <button onclick="pmRoll()">Lempar dadu</button>
+    <button class="pm-light" onclick="pmRollTen()">Lempar 10 kali</button>
+    <button class="pm-light" onclick="pmResetMission()">Reset misi</button>
+    <div id="pmObservation"></div>
    </div>
-  </div>
+  </section>
  </div>`;
- pmDrawTree();
- pmSetMission();
+ pmBuildDie();
+ pmRenderObservation();
+ pmRenderMissions();
+}
+ <script>
+let pmCoinCount={A:0,G:0};
+let pmCoinHistory=[];
+let pmCoinDieHistory=[];
+let pmDieCounts=[0,0,0,0,0,0];
+let pmDieTotal=0;
+let pmMissionIndex=0;
+
+function pmShowSample(){
+ const el=document.getElementById("pmSample");
+ if(!el)return;
+ let html='<table class="pm-table"><tr><th>Dadu 1 \\ Dadu 2</th>';
+ for(let i=1;i<=6;i++)html+=`<th>${i}</th>`;
+ html+='</tr>';
+ for(let i=1;i<=6;i++){
+  html+=`<tr><th>${i}</th>`;
+  for(let j=1;j<=6;j++)html+=`<td>(${i}, ${j})</td>`;
+  html+='</tr>';
+ }
+ html+='</table><p><strong>Jumlah ruang sampel = 36 pasangan.</strong></p>';
+ el.innerHTML=html;
 }
 
-function pmDrawTree(){
- let v=document.getElementById('pmTreeView');
- if(!v)return;
- let mode=document.getElementById('pmTree').value;
- if(mode==='table'){
-  let h='<table class="pm-table"><tr><th>Dadu 1 / Dadu 2</th>'+
-   [1,2,3,4,5,6].map(x=>'<th>'+x+'</th>').join('')+'</tr>';
-  for(let i=1;i<=6;i++){
-   h+='<tr><th>'+i+'</th>'+
-   [1,2,3,4,5,6].map(j=>'<td>('+i+','+j+')</td>').join('')+'</tr>';
-  }
-  v.innerHTML=h+'</table><p class="pm-small">Jumlah titik sampel = 6 × 6 = 36.</p>';
- }else{
-  v.innerHTML='<div class="pm-grid">'+Array.from({length:11},(_,i)=>{
-   let sum=i+2,arr=[];
-   for(let a=1;a<=6;a++)for(let b=1;b<=6;b++)if(a+b===sum)arr.push('('+a+','+b+')');
-   return '<div class="pm-result"><b>Jumlah '+sum+'</b><br>'+arr.join(' ')+'</div>';
-  }).join('')+'</div>';
- }
+function pmUpdateCoin(){
+ const total=pmCoinCount.A+pmCoinCount.G;
+ const a=total?((pmCoinCount.A/total)*100).toFixed(1):0;
+ const g=total?((pmCoinCount.G/total)*100).toFixed(1):0;
+ document.getElementById("pmCoinResult").innerHTML=
+ `<strong>Jumlah percobaan:</strong> ${total}<br>
+ Angka (A): ${pmCoinCount.A} (${a}%)<br>
+ Gambar (G): ${pmCoinCount.G} (${g}%)`;
+ document.getElementById("pmCoinHistory").textContent=
+ pmCoinHistory.length?"Hasil percobaan: "+pmCoinHistory.join(", "):"";
 }
-
-let pmA=0,pmG=0,pmHist=[];
-function pmFlip(n){
- let last='';
- for(let i=0;i<n;i++){
-  last=Math.random()<.5?'A':'G';
-  if(last==='A')pmA++;else pmG++;
-  pmHist.unshift(last);
- }
- document.getElementById('pmCoinFace').textContent=last==='A'?'🪙 A (Angka)':'🪙 G (Gambar)';
- let t=pmA+pmG;
- document.getElementById('pmCoinStats').innerHTML=
-  `Total: ${t} kali | Angka: ${pmA} (${t?(pmA/t*100).toFixed(1):0}%) | Gambar: ${pmG} (${t?(pmG/t*100).toFixed(1):0}%)`;
- document.getElementById('pmCoinHistory').textContent='Riwayat terbaru: '+pmHist.slice(0,60).join(', ');
+function pmTossCoin(){
+ const result=Math.random()<.5?"A":"G";
+ pmCoinCount[result]++;
+ pmCoinHistory.push(result);
+ document.getElementById("pmCoin").textContent=result==="A"?"🔵":"🟡";
+ pmUpdateCoin();
 }
-function pmReset(){
- pmA=pmG=0;pmHist=[];
- document.getElementById('pmCoinFace').textContent='🪙';
- document.getElementById('pmCoinStats').textContent='Total: 0 kali | Angka: 0 | Gambar: 0';
- document.getElementById('pmCoinHistory').textContent='';
+function pmTossCoinTen(){
+ for(let i=0;i<10;i++){
+  const result=Math.random()<.5?"A":"G";
+  pmCoinCount[result]++;
+  pmCoinHistory.push(result);
+ }
+ document.getElementById("pmCoin").textContent="🪙";
+ pmUpdateCoin();
+}
+function pmResetCoin(){
+ pmCoinCount={A:0,G:0};
+ pmCoinHistory=[];
+ document.getElementById("pmCoin").textContent="🪙";
+ pmUpdateCoin();
 }
 
 function pmExpected(){
- let n=Number(document.getElementById('pmN').value);
- let p=Number(document.getElementById('pmP').value);
- document.getElementById('pmExpectedResult').textContent=
-  (n>=0&&p>=0&&p<=1)?`Frekuensi harapan = ${n} × ${p} = ${n*p}.`:
-  'Masukkan n ≥ 0 dan peluang antara 0 sampai 1.';
-}
-
-let pmInd=[],pmIndA=0,pmIndEven=0,pmIndBoth=0;
-function pmIndependent(n){
- for(let i=0;i<n;i++){
-  let c=Math.random()<.5?'A':'G';
-  let d=1+Math.floor(Math.random()*6);
-  pmInd.push(c+d);
-  if(c==='A')pmIndA++;
-  if(d%2===0)pmIndEven++;
-  if(c==='A'&&d%2===0)pmIndBoth++;
+ const p=Number(document.getElementById("pmProbability").value);
+ const n=Number(document.getElementById("pmTrials").value);
+ const result=document.getElementById("pmExpectedResult");
+ if(!Number.isFinite(p)||p<0||p>1||!Number.isFinite(n)||n<0){
+  result.textContent="Masukkan peluang antara 0 sampai 1 dan banyak percobaan tidak negatif.";
+  return;
  }
- let t=pmInd.length;
- document.getElementById('pmIndResult').innerHTML=
-  `Total percobaan: ${t}<br>Koin angka: ${pmIndA}<br>Dadu genap: ${pmIndEven}<br>Koin angka dan dadu genap: ${pmIndBoth}<br>Frekuensi relatif kejadian bersama: ${(pmIndBoth/t*100).toFixed(1)}%`;
- document.getElementById('pmIndHistory').textContent='Hasil: '+pmInd.slice(-50).join(', ');
-}
-function pmIndReset(){
- pmInd=[];pmIndA=pmIndEven=pmIndBoth=0;
- document.getElementById('pmIndResult').textContent='Belum ada percobaan.';
- document.getElementById('pmIndHistory').textContent='';
+ result.innerHTML=`Frekuensi harapan = ${p} × ${n} = <strong>${p*n}</strong>`;
 }
 
-const pmMissions=[
- ['Misi 1 — Mengamati hasil dadu','Lempar dadu dan catat satu hasil yang muncul.'],
- ['Misi 2 — Bilangan genap','Amati apakah hasil dadu termasuk bilangan genap.'],
- ['Misi 3 — Bilangan ganjil','Amati apakah hasil dadu termasuk bilangan ganjil.'],
- ['Misi 4 — Peluang angka 6','Lakukan beberapa lemparan dan hitung kemunculan angka 6.'],
- ['Misi 5 — Kurang dari 4','Tentukan apakah hasil dadu kurang dari 4.'],
- ['Misi 6 — Lebih dari 3','Tentukan apakah hasil dadu lebih dari 3.'],
- ['Misi 7 — Frekuensi relatif','Lakukan 10 lemparan dan amati frekuensi hasil genap.'],
- ['Misi 8 — Ruang sampel','Ingat kembali enam hasil yang mungkin pada dadu.'],
- ['Misi 9 — Kesimpulan','Bandingkan peluang teoretis dan hasil percobaan.']
-];
-let pmMi=0,pmRolls=[];
-function pmSetMission(){
- document.getElementById('pmMissionTitle').textContent=pmMissions[pmMi][0];
- document.getElementById('pmMissionDesc').textContent=pmMissions[pmMi][1];
- document.getElementById('pmMissionResult').textContent='Lakukan lemparan untuk menyelesaikan misi.';
+function pmCoinDie(){
+ const coin=Math.random()<.5?"Angka":"Gambar";
+ const die=Math.floor(Math.random()*6)+1;
+ pmCoinDieHistory.push({coin,die});
+ document.getElementById("pmCoinDieResult").innerHTML=
+ `Hasil koin: <strong>${coin}</strong><br>Hasil dadu: <strong>${die}</strong><br>
+ Pasangan hasil: (${coin}, ${die})`;
+ document.getElementById("pmCoinDieHistory").innerHTML=
+ "<strong>Riwayat percobaan:</strong><br>"+
+ pmCoinDieHistory.map((x,i)=>`${i+1}. (${x.coin}, ${x.die})`).join("<br>");
 }
-function pmNextMission(){
- pmMi=(pmMi+1)%pmMissions.length;
- pmRolls=[];
- document.getElementById('pmDie').textContent='⚄';
- pmSetMission();
+function pmResetCoinDie(){
+ pmCoinDieHistory=[];
+ document.getElementById("pmCoinDieResult").textContent="Belum ada percobaan.";
+ document.getElementById("pmCoinDieHistory").textContent="";
 }
+
+function pmRenderMissions(){
+ const missions=[
+  "Lakukan 5 kali pelemparan dadu. Catat hasil yang muncul.",
+  "Lakukan 10 kali pelemparan dadu. Hitung frekuensi setiap mata dadu.",
+  "Amati berapa kali muncul mata dadu genap.",
+  "Amati berapa kali muncul mata dadu ganjil.",
+  "Hitung frekuensi kemunculan mata dadu 6.",
+  "Bandingkan frekuensi muncul mata dadu 1 dan 2.",
+  "Lakukan 20 kali pelemparan dan amati hasilnya.",
+  "Tentukan peluang empiris muncul mata dadu genap.",
+  "Bandingkan hasil pengamatan dengan peluang teoretis."
+ ];
+ const el=document.getElementById("pmMissionList");
+ if(!el)return;
+ el.innerHTML=missions.map((mission,i)=>`
+  <div class="pm-mission" style="margin:8px 0">
+   <strong>Misi ${i+1}</strong>
+   <p>${mission}</p>
+   <span class="pm-small">${i===0?"Mulai dengan 5 percobaan.":"Gunakan simulasi dadu di bawah untuk mengumpulkan data."}</span>
+  </div>`).join("");
+}
+
+function pmBuildDie(){
+ const cube=document.getElementById("pmCube");
+ if(!cube)return;
+ const faces=[
+  {cls:"pm-front",num:1},
+  {cls:"pm-back",num:6},
+  {cls:"pm-right",num:3},
+  {cls:"pm-left",num:4},
+  {cls:"pm-top",num:2},
+  {cls:"pm-bottom",num:5}
+ ];
+ const patterns={
+  1:[4],
+  2:[0,8],
+  3:[0,4,8],
+  4:[0,2,6,8],
+  5:[0,2,4,6,8],
+  6:[0,2,3,5,6,8]
+ };
+ faces.forEach(face=>{
+  const el=cube.querySelector("."+face.cls);
+  if(!el)return;
+  el.innerHTML="";
+  for(let i=0;i<9;i++){
+   const pip=document.createElement("span");
+   if(patterns[face.num].includes(i))pip.className="pm-pip";
+   el.appendChild(pip);
+  }
+ });
+}
+
+function pmShowDie(n,animate=true){
+ const cube=document.getElementById("pmCube");
+ if(!cube)return;
+ const rotations={
+  1:[-25,-35],
+  2:[-115,-35],
+  3:[-25,-125],
+  4:[-25,55],
+  5:[65,-35],
+  6:[155,-35]
+ };
+ const [x,y]=rotations[n];
+ cube.style.transform=`rotateX(${x+720}deg) rotateY(${y+720}deg)`;
+ if(!animate)cube.style.transition="none";
+ else cube.style.transition="transform .9s cubic-bezier(.2,.8,.2,1)";
+}
+
+function pmRenderObservation(){
+ const el=document.getElementById("pmObservation");
+ if(!el)return;
+ let html=`<h4 style="margin:12px 0 5px">Tabel Frekuensi Hasil Pengamatan</h4>
+ <table class="pm-table"><tr><th>Mata dadu</th><th>Frekuensi</th><th>Frekuensi relatif</th></tr>`;
+ for(let i=0;i<6;i++){
+  const relative=pmDieTotal?(pmDieCounts[i]/pmDieTotal*100).toFixed(1)+"%":"0%";
+  html+=`<tr><td>${i+1}</td><td>${pmDieCounts[i]}</td><td>${relative}</td></tr>`;
+ }
+ html+=`<tr><th>Jumlah</th><th>${pmDieTotal}</th><th>${pmDieTotal? "100%":"0%"}</th></tr></table>`;
+ el.innerHTML=html;
+}
+
 function pmRoll(){
- let n=1+Math.floor(Math.random()*6);
- pmRolls.push(n);
- document.getElementById('pmDie').textContent=['','⚀','⚁','⚂','⚃','⚄','⚅'][n];
- document.getElementById('pmMissionResult').textContent=
-  `Hasil lemparan: ${n}. Total lemparan pada misi ini: ${pmRolls.length}. Hasil tercatat: ${pmRolls.join(', ')}.`;
+ const result=Math.floor(Math.random()*6)+1;
+ pmDieCounts[result-1]++;
+ pmDieTotal++;
+ pmMissionIndex++;
+ pmShowDie(result,true);
+ document.getElementById("pmDieResult").innerHTML=
+ `Hasil lemparan: <strong>${result}</strong><br>
+ Jumlah percobaan: ${pmDieTotal}`;
+ pmRenderObservation();
 }
+
+function pmRollTen(){
+ for(let i=0;i<10;i++){
+  const result=Math.floor(Math.random()*6)+1;
+  pmDieCounts[result-1]++;
+  pmDieTotal++;
+ }
+ const last=pmDieCounts.findIndex((x,i)=>x>0&&x===Math.max(...pmDieCounts))+1;
+ pmShowDie(last,true);
+ document.getElementById("pmDieResult").innerHTML=
+ `Berhasil melakukan 10 kali pelemparan.<br>
+ Jumlah seluruh percobaan: <strong>${pmDieTotal}</strong>`;
+ pmRenderObservation();
+}
+
+function pmResetMission(){
+ pmDieCounts=[0,0,0,0,0,0];
+ pmDieTotal=0;
+ pmMissionIndex=0;
+ pmShowDie(1,false);
+ document.getElementById("pmDieResult").textContent="Dadu belum dilempar.";
+ pmRenderObservation();
+}
+
+window.pmShowSample=pmShowSample;
+window.pmTossCoin=pmTossCoin;
+window.pmTossCoinTen=pmTossCoinTen;
+window.pmResetCoin=pmResetCoin;
+window.pmExpected=pmExpected;
+window.pmCoinDie=pmCoinDie;
+window.pmResetCoinDie=pmResetCoinDie;
+window.pmRoll=pmRoll;
+window.pmRollTen=pmRollTen;
+window.pmResetMission=pmResetMission;
 </script>
 </body>
 </html>
