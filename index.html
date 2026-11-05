@@ -20,7 +20,7 @@
   --soft:#f7f9fc;
 }
 
-/* ===== NAVBAR LOMPAT BAGIAN (opsional, tambahan kecil) ===== */
+/* ===== NAVBAR ATAS (tombol kembali ke menu) ===== */
 .top-nav{
   position:sticky;
   top:0;
@@ -28,19 +28,126 @@
   background:#244a87;
   padding:10px 16px;
   text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
 }
-.top-nav a{
+.top-nav button{
+  background:transparent;
+  border:2px solid #fff;
   color:#fff;
-  text-decoration:none;
   font-weight:bold;
-  margin:0 12px;
+  padding:8px 16px;
+  border-radius:8px;
+  cursor:pointer;
   font-size:14px;
+  font-family:Arial,sans-serif;
+  transition:background .2s;
 }
-.top-nav a:hover{text-decoration:underline}
+.top-nav button:hover{background:rgba(255,255,255,.15)}
+.top-nav .nav-title{
+  color:#fff;
+  font-weight:bold;
+  font-size:15px;
+  margin-left:14px;
+}
+
+/* ===== MENU UTAMA (2 kartu pilihan) ===== */
+#menuUtama{
+  min-height:calc(100vh - 60px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:40px 20px;
+  background:linear-gradient(135deg,#f2f5fa 0%,#e6edf9 100%);
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  box-sizing:border-box;
+}
+#menuUtama .menu-header{
+  text-align:center;
+  margin-bottom:40px;
+  max-width:700px;
+}
+#menuUtama h1{
+  color:var(--navy);
+  font-size:clamp(28px,5vw,42px);
+  margin:0 0 10px;
+  letter-spacing:1px;
+}
+#menuUtama .menu-sub{
+  color:var(--muted);
+  font-size:clamp(14px,2vw,17px);
+  margin:0;
+  line-height:1.5;
+}
+
+#menuUtama .menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:22px;
+  width:100%;
+  max-width:800px;
+}
+
+#menuUtama .menu-card{
+  background:#fff;
+  border-radius:20px;
+  padding:32px 26px;
+  text-align:center;
+  cursor:pointer;
+  border:3px solid transparent;
+  box-shadow:0 6px 22px rgba(30,55,90,.1);
+  transition:transform .25s, box-shadow .25s, border-color .25s;
+  box-sizing:border-box;
+}
+#menuUtama .menu-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 12px 32px rgba(30,55,90,.2);
+}
+#menuUtama .menu-card.konsep{border-color:#3976d3}
+#menuUtama .menu-card.majemuk{border-color:#8061d9}
+
+#menuUtama .menu-icon{
+  font-size:56px;
+  display:block;
+  margin-bottom:14px;
+  line-height:1;
+}
+#menuUtama .menu-card h2{
+  color:var(--navy);
+  margin:0 0 10px;
+  font-size:22px;
+}
+#menuUtama .menu-card p{
+  color:var(--muted);
+  margin:0 0 18px;
+  font-size:14px;
+  line-height:1.5;
+}
+#menuUtama .menu-btn{
+  display:inline-block;
+  padding:10px 22px;
+  border-radius:8px;
+  font-weight:bold;
+  font-size:14px;
+  color:#fff;
+}
+#menuUtama .menu-card.konsep .menu-btn{background:#3976d3}
+#menuUtama .menu-card.majemuk .menu-btn{background:#8061d9}
+
+#menuUtama .menu-footer{
+  margin-top:40px;
+  color:var(--muted);
+  font-size:13px;
+  text-align:center;
+}
+
+/* ===== HALAMAN BAGIAN (awalnya tersembunyi) ===== */
+.halaman{display:none}
+.halaman.aktif{display:block}
 
 /* ================================================================
    BAGIAN A — Konsep Dasar Peluang
-   Semua CSS asli Kode A di-scope ke #bagianA agar tidak bentrok
    ================================================================ */
 #bagianA *{box-sizing:border-box}
 #bagianA{scroll-behavior:smooth}
@@ -292,7 +399,6 @@
 
 /* ================================================================
    BAGIAN B — Kejadian Majemuk
-   Semua CSS asli Kode B di-scope ke #bagianB agar tidak bentrok
    ================================================================ */
 #bagianB *{box-sizing:border-box}
 
@@ -677,16 +783,57 @@
 
 <body>
 
-<!-- NAVBAR LOMPAT BAGIAN -->
-<nav class="top-nav">
-  <a href="#bagianA">📘 Konsep Dasar Peluang</a>
-  <a href="#bagianB">📗 Kejadian Majemuk</a>
+<!-- NAVBAR ATAS: tombol kembali ke menu + judul bagian aktif -->
+<nav class="top-nav" id="topNav" style="display:none">
+  <button onclick="kembaliKeMenu()">← Menu Utama</button>
+  <span class="nav-title" id="navTitle"></span>
 </nav>
 
 <!-- ============================================================
-     BAGIAN A — Konsep Dasar Peluang (Kode A)
+     MENU UTAMA — 2 pilihan
      ============================================================ -->
-<div id="bagianA">
+<div id="menuUtama">
+
+  <div class="menu-header">
+    <h1>ADALUANG</h1>
+    <p class="menu-sub">
+      Media pembelajaran matematika interaktif.<br>
+      Pilih materi yang ingin kamu pelajari.
+    </p>
+  </div>
+
+  <div class="menu-grid">
+
+    <div class="menu-card konsep" onclick="bukaBagian('bagianA')">
+      <span class="menu-icon">📘</span>
+      <h2>Konsep Dasar Peluang</h2>
+      <p>
+        Ruang sampel, frekuensi relatif, peluang suatu kejadian,
+        komplemen, dan frekuensi harapan.
+      </p>
+      <span class="menu-btn">Mulai Belajar →</span>
+    </div>
+
+    <div class="menu-card majemuk" onclick="bukaBagian('bagianB')">
+      <span class="menu-icon">📗</span>
+      <h2>Kejadian Majemuk</h2>
+      <p>
+        Kejadian saling lepas, tidak saling lepas, saling bebas,
+        dan peluang bersyarat.
+      </p>
+      <span class="menu-btn">Mulai Belajar →</span>
+    </div>
+
+  </div>
+
+  <p class="menu-footer">© ADALUANG — E-Learning Analisis Data dan Peluang</p>
+</div>
+
+
+<!-- ============================================================
+     BAGIAN A — Konsep Dasar Peluang (awalnya tersembunyi)
+     ============================================================ -->
+<div id="bagianA" class="halaman">
 
 <header>
   <h1>ADALUANG</h1>
@@ -1056,9 +1203,9 @@
 
 
 <!-- ============================================================
-     BAGIAN B — Kejadian Majemuk (Kode B)
+     BAGIAN B — Kejadian Majemuk (awalnya tersembunyi)
      ============================================================ -->
-<div id="bagianB">
+<div id="bagianB" class="halaman">
 
 <header>
 <h1>Eksplorasi Peluang Kejadian Majemuk</h1>
@@ -1617,9 +1764,54 @@ kejadian A dan B serta informasi yang diketahui dalam soal.
 
 
 <!-- ============================================================
-     JAVASCRIPT GABUNGAN (Kode A + Kode B)
+     JAVASCRIPT GABUNGAN (Kode A + Kode B + Navigasi)
      ============================================================ -->
 <script>
+/* ============================================================
+   NAVIGASI MENU UTAMA ↔ BAGIAN
+   ============================================================ */
+const judulBagian = {
+  bagianA: "📘 Konsep Dasar Peluang",
+  bagianB: "📗 Kejadian Majemuk"
+};
+
+function bukaBagian(id){
+  // Sembunyikan menu utama
+  document.getElementById("menuUtama").style.display = "none";
+
+  // Sembunyikan semua halaman bagian
+  document.querySelectorAll(".halaman").forEach(el=>{
+    el.classList.remove("aktif");
+  });
+
+  // Tampilkan bagian yang dipilih
+  document.getElementById(id).classList.add("aktif");
+
+  // Tampilkan navbar atas + judul
+  document.getElementById("topNav").style.display = "block";
+  document.getElementById("navTitle").textContent = judulBagian[id] || "";
+
+  // Scroll ke atas
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function kembaliKeMenu(){
+  // Sembunyikan semua halaman bagian
+  document.querySelectorAll(".halaman").forEach(el=>{
+    el.classList.remove("aktif");
+  });
+
+  // Sembunyikan navbar
+  document.getElementById("topNav").style.display = "none";
+
+  // Tampilkan menu utama
+  document.getElementById("menuUtama").style.display = "flex";
+
+  // Scroll ke atas
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+
 /* ============================================================
    FUNGSI-FUNGSI DARI KODE A
    ============================================================ */
