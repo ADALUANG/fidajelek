@@ -104,6 +104,49 @@ h1 span{display:block;color:#8056d9}
 .materi-back{display:inline-flex;align-items:center;gap:8px;background:#f4effc;color:#6e49bd;border:0;border-radius:10px;padding:10px 18px;font-weight:900;font-size:14px;cursor:pointer;margin-bottom:18px;font-family:Nunito,sans-serif}
 .materi-back:hover{background:#e8dcfb}
 
+/* ============================================================
+   LATIHAN SOAL
+   ============================================================ */
+.practice-area{margin-top:10px}
+.practice-area h3{font-size:20px;margin-bottom:8px;color:#35256c}
+.practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
+.practice-card{background:linear-gradient(145deg,#f8f2ff,#eee7ff);border:2px solid #eae0fb;border-radius:18px;padding:22px 18px;text-align:left;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:Nunito,sans-serif}
+.practice-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px #60468b22}
+.practice-icon{font-size:36px;display:block;margin-bottom:10px;line-height:1}
+.practice-card h4{font-size:16px;font-weight:900;color:#35256c;margin:0 0 8px}
+.practice-card p{font-size:12px;color:#8984a5;line-height:1.5;margin:0}
+.practice-back{display:inline-flex;align-items:center;gap:8px;background:#f4effc;color:#6e49bd;border:0;border-radius:10px;padding:10px 18px;font-weight:900;font-size:14px;cursor:pointer;margin-bottom:18px;font-family:Nunito,sans-serif}
+.practice-back:hover{background:#e8dcfb}
+.practice-btn{border:0;border-radius:12px;padding:12px 22px;font-weight:900;font-size:14px;background:#8056d9;color:white;cursor:pointer;margin-top:16px;font-family:Nunito,sans-serif;transition:.2s}
+.practice-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.practice-btn.secondary{background:#f0e7ff;color:#6e49bd;margin-top:10px;font-size:13px;padding:9px 16px}
+.question-card{background:#f8f2ff;border:1px solid #eae0fb;border-radius:16px;padding:18px;margin-bottom:14px}
+.question-card h4{font-size:15px;font-weight:800;color:#35256c;margin:8px 0 14px;line-height:1.6}
+.question-number{display:inline-block;font-size:11px;font-weight:900;letter-spacing:1.5px;color:#6e49bd;background:#f0e7ff;padding:4px 10px;border-radius:20px}
+.question-option{display:flex;align-items:center;gap:10px;padding:11px 14px;border:2px solid #e8def8;border-radius:12px;margin-bottom:9px;cursor:pointer;background:white;transition:.15s;font-size:14px;font-weight:700;color:#4a3f6b}
+.question-option:hover{border-color:#c4aef0;background:#faf5ff}
+.question-option input{accent-color:#8056d9;width:18px;height:18px;flex-shrink:0}
+.question-option:has(input:checked){border-color:#8056d9;background:#f0e7ff}
+.question-card textarea{width:100%;min-height:90px;padding:13px;border:2px solid #e8def8;border-radius:12px;font-family:Nunito,sans-serif;font-size:14px;resize:vertical;outline:none;color:#35256c;background:white}
+.question-card textarea:focus{border-color:#8056d9}
+.practice-result{display:none;margin-top:18px;padding:16px;border-radius:14px;background:#eaf9f2;border-left:4px solid #23866b;color:#1a5f4d;font-size:14px;line-height:1.7}
+.practice-result.show{display:block;animation:appearS .3s ease}
+@keyframes appearS{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.practice-result strong{color:#166534}
+.practice-result p{margin:8px 0;line-height:1.6}
+.drag-items{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;padding:14px;background:#f8f2ff;border:1px dashed #d4c4f5;border-radius:14px}
+.drag-item{padding:10px 18px;background:white;border:2px solid #e8def8;border-radius:10px;font-weight:900;color:#35256c;cursor:grab;user-select:none;transition:.15s;font-size:14px}
+.drag-item:hover{border-color:#8056d9;background:#faf5ff}
+.drag-item:active{cursor:grabbing}
+.drop-zone{padding:16px;border:2px dashed #c4aef0;border-radius:12px;background:white;text-align:center;color:#8984a5;font-weight:700;font-size:13px;margin-top:10px;cursor:pointer;transition:.15s;min-height:52px;display:flex;align-items:center;justify-content:center}
+.drop-zone:hover{background:#faf5ff;border-color:#8056d9}
+.drop-zone.filled{border-style:solid;border-color:#8056d9;background:#f0e7ff;color:#35256c;font-size:15px}
+.match-row{display:grid;grid-template-columns:1fr 1.2fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #eee6fa}
+.match-row:last-child{border-bottom:0}
+.match-row strong{font-size:14px;color:#35256c}
+.match-row select{width:100%;padding:11px;border:2px solid #e8def8;border-radius:10px;font-family:Nunito,sans-serif;font-size:13px;background:white;color:#35256c;cursor:pointer;outline:none}
+.match-row select:focus{border-color:#8056d9}
+
 @media(max-width:1100px){.page{grid-template-columns:1fr 1.05fr;padding:45px 6%}.right{display:none}}
 @media(max-width:650px){
 .page{display:flex;flex-direction:column;gap:28px;padding:35px 20px}
@@ -123,6 +166,16 @@ h1{font-size:45px}
 .app-top{align-items:flex-start}
 .userline{max-width:180px}
 .materi-frame-wrap iframe{height:70vh;min-height:500px}
+.practice-grid{grid-template-columns:1fr 1fr;gap:10px}
+.practice-card{padding:16px 12px}
+.practice-icon{font-size:28px;margin-bottom:6px}
+.practice-card h4{font-size:14px}
+.practice-card p{font-size:11px}
+.match-row{grid-template-columns:1fr;gap:6px}
+.match-row strong{font-size:13px}
+}
+@media(max-width:400px){
+.practice-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -577,7 +630,7 @@ async function teacherDashboard(){
 $('content').innerHTML=`
 <section class="panel">
 <h2>Ruang Guru</h2>
-<p class="muted">Guru yang disetujui dapat membuat kelas dan membagikan kode kepada murid. Guru tidak menambah atau mengedit materi.</p>
+<p class="muted">Guru yang disetujui dapat membuat kelas dan membagikan kode kepada murid.</p>
 
 <form id="classForm" class="inline">
 <div class="field">
@@ -743,10 +796,7 @@ section.innerHTML=`
 </div>
 <div id="materiFrameContainer"></div>`;
 }else if(tab==='soal'){
-section.innerHTML=`
-<h3>Latihan Soal</h3>
-<p class="muted">Kerjakan latihan soal untuk menguji pemahamanmu.</p>
-<div class="empty">Belum ada soal yang tersedia.</div>`;
+renderLatihanMenu();
 }
 };
 
@@ -760,12 +810,286 @@ const section=$('studentSection');
 section.innerHTML=`
 <button class="materi-back" onclick="kembaliKeMateri()">← Kembali ke Materi</button>
 <div class="materi-frame-wrap">
-<iframe src="materi.html?tab=${tab}" title="Materi"></iframe>
+<iframe src="materi.html?tab=${encodeURIComponent(tab)}" title="Materi"></iframe>
 </div>`;
 };
 
 window.kembaliKeMateri=()=>{
 window.studentTab('materi');
+};
+
+/* =========================
+   LATIHAN SOAL INTERAKTIF
+========================= */
+
+const latihanData={
+pg:[
+{q:'Dua buah dadu dilempar secara bersamaan. Banyak anggota ruang sampel percobaan tersebut adalah ....',o:['6','12','24','36'],a:3,e:'Setiap dadu memiliki 6 kemungkinan. Jadi banyak anggota ruang sampel adalah 6 × 6 = 36.'},
+{q:'Sebuah koin dilempar 20 kali dan muncul sisi angka sebanyak 12 kali. Frekuensi relatif muncul sisi angka adalah ....',o:['0,2','0,4','0,6','0,8'],a:2,e:'Frekuensi relatif = 12/20 = 0,6.'},
+{q:'Jika peluang kejadian A adalah 0,35, maka peluang komplemen A adalah ....',o:['0,25','0,35','0,55','0,65'],a:3,e:'P(A komplemen) = 1 − P(A) = 1 − 0,35 = 0,65.'},
+{q:'Dua kejadian disebut saling lepas apabila ....',o:['Selalu terjadi bersamaan','Tidak memiliki irisan','Memiliki hasil yang sama','Peluangnya selalu sama'],a:1,e:'Kejadian saling lepas tidak mempunyai anggota irisan, sehingga P(A ∩ B) = 0.'},
+{q:'Jika A dan B saling bebas, P(A) = 0,4 dan P(B) = 0,5. Nilai P(A ∩ B) adalah ....',o:['0,1','0,2','0,4','0,9'],a:1,e:'Untuk kejadian saling bebas, P(A ∩ B) = P(A) × P(B) = 0,4 × 0,5 = 0,2.'}
+],
+essay:[
+{q:'Dua buah dadu dilempar secara bersamaan. Tentukan peluang jumlah mata dadu yang muncul sama dengan 7.',a:'Ruang sampel dua dadu berjumlah 36. Pasangan yang jumlahnya 7 adalah (1,6), (2,5), (3,4), (4,3), (5,2), dan (6,1), sehingga ada 6 hasil. Jadi P(jumlah 7) = 6/36 = 1/6.'},
+{q:'Dalam sebuah kelas terdapat 20 siswa. Sebanyak 12 siswa menyukai matematika, 8 siswa menyukai sains, dan 5 siswa menyukai keduanya. Jika seorang siswa dipilih secara acak, tentukan peluang siswa tersebut menyukai matematika atau sains.',a:'Gunakan rumus P(A ∪ B) = (n(A) + n(B) − n(A ∩ B))/n(S). Banyak siswa yang menyukai matematika atau sains = 12 + 8 − 5 = 15. Jadi peluangnya = 15/20 = 3/4.'}
+],
+drag:[
+{label:'Banyak anggota ruang sampel',answer:'10'},
+{label:'Banyak bola merah',answer:'3'},
+{label:'Peluang mengambil bola merah',answer:'3/10'}
+],
+match:[
+{term:'Ruang sampel',answer:'Himpunan semua hasil yang mungkin'},
+{term:'Frekuensi relatif',answer:'Perbandingan frekuensi kejadian dengan banyak percobaan'},
+{term:'Komplemen kejadian',answer:'Kejadian yang tidak termasuk dalam A'},
+{term:'Kejadian saling bebas',answer:'Kejadian yang tidak saling memengaruhi'}
+]
+};
+
+window.renderLatihanMenu=()=>{
+const section=$('studentSection');
+section.innerHTML=`<div class="practice-area">
+<h3>Latihan Soal</h3>
+<p class="muted">Pilih bentuk latihan yang ingin kamu kerjakan.</p>
+<div class="practice-grid">
+<button class="practice-card" onclick="bukaLatihan('pg')">
+<span class="practice-icon">📝</span>
+<h4>Pilihan Ganda</h4>
+<p>5 soal dengan pilihan jawaban dan pembahasan otomatis.</p>
+</button>
+<button class="practice-card" onclick="bukaLatihan('essay')">
+<span class="practice-icon">✍️</span>
+<h4>Uraian</h4>
+<p>2 soal untuk melatih proses dan penjelasan penyelesaian.</p>
+</button>
+<button class="practice-card" onclick="bukaLatihan('drag')">
+<span class="practice-icon">🧩</span>
+<h4>Seret Jawaban</h4>
+<p>Pasangkan jawaban dengan kotak yang sesuai.</p>
+</button>
+<button class="practice-card" onclick="bukaLatihan('match')">
+<span class="practice-icon">🔗</span>
+<h4>Menjodohkan</h4>
+<p>Hubungkan istilah peluang dengan pengertiannya.</p>
+</button>
+</div></div>`;
+};
+
+window.bukaLatihan=(jenis)=>{
+const section=$('studentSection');
+const back='<button class="practice-back" onclick="renderLatihanMenu()">← Kembali ke daftar latihan</button>';
+
+if(jenis==='pg'){
+section.innerHTML=`<div class="practice-area">
+${back}
+<h3>Latihan Pilihan Ganda</h3>
+<p class="muted">Pilih satu jawaban yang paling tepat pada setiap soal.</p>
+<div id="pgQuestions"></div>
+<button class="practice-btn" onclick="periksaPG()">Periksa Jawaban</button>
+<div id="pgResult" class="practice-result"></div>
+</div>`;
+
+$('pgQuestions').innerHTML=latihanData.pg.map((x,i)=>`
+<div class="question-card">
+<div class="question-number">SOAL ${i+1}</div>
+<h4>${x.q}</h4>
+${x.o.map((v,j)=>`
+<label class="question-option">
+<input type="radio" name="pg${i}" value="${j}">
+<span>${String.fromCharCode(65+j)}. ${v}</span>
+</label>`).join('')}
+</div>`).join('');
+
+}else if(jenis==='essay'){
+section.innerHTML=`<div class="practice-area">
+${back}
+<h3>Latihan Uraian</h3>
+<p class="muted">Tuliskan langkah penyelesaianmu pada kolom jawaban.</p>
+${latihanData.essay.map((x,i)=>`
+<div class="question-card">
+<div class="question-number">SOAL ${i+1}</div>
+<h4>${x.q}</h4>
+<textarea id="essay${i}" placeholder="Tuliskan jawaban dan langkah penyelesaian..."></textarea>
+<button class="practice-btn secondary" onclick="lihatPembahasan(${i})">Lihat Pembahasan</button>
+<div id="essayResult${i}" class="practice-result"></div>
+</div>`).join('')}
+</div>`;
+
+}else if(jenis==='drag'){
+window.selectedDragElement=null;
+const choices=['10','3','3/10','1/3','7'];
+
+section.innerHTML=`<div class="practice-area">
+${back}
+<h3>Seret Jawaban ke Kotak</h3>
+<p class="muted">Di dalam sebuah kantong terdapat 10 bola, terdiri atas 3 bola merah dan 7 bola biru. Lengkapi pernyataan berikut.</p>
+
+<div class="drag-items">
+${choices.map(v=>`
+<div class="drag-item" draggable="true" tabindex="0" data-value="${v}"
+onclick="pilihDrag(this)"
+onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pilihDrag(this)}"
+ondragstart="mulaiDrag(event)">${v}</div>`).join('')}
+</div>
+
+${latihanData.drag.map((x,i)=>`
+<div class="question-card">
+<strong>${x.label}</strong>
+<div class="drop-zone" data-index="${i}"
+ondragover="event.preventDefault()"
+ondrop="jatuhkanDrag(event,this)"
+onclick="letakkanPilihan(this)">Letakkan jawaban di sini</div>
+</div>`).join('')}
+
+<button class="practice-btn" onclick="periksaDrag()">Periksa Jawaban</button>
+<div id="dragResult" class="practice-result"></div>
+<p class="muted">Pada layar sentuh, ketuk salah satu pilihan lalu ketuk kotak jawaban.</p>
+</div>`;
+
+}else if(jenis==='match'){
+const options=[
+'Himpunan semua hasil yang mungkin',
+'Perbandingan frekuensi kejadian dengan banyak percobaan',
+'Kejadian yang tidak termasuk dalam A',
+'Kejadian yang tidak saling memengaruhi'
+];
+
+section.innerHTML=`<div class="practice-area">
+${back}
+<h3>Latihan Menjodohkan</h3>
+<p class="muted">Pilih pengertian yang tepat untuk setiap istilah.</p>
+<div class="question-card">
+${latihanData.match.map((x,i)=>`
+<div class="match-row">
+<strong>${x.term}</strong>
+<select id="match${i}">
+<option value="">Pilih pengertian</option>
+${options.map((v,j)=>`<option value="${j}">${v}</option>`).join('')}
+</select>
+</div>`).join('')}
+</div>
+<button class="practice-btn" onclick="periksaMatch()">Periksa Jawaban</button>
+<div id="matchResult" class="practice-result"></div>
+</div>`;
+}
+};
+
+window.periksaPG=()=>{
+let score=0;
+let details=[];
+
+latihanData.pg.forEach((x,i)=>{
+const chosen=document.querySelector(`input[name="pg${i}"]:checked`);
+const correct=chosen&&Number(chosen.value)===x.a;
+
+if(correct)score++;
+
+details.push(`<p><strong>Nomor ${i+1}: ${correct?'Benar':'Belum tepat'}.</strong> ${x.e}</p>`);
+});
+
+const result=$('pgResult');
+result.innerHTML=`<strong>Skor: ${score}/${latihanData.pg.length}</strong>${details.join('')}`;
+result.classList.add('show');
+};
+
+window.lihatPembahasan=(i)=>{
+const answer=$('essay'+i).value.trim();
+const result=$('essayResult'+i);
+
+result.innerHTML=(answer
+?'<strong>Jawabanmu sudah ditulis pada kolom latihan.</strong><br>'
+:'<strong>Belum ada jawaban yang ditulis.</strong><br>')
++'<strong>Pembahasan:</strong> '+latihanData.essay[i].a;
+
+result.classList.add('show');
+};
+
+window.pilihDrag=(el)=>{
+if(el.dataset.used==='1')return;
+
+document.querySelectorAll('.drag-item').forEach(item=>{
+item.style.outline='none';
+});
+
+el.style.outline='3px solid #8056d9';
+window.selectedDragElement=el;
+};
+
+window.letakkanPilihan=(zone)=>{
+const el=window.selectedDragElement;
+
+if(!el||el.dataset.used==='1')return;
+
+if(zone.dataset.value){
+alert('Kotak ini sudah terisi.');
+return;
+}
+
+zone.textContent=el.dataset.value;
+zone.dataset.value=el.dataset.value;
+zone.classList.add('filled');
+
+el.dataset.used='1';
+el.style.opacity='.4';
+el.style.outline='none';
+
+window.selectedDragElement=null;
+};
+
+window.mulaiDrag=(event)=>{
+event.dataTransfer.setData('text/plain',event.currentTarget.dataset.value);
+event.dataTransfer.effectAllowed='move';
+};
+
+window.jatuhkanDrag=(event,zone)=>{
+event.preventDefault();
+
+const value=event.dataTransfer.getData('text/plain');
+const el=[...document.querySelectorAll('.drag-item')]
+.find(item=>item.dataset.value===value&&item.dataset.used!=='1');
+
+if(!el)return;
+
+window.selectedDragElement=el;
+window.letakkanPilihan(zone);
+};
+
+window.periksaDrag=()=>{
+let score=0;
+const zones=[...document.querySelectorAll('.drop-zone')];
+
+zones.forEach((z,i)=>{
+const ok=z.dataset.value===latihanData.drag[i].answer;
+
+if(ok)score++;
+
+z.style.borderColor=ok?'#16865b':'#d34e5c';
+});
+
+const result=$('dragResult');
+result.innerHTML=`
+<strong>Jawaban benar: ${score}/${latihanData.drag.length}.</strong>
+<p>Urutan jawaban yang tepat: 10, 3, dan 3/10.</p>`;
+result.classList.add('show');
+};
+
+window.periksaMatch=()=>{
+let score=0;
+const details=[];
+
+latihanData.match.forEach((x,i)=>{
+const chosen=$('match'+i).value;
+const correct=chosen===String(i);
+
+if(correct)score++;
+
+details.push(`<p>${x.term}: ${correct?'Benar':'Belum tepat'}.</p>`);
+});
+
+const result=$('matchResult');
+result.innerHTML=`<strong>Skor: ${score}/${latihanData.match.length}</strong>${details.join('')}`;
+result.classList.add('show');
 };
 
 /* =========================
