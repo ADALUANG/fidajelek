@@ -781,7 +781,7 @@
 }
 
 /* ================================================================
-   LAB PELUANG — materi ke-3 (di-scope ke #labPeluang)
+   LAB PELUANG — materi ke-3
    ================================================================ */
 #labPeluang *{box-sizing:border-box}
 
@@ -863,6 +863,7 @@
   margin:12px auto;
   perspective:500px;
   perspective-origin:50% 50%;
+  transform-style:preserve-3d;
 }
 
 #labPeluang .die-spinner{
@@ -871,14 +872,15 @@
   position:relative;
   transform-style:preserve-3d;
   transform:rotateX(-18deg) rotateY(-25deg);
+  transform-origin:center center;
 }
 
 #labPeluang .die-cube{
   position:absolute;
   inset:0;
   transform-style:preserve-3d;
-  /* transform default TIDAK di-set di sini — biar JS yang atur penuh */
-  transform:rotateX(0deg) rotateY(0deg);
+  will-change:transform;
+  transform:translateZ(0);
 }
 
 #labPeluang .face{
@@ -1448,13 +1450,13 @@
     <div class="grid-2">
       <div>
         <label><strong>Banyak percobaan (n)</strong></label>
-        <input type="number" id="fhN" min="1" value="100">
+        <input type="number" id="fhN" min="1" value="0" placeholder="0">
       </div>
 
       <div>
         <label><strong>Peluang kejadian P(A)</strong></label>
         <input type="number" id="fhP"
-          min="0" max="1" step="0.01" value="0.5">
+          min="0" max="1" step="0.01" value="0" placeholder="0">
       </div>
     </div>
 
@@ -1462,9 +1464,7 @@
       Hitung Frekuensi Harapan
     </button>
 
-    <div id="expectedResult" class="result">
-      Masukkan nilai untuk melihat frekuensi harapan.
-    </div>
+    <div id="expectedResult" class="result" style="display:none"></div>
   </div>
 </div>
 
@@ -1955,7 +1955,7 @@
 
 </section>
 
-<!-- KESIMPULAN AKHIR: AWALNYA TERSEMBUNYI -->
+<!-- KESIMPULAN AKHIR -->
 <section class="panel" id="finalConclusion" hidden>
 
 <span class="badge">Kesimpulan Akhir</span>
@@ -2369,8 +2369,10 @@ function calculateExpectedFrequency(){
   const p=Number(document.getElementById('fhP').value);
   const result=document.getElementById('expectedResult');
 
+  result.style.display = 'block';
+
   if(!Number.isFinite(n)||!Number.isFinite(p)||n<=0||p<0||p>1){
-    result.textContent=
+    result.textContent =
       'Masukkan banyak percobaan lebih dari 0 dan peluang antara 0 sampai 1.';
     return;
   }
@@ -2383,6 +2385,28 @@ function calculateExpectedFrequency(){
     <strong>= ${fh}</strong><br>
     Jadi, frekuensi harapan adalah ${fh}.`;
 }
+
+// Interaksi input Frekuensi Harapan:
+// - saat fokus: kalau nilainya 0, kosongkan supaya siswa bisa langsung ketik
+// - saat blur: kalau kosong, kembalikan ke 0
+// - saat input diubah: sembunyikan hasil (harus hitung ulang)
+(function(){
+  const fhN = document.getElementById('fhN');
+  const fhP = document.getElementById('fhP');
+  const fhResult = document.getElementById('expectedResult');
+
+  [fhN, fhP].forEach(input=>{
+    input.addEventListener('focus', ()=>{
+      if(input.value === '0') input.value = '';
+    });
+    input.addEventListener('blur', ()=>{
+      if(input.value.trim() === '') input.value = '0';
+    });
+    input.addEventListener('input', ()=>{
+      fhResult.style.display = 'none';
+    });
+  });
+})();
 
 
 /* ============================================================
@@ -3053,8 +3077,6 @@ function rollOutcome(index){
   setRollingState(true);
   resultText.textContent = "Dadu sedang dikocok...";
 
-  // Animasi putaran dadu sepenuhnya lewat inline style dari JS.
-  // Tidak pakai animasi CSS, jadi tidak mungkin bentrok.
   const spinTimer = setInterval(()=>{
     cube1.style.transform =
       `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg) rotateZ(${Math.random()*720}deg)`;
@@ -3180,7 +3202,8 @@ updateTree();
 updateCoin();
 updateEventProbability();
 updateComplement();
-calculateExpectedFrequency();
+// calculateExpectedFrequency() TIDAK dipanggil di awal —
+// hasil hanya muncul setelah siswa menekan tombol.
 
 // Kode B
 updateIndependent();
