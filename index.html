@@ -877,6 +877,7 @@
   position:absolute;
   inset:0;
   transform-style:preserve-3d;
+  /* transform default TIDAK di-set di sini — biar JS yang atur penuh */
   transform:rotateX(0deg) rotateY(0deg);
 }
 
@@ -932,18 +933,6 @@
 #labPeluang .face[data-number="6"] .pip:nth-child(4){grid-area:1 / 3}
 #labPeluang .face[data-number="6"] .pip:nth-child(5){grid-area:2 / 3}
 #labPeluang .face[data-number="6"] .pip:nth-child(6){grid-area:3 / 3}
-
-#labPeluang .die-cube.rolling{
-  animation: rollDiceLab 0.16s linear infinite;
-}
-
-@keyframes rollDiceLab{
-  0%  {transform:rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
-  25% {transform:rotateX(90deg) rotateY(180deg) rotateZ(90deg)}
-  50% {transform:rotateX(180deg) rotateY(360deg) rotateZ(180deg)}
-  75% {transform:rotateX(270deg) rotateY(540deg) rotateZ(270deg)}
-  100%{transform:rotateX(360deg) rotateY(720deg) rotateZ(360deg)}
-}
 
 #labPeluang .result-text{
   font-size:18px;
@@ -2969,7 +2958,6 @@ function createFaces(cube){
 }
 
 function setCubeFace(cube, number){
-  cube.classList.remove("rolling");
   cube.style.transform = getFaceTransform(number);
 }
 
@@ -3065,18 +3053,22 @@ function rollOutcome(index){
   setRollingState(true);
   resultText.textContent = "Dadu sedang dikocok...";
 
-  cube1.classList.add("rolling");
-  cube2.classList.add("rolling");
-
+  // Animasi putaran dadu sepenuhnya lewat inline style dari JS.
+  // Tidak pakai animasi CSS, jadi tidak mungkin bentrok.
   const spinTimer = setInterval(()=>{
-    cube1.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg) rotateZ(${Math.random()*720}deg)`;
-    cube2.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg) rotateZ(${Math.random()*720}deg)`;
-  }, 90);
+    cube1.style.transform =
+      `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg) rotateZ(${Math.random()*720}deg)`;
+    cube2.style.transform =
+      `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg) rotateZ(${Math.random()*720}deg)`;
+  }, 80);
 
   setTimeout(()=>{
     clearInterval(spinTimer);
+
     currentFaces = [outcome[0], outcome[1] || 1];
+
     setCubeFace(cube1, currentFaces[0]);
+
     if(missions[currentMission].dice === 2){
       setCubeFace(cube2, currentFaces[1]);
     }else{
