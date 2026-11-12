@@ -933,6 +933,16 @@ if(d.exists()) prevDoc=d.data();
 }catch(e){}
 
 let statusHTML='';
+let nilaiTertinggiHTML='';
+
+// ===== CEK FEEDBACK GURU =====
+let feedbackData=null;
+try{
+const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
+if(fbs.size) feedbackData=fbs.docs[0].data();
+}catch(e){}
+
+// ===== JIKA SUDAH PERNAH KUMPUL =====
 if(prevDoc && prevDoc.selesaiKuis){
 const total=Math.round(prevDoc.skorTotal||0);
 const predikat=getPredikat(total);
@@ -941,12 +951,43 @@ const totalKotak=kuisData.drag.length;
 const benarMatch=prevDoc.benarMatch||0;
 const benarDrag=prevDoc.benarDrag||0;
 const uraianDinilai=prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0;
-statusHTML=`<div class="kuis-summary">
-<strong>Kuis sudah kamu kumpulkan.</strong>
-<div class="kuis-score">${total}</div>
+
+// ===== NILAI TERTINGGI =====
+nilaiTertinggiHTML=`<div class="kuis-summary" style="background:#e8f4ff;border-left-color:#3976d3">
+<strong>🏆 Nilai Tertinggi Kamu:</strong>
+<div class="kuis-score" style="color:#3976d3">${total}/100</div>
 <span class="kuis-predikat ${predikat.kelas}">Predikat ${predikat.label}</span>
-<p style="margin-top:10px"><strong>Rincian nilai:</strong></p>
-<p>🔗 Match: ${Math.round(prevDoc.skorMatch||0)}/20 (${benarMatch}/${totalPasang} benar)</p>
+<p style="margin-top:8px;font-size:12px;color:#4a3f6b">Diambil dari seluruh percobaan yang pernah kamu lakukan.</p>
+</div>`;
+
+// ===== KETERANGAN KKM =====
+let keteranganKMK='';
+if(feedbackData){
+if(total < 75){
+keteranganKMK=`<div class="kuis-summary" style="background:#fff0f2;border-left:5px solid #b3425a;color:#b3425a">
+<strong style="color:#b3425a;font-size:15px">⚠️ Nilaimu di bawah KKM (75), wajib kerjakan ulang kuis!</strong>
+<p style="margin-top:8px;font-size:13px">Nilai kamu: <strong>${total}/100</strong> · KKM: <strong>75</strong></p>
+</div>`;
+}else{
+keteranganKMK=`<div class="kuis-summary" style="background:#e2f8ee;border-left:5px solid #23866b;color:#166534">
+<strong style="color:#166534;font-size:15px">🎉 Selamat! Untuk mendapatkan nilai lebih bagus, kamu boleh mengerjakan ulang.</strong>
+<p style="margin-top:8px;font-size:13px">Nilai kamu: <strong>${total}/100</strong> · KKM: <strong>75</strong></p>
+</div>`;
+}
+}else{
+keteranganKMK=`<div class="kuis-summary" style="background:#fff3d7;border-left:5px solid #e7ad35;color:#946b08">
+<strong style="color:#946b08;font-size:15px">⏳ Tunggu nilai uraian dan feedback dari guru!</strong>
+<p style="margin-top:8px;font-size:13px">Skor otomatis (Match + Drag): <strong>${Math.round((prevDoc.skorMatch||0)+(prevDoc.skorDrag||0))}/40</strong></p>
+<p style="font-size:13px">Uraian: <em>${uraianDinilai ? Math.round(prevDoc.skorUraian)+'/60' : 'Menunggu penilaian guru'}</em></p>
+</div>`;
+}
+
+statusHTML=`
+${nilaiTertinggiHTML}
+${keteranganKMK}
+<div class="kuis-summary">
+<strong>📊 Rincian Nilai (percobaan terakhir):</strong>
+<p style="margin-top:8px">🔗 Match: ${Math.round(prevDoc.skorMatch||0)}/20 (${benarMatch}/${totalPasang} benar)</p>
 <p>🧩 Drag: ${Math.round(prevDoc.skorDrag||0)}/20 (${benarDrag}/${totalKotak} benar)</p>
 <p>✍️ Uraian: ${uraianDinilai ? Math.round(prevDoc.skorUraian)+'/60 (dinilai guru)' : '<em>Menunggu penilaian guru</em> (maks 60)'}</p>
 <p style="margin-top:10px"><strong>Skor total: ${uraianDinilai ? total+'/100' : Math.round((prevDoc.skorMatch||0)+(prevDoc.skorDrag||0))+'/40 (sementara)'}</strong></p>
@@ -959,15 +1000,12 @@ statusHTML=`<div class="kuis-summary">
 </div>`;
 }
 
+// ===== FEEDBACK GURU =====
 let feedbackHTML='';
-try{
-const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
-if(fbs.size){
-const f=fbs.docs[0].data();
-const tgl=f.createdAt?.toDate?f.createdAt.toDate().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):'';
-feedbackHTML=`<div class="feedback-panel"><strong>💬 Feedback dari guru:</strong><p style="margin:8px 0 0">${esc(f.feedback)}</p>${tgl?`<span class="meta">— ${tgl}</span>`:''}</div>`;
+if(feedbackData){
+const tgl=feedbackData.createdAt?.toDate?feedbackData.createdAt.toDate().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):'';
+feedbackHTML=`<div class="feedback-panel"><strong>💬 Feedback dari guru:</strong><p style="margin:8px 0 0">${esc(feedbackData.feedback)}</p>${tgl?`<span class="meta">— ${tgl}</span>`:''}</div>`;
 }
-}catch(e){}
 
 section.innerHTML=`<div class="practice-area">
 <h3>Kuis Peluang</h3>
@@ -976,7 +1014,7 @@ ${statusHTML}
 ${feedbackHTML}
 <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
 ${prevDoc && prevDoc.selesaiKuis 
-  ? `<button class="practice-btn" onclick="mulaiKuis()">Ulangi Kuis (skor tertinggi diambil)</button>
+  ? `<button class="practice-btn" onclick="mulaiKuis()">🔄 Ulangi Kuis (nilai tertinggi diambil)</button>
      <button class="practice-btn secondary" onclick="reviewKuisTerakhir()">📝 Review Jawaban</button>`
   : prevDoc && prevDoc.currentIndex!==undefined
     ? `<button class="practice-btn" onclick="lanjutkanKuis()">▶ Lanjutkan Kuis</button>
@@ -1048,7 +1086,6 @@ soal.filter(s=>s.jenis==='drag').forEach(s=>{
 kuisState.dragChoicesShuffled[s.idx]=shuffle(s.choices);
 });
 renderKuisSoal();
-// Hitung sisa waktu dari startedAt
 let sisaDetik=KUIS_DURASI_MENIT*60;
 if(data.startedAt && data.startedAt.toDate){
 const mulai=data.startedAt.toDate().getTime();
