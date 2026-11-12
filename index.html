@@ -332,7 +332,6 @@ h1{font-size:45px}
 </header>
 <main class="content" id="content"></main>
 </div>
-
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -482,6 +481,7 @@ else teacherDashboard();
 
 window.logout=async()=>{
 hentikanMonitor();
+hentikanTimer();
 if(auth.currentUser)await signOut(auth);
 profile=null;student=null;
 $('app').classList.remove('show');
@@ -779,18 +779,18 @@ $('latihanCheck').disabled=true;
 
 const kuisData={
 match:[
-{konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',pasangan:[{term:'Muncul dua sisi angka',answer:'1'},{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}]},
-{konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Muncul mata dadu angka 5',answer:'1/6'},{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},{term:'Muncul mata dadu paling banyak 6',answer:'1'}]},
-{konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',pasangan:[{term:'Jumlah kedua mata dadu 7',answer:'1/6'},{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},{term:'Jumlah kedua mata dadu 2',answer:'1/36'}]},
-{konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Merah kemudian kuning',answer:'2/11'},{term:'Kuning kemudian biru',answer:'2/33'},{term:'Biru kemudian merah',answer:'1/11'}]},
-{konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Kedua bola berwarna merah',answer:'5/33'},{term:'Kedua bola berwarna biru',answer:'1/11'},{term:'Kedua bola berwarna putih',answer:'1/22'}]}
+{konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',pasangan:[{term:'Muncul dua sisi angka',answer:'1'},{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}],pembahasan:'n(S) = 2 × 2 = 4, yaitu AA, AG, GA, GG. Muncul dua sisi angka = 1 (AA). Muncul satu angka satu gambar = 2 (AG, GA). Muncul paling sedikit satu gambar = 3 (AG, GA, GG).'},
+{konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Muncul mata dadu angka 5',answer:'1/6'},{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},{term:'Muncul mata dadu paling banyak 6',answer:'1'}],pembahasan:'n(S) = 6. Muncul angka 5 = 1 hasil, P = 1/6. Kurang dari 4 = {1,2,3} → 3 hasil, P = 3/6 = 1/2. Paling banyak 6 = {1,2,3,4,5,6} → 6 hasil, P = 6/6 = 1.'},
+{konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',pasangan:[{term:'Jumlah kedua mata dadu 7',answer:'1/6'},{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},{term:'Jumlah kedua mata dadu 2',answer:'1/36'}],pembahasan:'n(S) = 36. Jumlah 7: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) → 6 hasil, P = 6/36 = 1/6. Faktor 6 sekaligus prima = {2,3}, pasangan (1,6),(2,5),(3,4) → 3 hasil, P = 3/36 = 1/12. Jumlah 2: (1,1) → 1 hasil, P = 1/36.'},
+{konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Merah kemudian kuning',answer:'2/11'},{term:'Kuning kemudian biru',answer:'2/33'},{term:'Biru kemudian merah',answer:'1/11'}],pembahasan:'n(S) = 12. Merah lalu kuning: 6/12 × 4/11 = 24/132 = 2/11. Kuning lalu biru: 4/12 × 2/11 = 8/132 = 2/33. Biru lalu merah: 2/12 × 6/11 = 12/132 = 1/11.'},
+{konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Kedua bola berwarna merah',answer:'5/33'},{term:'Kedua bola berwarna biru',answer:'1/11'},{term:'Kedua bola berwarna putih',answer:'1/22'}],pembahasan:'n(S) = C(12,2) = 66. Dua merah: C(5,2) = 10, P = 10/66 = 5/33. Dua biru: C(4,2) = 6, P = 6/66 = 1/11. Dua putih: C(3,2) = 3, P = 3/66 = 1/22.'}
 ],
 drag:[
-{q:'Sebuah dadu bersisi enam dilempar sebanyak satu kali. Peluang munculnya mata dadu berupa bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2'},
-{q:'Dalam sebuah kotak terdapat 5 bola merah, 3 bola biru, dan 2 bola hijau. Jika satu bola diambil secara acak, peluang terambilnya bola biru adalah ....',choices:['1/5','3/10','1/2','2/5'],answer:'3/10'},
-{q:'Dalam sebuah kotak terdapat 6 bola merah dan 4 bola putih. Dua bola diambil satu per satu secara acak dengan pengembalian. Peluang terambil bola merah pada pengambilan pertama dan bola putih pada pengambilan kedua adalah ....',choices:['1/5','6/25','2/5','3/5'],answer:'6/25'},
-{q:'Dalam sebuah kotak terdapat 5 bola merah dan 3 bola biru. Dua bola diambil secara berurutan tanpa pengembalian. Peluang kedua bola yang terambil berwarna merah adalah ....',choices:['5/14','5/16','3/8','1/2'],answer:'5/14'},
-{q:'Dalam sebuah kotak terdapat 8 baterai dalam kondisi baik dan 4 baterai rusak. Dua baterai diambil secara berurutan tanpa pengembalian. Peluang kedua baterai yang terambil dalam kondisi baik adalah ....',choices:['7/22','14/33','1/2','8/11'],answer:'14/33'}
+{q:'Sebuah dadu bersisi enam dilempar sebanyak satu kali. Peluang munculnya mata dadu berupa bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2',pembahasan:'n(S) = 6. Bilangan genap: 2, 4, 6 → n(A) = 3. P = 3/6 = 1/2.'},
+{q:'Dalam sebuah kotak terdapat 5 bola merah, 3 bola biru, dan 2 bola hijau. Jika satu bola diambil secara acak, peluang terambilnya bola biru adalah ....',choices:['1/5','3/10','1/2','2/5'],answer:'3/10',pembahasan:'n(S) = 5 + 3 + 2 = 10. Bola biru = 3. P = 3/10.'},
+{q:'Dalam sebuah kotak terdapat 6 bola merah dan 4 bola putih. Dua bola diambil satu per satu secara acak dengan pengembalian. Peluang terambil bola merah pada pengambilan pertama dan bola putih pada pengambilan kedua adalah ....',choices:['1/5','6/25','2/5','3/5'],answer:'6/25',pembahasan:'Dengan pengembalian, peluang tetap. P(merah) = 6/10, P(putih) = 4/10. P = 6/10 × 4/10 = 24/100 = 6/25.'},
+{q:'Dalam sebuah kotak terdapat 5 bola merah dan 3 bola biru. Dua bola diambil secara berurutan tanpa pengembalian. Peluang kedua bola yang terambil berwarna merah adalah ....',choices:['5/14','5/16','3/8','1/2'],answer:'5/14',pembahasan:'P(merah 1) = 5/8. Setelah diambil, sisa 4 merah dari 7 bola. P(merah 2|merah 1) = 4/7. P = 5/8 × 4/7 = 20/56 = 5/14.'},
+{q:'Dalam sebuah kotak terdapat 8 baterai dalam kondisi baik dan 4 baterai rusak. Dua baterai diambil secara berurutan tanpa pengembalian. Peluang kedua baterai yang terambil dalam kondisi baik adalah ....',choices:['7/22','14/33','1/2','8/11'],answer:'14/33',pembahasan:'P(baik 1) = 8/12. Setelah diambil, sisa 7 baik dari 11. P(baik 2|baik 1) = 7/11. P = 8/12 × 7/11 = 56/132 = 14/33.'}
 ],
 uraian:[
 {q:'Dua dadu dilempar bersama-sama sebanyak 126 kali. Frekuensi harapan muncul dua mata dadu berjumlah kurang dari 6 adalah ... kali.',a:'n(S)=36. Jumlah < 6: (1,1),(1,2),(2,1),(1,3),(2,2),(3,1),(1,4),(2,3),(3,2),(4,1) → 10. P=10/36=5/18. Fh=5/18×126=35 kali.'},
@@ -845,8 +845,12 @@ return {benarMatch,benarDrag,totalPasang,totalKotak,skorMatch,skorDrag};
 }
 
 function mulaiTimer(){
+mulaiTimerDenganSisa(KUIS_DURASI_MENIT*60);
+}
+
+function mulaiTimerDenganSisa(detik){
 hentikanTimer();
-kuisWaktuSisa=KUIS_DURASI_MENIT*60;
+kuisWaktuSisa=detik;
 updateTimerDisplay();
 kuisTimer=setInterval(()=>{
 kuisWaktuSisa--;
@@ -884,7 +888,7 @@ monitorUnsubscribe=null;
 }
 }
 
-async function simpanProgresLive(){
+async function simpanProgresLive(isMulai=false){
 if(!kuisState || !student) return;
 try{
 const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
@@ -895,7 +899,7 @@ if(cd.exists()) ownerUid=cd.data().ownerUid;
 }
 const s=hitungSkorSementara();
 const total=kuisState.soal.length;
-await setDoc(doc(db,'progres_soal',docId),{
+const data={
 studentNama:student.nama,
 studentKode:student.kode,
 classId:student.id,
@@ -907,7 +911,12 @@ selesaiKuis:false,
 skorMatch:s.skorMatch,skorDrag:s.skorDrag,
 benarMatch:s.benarMatch,benarDrag:s.benarDrag,
 updatedAt:serverTimestamp()
-},{merge:true});
+};
+if(isMulai){
+data.startedAt=serverTimestamp();
+data.kuisDurasiMenit=KUIS_DURASI_MENIT;
+}
+await setDoc(doc(db,'progres_soal',docId),data,{merge:true});
 }catch(e){
 console.error('Gagal simpan live:',e);
 }
@@ -962,7 +971,7 @@ feedbackHTML=`<div class="feedback-panel"><strong>💬 Feedback dari guru:</stro
 
 section.innerHTML=`<div class="practice-area">
 <h3>Kuis Peluang</h3>
-<p class="muted">Kuis terdiri dari 5 soal menjodohkan, 5 soal drag, dan 5 soal uraian. Total 15 soal. Kuis dinilai. Waktu: ${KUIS_DURASI_MENIT} menit.</p>
+<p class="muted">Kuis terdiri dari 5 soal menjodohkan, 5 soal drag, dan 5 soal uraian. Total 15 soal. Kuis dinilai. Waktu: ${KUIS_DURASI_MENIT} menit untuk seluruh kuis.</p>
 ${statusHTML}
 ${feedbackHTML}
 <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
@@ -990,8 +999,8 @@ await reviewKuis();
 
 function buildKuisSoal(){
 const soal=[];
-kuisData.match.forEach((m,i)=>soal.push({jenis:'match',idx:i,konteks:m.konteks,pasangan:m.pasangan}));
-kuisData.drag.forEach((d,i)=>soal.push({jenis:'drag',idx:i,q:d.q,choices:d.choices,answer:d.answer}));
+kuisData.match.forEach((m,i)=>soal.push({jenis:'match',idx:i,konteks:m.konteks,pasangan:m.pasangan,pembahasan:m.pembahasan}));
+kuisData.drag.forEach((d,i)=>soal.push({jenis:'drag',idx:i,q:d.q,choices:d.choices,answer:d.answer,pembahasan:d.pembahasan}));
 kuisData.uraian.forEach((u,i)=>soal.push({jenis:'uraian',idx:i,q:u.q,a:u.a}));
 return soal;
 }
@@ -1013,7 +1022,7 @@ soal.filter(s=>s.jenis==='drag').forEach(s=>{
 kuisState.dragChoicesShuffled[s.idx]=shuffle(s.choices);
 });
 renderKuisSoal();
-simpanProgresLive();
+simpanProgresLive(true);
 mulaiTimer();
 };
 
@@ -1039,7 +1048,20 @@ soal.filter(s=>s.jenis==='drag').forEach(s=>{
 kuisState.dragChoicesShuffled[s.idx]=shuffle(s.choices);
 });
 renderKuisSoal();
-mulaiTimer();
+// Hitung sisa waktu dari startedAt
+let sisaDetik=KUIS_DURASI_MENIT*60;
+if(data.startedAt && data.startedAt.toDate){
+const mulai=data.startedAt.toDate().getTime();
+const sekarang=Date.now();
+const elapsed=Math.floor((sekarang-mulai)/1000);
+sisaDetik=Math.max(0,KUIS_DURASI_MENIT*60-elapsed);
+}
+if(sisaDetik<=0){
+alert('⏰ Waktu sudah habis! Kuis otomatis dikumpulkan.');
+kumpulkanKuis(true);
+}else{
+mulaiTimerDenganSisa(sisaDetik);
+}
 }catch(e){alert(errText(e));}
 };
 
@@ -1114,7 +1136,7 @@ ${bodyHTML}
 <button class="practice-btn secondary" onclick="kuisPrev()" ${kuisState.index===0?'disabled':''}>← Sebelumnya</button>
 <button class="practice-btn" onclick="kuisNext()" id="kuisNextBtn">${kuisState.index===total-1?'Kumpulkan Kuis':'Berikutnya →'}</button>
 </div>
-<p class="muted" style="margin-top:12px;font-size:12px">Jawaban tersimpan otomatis.</p>
+<p class="muted" style="margin-top:12px;font-size:12px">Jawaban tersimpan otomatis. Waktu total 45 menit untuk seluruh kuis.</p>
 </div>`;
 
 if(s.jenis==='match'){
@@ -1245,6 +1267,7 @@ totalSoal:kuisState.soal.length,
 skorMatch:finalSkorMatch,skorDrag:finalSkorDrag,skorUraian:finalSkorUraian,skorTotal:finalSkorTotal,
 benarMatch:finalBenarMatch,benarDrag:finalBenarDrag,
 selesaiKuis:true,
+startedAt:null,
 updatedAt:serverTimestamp()
 },{merge:true});
 
@@ -1312,6 +1335,9 @@ const ok=ans===p.answer;
 const cls=!ans?'empty':(ok?'correct':'wrong');
 html+=`<div class="detail-item ${cls}"><strong>${esc(p.term)}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(p.answer)})`):''}</div>`;
 });
+if(feedbackSudah){
+html+=`<div class="detail-item empty" style="margin-top:8px"><strong>📖 Pembahasan:</strong> ${esc(m.pembahasan)}</div>`;
+}
 html+='</div>';
 });
 html+='</div>';
@@ -1321,7 +1347,11 @@ kuisData.drag.forEach((d,i)=>{
 const ans=kuisState.jawaban.drag[i]||'';
 const ok=ans===d.answer;
 const cls=!ans?'empty':(ok?'correct':'wrong');
-html+=`<div class="detail-item ${cls}"><strong>Soal ${i+1}:</strong> ${esc(d.q)}<br>Jawabanmu: ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(d.answer)})`):''}</div>`;
+html+=`<div class="detail-item ${cls}"><strong>Soal ${i+1}:</strong> ${esc(d.q)}<br>Jawabanmu: ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(d.answer)})`):''}`;
+if(feedbackSudah){
+html+=`<br><strong style="color:#23866b">📖 Pembahasan:</strong> ${esc(d.pembahasan)}`;
+}
+html+='</div>';
 });
 html+='</div>';
 
@@ -1514,11 +1544,11 @@ return `<div class="detail-item empty"><strong>Uraian ${i+1}:</strong> ${ans}${s
 
 const matchHTML=kuisData.match.map((m,mi)=>{
 let inner='';
-m.pasangan.forEach((p,pi)=>{
+m.pasangan.forEach((pp,pi)=>{
 const ans=(jawaban.match&&jawaban.match[mi])?jawaban.match[mi][pi]:'';
-const ok=ans===p.answer;
+const ok=ans===pp.answer;
 const cls=!ans?'empty':(ok?'correct':'wrong');
-inner+=`<div class="detail-item ${cls}"><strong>${esc(p.term)}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(p.answer)})`):''}</div>`;
+inner+=`<div class="detail-item ${cls}"><strong>${esc(pp.term)}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(pp.answer)})`):''}</div>`;
 });
 return `<div style="background:#f8f2ff;border-radius:12px;padding:10px;margin-bottom:8px"><p style="font-size:11px;color:#6845ae;margin-bottom:6px">${esc(m.konteks)}</p>${inner}</div>`;
 }).join('');
@@ -1610,13 +1640,15 @@ const skorDrag=p.skorDrag||0;
 const skorUraian=total;
 const skorTotal=skorMatch+skorDrag+skorUraian;
 try{
+modal.querySelector('#simpanNilai').disabled=true;
 await updateDoc(doc(db,'progres_soal',p.id),{
 skorUraian,skorUraianPerSoal:perSoal,skorTotal,updatedAt:serverTimestamp()
 });
-modal.querySelector('#msgNilai').textContent='Nilai uraian tersimpan. Skor total: '+Math.round(skorTotal)+'/100';
-modal.querySelector('#msgNilai').classList.add('ok');
+modal.remove();
+alert('✅ Nilai uraian tersimpan! Skor total: '+Math.round(skorTotal)+'/100. Kembali ke monitoring.');
 }catch(e){
 modal.querySelector('#msgNilai').textContent=errText(e);
+modal.querySelector('#simpanNilai').disabled=false;
 }
 });
 }
