@@ -91,7 +91,6 @@ h1 span{display:block;color:#8056d9}
 .student-menu button.active{background:#8056d9;color:white;border-color:#8056d9}
 .student-content{margin-top:10px}
 
-/* Kartu menu materi */
 .materi-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:18px}
 .materi-card{background:linear-gradient(145deg,#f8f2ff,#eee7ff);border:2px solid #eae0fb;border-radius:20px;padding:24px 20px;text-align:center;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:Nunito,sans-serif}
 .materi-card:hover{transform:translateY(-5px);box-shadow:0 12px 28px #60468b22}
@@ -104,7 +103,6 @@ h1 span{display:block;color:#8056d9}
 .materi-back{display:inline-flex;align-items:center;gap:8px;background:#f4effc;color:#6e49bd;border:0;border-radius:10px;padding:10px 18px;font-weight:900;font-size:14px;cursor:pointer;margin-bottom:18px;font-family:Nunito,sans-serif}
 .materi-back:hover{background:#e8dcfb}
 
-/* Latihan */
 .practice-area{margin-top:10px}
 .practice-area h3{font-size:20px;margin-bottom:8px;color:#35256c}
 .practice-back{display:inline-flex;align-items:center;gap:8px;background:#f4effc;color:#6e49bd;border:0;border-radius:10px;padding:10px 18px;font-weight:900;font-size:14px;cursor:pointer;margin-bottom:18px;font-family:Nunito,sans-serif}
@@ -120,15 +118,12 @@ h1 span{display:block;color:#8056d9}
 .question-option:hover{border-color:#c4aef0;background:#faf5ff}
 .question-option input{accent-color:#8056d9;width:18px;height:18px;flex-shrink:0}
 .question-option:has(input:checked){border-color:#8056d9;background:#f0e7ff}
-.question-card textarea{width:100%;min-height:90px;padding:13px;border:2px solid #e8def8;border-radius:12px;font-family:Nunito,sans-serif;font-size:14px;resize:vertical;outline:none;color:#35256c;background:white}
-.question-card textarea:focus{border-color:#8056d9}
 .practice-result{display:none;margin-top:18px;padding:16px;border-radius:14px;background:#eaf9f2;border-left:4px solid #23866b;color:#1a5f4d;font-size:14px;line-height:1.7}
 .practice-result.show{display:block;animation:appearS .3s ease}
 @keyframes appearS{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .practice-result strong{color:#166534}
 .practice-result p{margin:8px 0;line-height:1.6}
 
-/* Kuis */
 .kuis-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .kuis-progress{flex:1;min-width:200px}
 .kuis-progress-bar{height:8px;background:#f0e7ff;border-radius:4px;overflow:hidden;margin-top:6px}
@@ -163,7 +158,6 @@ h1 span{display:block;color:#8056d9}
 .kuis-predikat.d{background:#ffe8d4;color:#a85617}
 .kuis-predikat.e{background:#fff0f2;color:#b3425a}
 
-/* Monitoring */
 .feedback-panel{background:#eaf9f2;border-left:4px solid #23866b;border-radius:14px;padding:16px;margin:14px 0;color:#1a5f4d;font-size:14px;line-height:1.7}
 .feedback-panel strong{color:#166534}
 .feedback-panel .meta{font-size:12px;color:#23866b;font-weight:700;margin-top:8px;display:block}
@@ -183,6 +177,7 @@ h1 span{display:block;color:#8056d9}
 .monitor-table td.done{color:#23866b;font-weight:800}
 .monitor-table td.pending{color:#946b08;font-weight:800}
 .monitor-table td.low{color:#b3425a;font-weight:800}
+.monitor-table td.progres-live{color:#8056d9;font-weight:800;font-size:12px}
 .monitor-table button{background:#8056d9;color:white;border:0;border-radius:8px;padding:6px 12px;font-weight:800;font-size:12px;cursor:pointer;font-family:Nunito,sans-serif}
 .monitor-table button:hover{filter:brightness(1.08)}
 .bulk-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0;padding:12px 15px;background:#f8f2ff;border:1px dashed #d4c4f5;border-radius:12px;font-size:13px}
@@ -710,7 +705,7 @@ section.innerHTML=`
 </div>`;
 };
 
-/* ================= LATIHAN (PG) — TIDAK DINILAI ================= */
+/* ================= LATIHAN (PG) ================= */
 
 const latihanData={
 pg:[
@@ -774,7 +769,7 @@ $('latihanCheck').disabled=true;
 };
 
 
-/* ================= KUIS — DINILAI ================= */
+/* ================= KUIS ================= */
 
 const kuisData={
 match:[
@@ -836,7 +831,6 @@ uraian:[
 };
 
 const BOBOT={match:20,drag:20,uraian:60};
-const SKOR_URAIAN_PER_SOAL=12;
 
 let kuisState=null;
 
@@ -855,6 +849,54 @@ const j=Math.floor(Math.random()*(i+1));
 [a[i],a[j]]=[a[j],a[i]];
 }
 return a;
+}
+
+function hitungSkorSementara(){
+let benarMatch=0,benarDrag=0;
+kuisData.match.forEach((m,i)=>{
+const jm=(kuisState&&kuisState.jawaban.match[i])||{};
+m.pasangan.forEach((p,pi)=>{
+if(jm[pi]===p.answer) benarMatch++;
+});
+});
+kuisData.drag.forEach((d,i)=>{
+if(kuisState && kuisState.jawaban.drag[i]===d.answer) benarDrag++;
+});
+const totalPasang=kuisData.match.reduce((s,m)=>s+m.pasangan.length,0);
+const totalKotak=kuisData.drag.length;
+const skorMatch=(benarMatch/totalPasang)*BOBOT.match;
+const skorDrag=(benarDrag/totalKotak)*BOBOT.drag;
+return {benarMatch,benarDrag,totalPasang,totalKotak,skorMatch,skorDrag};
+}
+
+async function simpanProgresLive(){
+if(!kuisState || !student) return;
+try{
+const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
+let ownerUid=student.data.ownerUid;
+if(!ownerUid){
+const cd=await getDoc(doc(db,'classes',student.id));
+if(cd.exists()) ownerUid=cd.data().ownerUid;
+}
+const s=hitungSkorSementara();
+const total=kuisState.soal.length;
+await setDoc(doc(db,'progres_soal',docId),{
+studentNama:student.nama,
+studentKode:student.kode,
+classId:student.id,
+classOwnerUid:ownerUid,
+jawabanKuis:kuisState.jawaban,
+currentIndex:kuisState.index,
+totalSoal:total,
+selesaiKuis:false,
+skorMatch:s.skorMatch,skorDrag:s.skorDrag,
+benarMatch:s.benarMatch,benarDrag:s.benarDrag,
+updatedAt:serverTimestamp()
+},{merge:true});
+console.log('✅ Progres live:',kuisState.index+1,'/',total);
+}catch(e){
+console.error('❌ Gagal simpan live:',e);
+}
 }
 
 window.renderKuisMenu=async()=>{
@@ -886,6 +928,12 @@ statusHTML=`<div class="kuis-summary">
 <p>✍️ Uraian: ${uraianDinilai ? Math.round(prevDoc.skorUraian)+'/60 (dinilai guru)' : '<em>Menunggu penilaian guru</em> (maks 60)'}</p>
 <p style="margin-top:10px"><strong>Skor total: ${uraianDinilai ? total+'/100' : Math.round((prevDoc.skorMatch||0)+(prevDoc.skorDrag||0))+'/40 (sementara)'}</strong></p>
 </div>`;
+}else if(prevDoc && prevDoc.currentIndex!==undefined && !prevDoc.selesaiKuis){
+statusHTML=`<div class="kuis-summary">
+<strong>Kamu sedang mengerjakan kuis.</strong>
+<p>Soal ${Math.min((prevDoc.currentIndex||0)+1,prevDoc.totalSoal||15)} dari ${prevDoc.totalSoal||15}</p>
+<p>Klik "Lanjutkan Kuis" untuk meneruskan.</p>
+</div>`;
 }
 
 let feedbackHTML='';
@@ -907,7 +955,10 @@ ${feedbackHTML}
 ${prevDoc && prevDoc.selesaiKuis 
   ? `<button class="practice-btn" onclick="mulaiKuis()">Ulangi Kuis (skor tertinggi diambil)</button>
      <button class="practice-btn secondary" onclick="reviewKuisTerakhir()">📝 Review Jawaban</button>`
-  : `<button class="practice-btn" onclick="mulaiKuis()">Mulai Kuis</button>`}
+  : prevDoc && prevDoc.currentIndex!==undefined
+    ? `<button class="practice-btn" onclick="lanjutkanKuis()">▶ Lanjutkan Kuis</button>
+       <button class="practice-btn secondary" onclick="mulaiKuis()">Mulai Ulang</button>`
+    : `<button class="practice-btn" onclick="mulaiKuis()">Mulai Kuis</button>`}
 </div>
 </div>`;
 };
@@ -940,17 +991,40 @@ jawaban:{uraian:{},match:{},drag:{}},
 matchOptionsShuffled:{},
 dragChoicesShuffled:{}
 };
-
 soal.filter(s=>s.jenis==='match').forEach(s=>{
 const jawabanSoal=s.pasangan.map(p=>p.answer);
 kuisState.matchOptionsShuffled[s.idx]=shuffle(jawabanSoal);
 });
-
 soal.filter(s=>s.jenis==='drag').forEach(s=>{
 kuisState.dragChoicesShuffled[s.idx]=shuffle(s.choices);
 });
-
 renderKuisSoal();
+simpanProgresLive();
+};
+
+window.lanjutkanKuis=async()=>{
+try{
+const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
+const d=await getDoc(doc(db,'progres_soal',docId));
+if(!d.exists()){mulaiKuis();return;}
+const data=d.data();
+const soal=buildKuisSoal();
+kuisState={
+soal,
+index:data.currentIndex||0,
+jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}},
+matchOptionsShuffled:{},
+dragChoicesShuffled:{}
+};
+soal.filter(s=>s.jenis==='match').forEach(s=>{
+const jawabanSoal=s.pasangan.map(p=>p.answer);
+kuisState.matchOptionsShuffled[s.idx]=shuffle(jawabanSoal);
+});
+soal.filter(s=>s.jenis==='drag').forEach(s=>{
+kuisState.dragChoicesShuffled[s.idx]=shuffle(s.choices);
+});
+renderKuisSoal();
+}catch(e){alert(errText(e));}
 };
 
 function renderKuisSoal(){
@@ -960,7 +1034,6 @@ const nomor=kuisState.index+1;
 const persen=Math.round(nomor/total*100);
 
 let bodyHTML='';
-
 if(s.jenis==='match'){
 const opts=kuisState.matchOptionsShuffled[s.idx];
 const konteksHTML=`<p style="font-size:13px;color:#6845ae;background:#f0e7ff;padding:10px 14px;border-radius:10px;margin-bottom:14px;line-height:1.6">${esc(s.konteks)}</p>`;
@@ -1005,7 +1078,7 @@ ${bodyHTML}
 <button class="practice-btn secondary" onclick="kuisPrev()" ${kuisState.index===0?'disabled':''}>← Sebelumnya</button>
 <button class="practice-btn" onclick="kuisNext()" id="kuisNextBtn">${kuisState.index===total-1?'Kumpulkan Kuis':'Berikutnya →'}</button>
 </div>
-<p class="muted" style="margin-top:12px;font-size:12px">Jawaban tersimpan otomatis saat kamu pindah soal.</p>
+<p class="muted" style="margin-top:12px;font-size:12px">Jawaban tersimpan otomatis.</p>
 </div>`;
 
 if(s.jenis==='match'){
@@ -1044,7 +1117,11 @@ zone.classList.remove('filled');
 };
 
 window.kuisPrev=()=>{
-if(kuisState.index>0){kuisState.index--;renderKuisSoal();}
+if(kuisState.index>0){
+kuisState.index--;
+renderKuisSoal();
+simpanProgresLive();
+}
 };
 
 window.kuisNext=async()=>{
@@ -1059,11 +1136,7 @@ if(s.pasangan.some((p,pi)=>!jm[pi])) ok=false;
 }else if(s.jenis==='drag'){
 if(!kuisState.jawaban.drag[s.idx]) ok=false;
 }
-
-if(!ok){
-alert('Lengkapi jawaban soal ini dulu ya.');
-return;
-}
+if(!ok){alert('Lengkapi jawaban soal ini dulu ya.');return;}
 
 if(kuisState.index===kuisState.soal.length-1){
 const semuaLengkap=kuisState.soal.every(so=>{
@@ -1074,36 +1147,20 @@ return so.pasangan.every((p,pi)=>!!jm[pi]);
 }
 if(so.jenis==='drag') return !!kuisState.jawaban.drag[so.idx];
 });
-if(!semuaLengkap){
-alert('Masih ada soal yang belum dijawab. Periksa kembali dengan tombol Sebelumnya.');
-return;
-}
+if(!semuaLengkap){alert('Masih ada soal yang belum dijawab. Periksa kembali dengan tombol Sebelumnya.');return;}
 if(!confirm('Kumpulkan kuis? Setelah dikumpulkan, jawaban tidak bisa diubah.')) return;
 await kumpulkanKuis();
 }else{
 kuisState.index++;
 renderKuisSoal();
+await simpanProgresLive();
 }
 };
 
 async function kumpulkanKuis(){
-let benarMatch=0,benarDrag=0;
-kuisData.match.forEach((m,i)=>{
-const jm=kuisState.jawaban.match[i]||{};
-m.pasangan.forEach((p,pi)=>{
-if(jm[pi]===p.answer) benarMatch++;
-});
-});
-kuisData.drag.forEach((d,i)=>{
-if(kuisState.jawaban.drag[i]===d.answer) benarDrag++;
-});
-const totalPasang=kuisData.match.reduce((s,m)=>s+m.pasangan.length,0);
-const totalKotak=kuisData.drag.length;
-const skorMatch=(benarMatch/totalPasang)*BOBOT.match;
-const skorDrag=(benarDrag/totalKotak)*BOBOT.drag;
+const s=hitungSkorSementara();
 const skorUraian=0;
-const skorTotal=skorMatch+skorDrag+skorUraian;
-
+const skorTotal=s.skorMatch+s.skorDrag+skorUraian;
 try{
 const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
 let ownerUid=student.data.ownerUid;
@@ -1111,14 +1168,40 @@ if(!ownerUid){
 const cd=await getDoc(doc(db,'classes',student.id));
 if(cd.exists()) ownerUid=cd.data().ownerUid;
 }
+
+// Cek skor lama — kalau lebih tinggi, pertahankan
+const oldDoc=await getDoc(doc(db,'progres_soal',docId));
+const oldData=oldDoc.exists()?oldDoc.data():null;
+
+let finalSkorMatch=s.skorMatch;
+let finalSkorDrag=s.skorDrag;
+let finalSkorUraian=skorUraian;
+let finalSkorTotal=skorTotal;
+let finalBenarMatch=s.benarMatch;
+let finalBenarDrag=s.benarDrag;
+let finalJawaban=kuisState.jawaban;
+
+if(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal){
+finalSkorMatch=oldData.skorMatch||0;
+finalSkorDrag=oldData.skorDrag||0;
+finalSkorUraian=oldData.skorUraian||0;
+finalSkorTotal=oldData.skorTotal||0;
+finalBenarMatch=oldData.benarMatch||0;
+finalBenarDrag=oldData.benarDrag||0;
+finalJawaban=oldData.jawabanKuis||kuisState.jawaban;
+console.log('Skor lama lebih tinggi — pertahankan:',oldData.skorTotal);
+}
+
 await setDoc(doc(db,'progres_soal',docId),{
 studentNama:student.nama,
 studentKode:student.kode,
 classId:student.id,
 classOwnerUid:ownerUid,
-jawabanKuis:kuisState.jawaban,
-skorMatch,skorDrag,skorUraian,skorTotal,
-benarMatch,benarDrag,
+jawabanKuis:finalJawaban,
+currentIndex:kuisState.soal.length,
+totalSoal:kuisState.soal.length,
+skorMatch:finalSkorMatch,skorDrag:finalSkorDrag,skorUraian:finalSkorUraian,skorTotal:finalSkorTotal,
+benarMatch:finalBenarMatch,benarDrag:finalBenarDrag,
 selesaiKuis:true,
 updatedAt:serverTimestamp()
 },{merge:true});
@@ -1130,41 +1213,43 @@ classId:student.id,
 classOwnerUid:ownerUid,
 jenis:'kuis',
 skor:skorTotal,
-skorMatch,skorDrag,skorUraian,
-benarMatch,benarDrag,
+skorMatch:s.skorMatch,skorDrag:s.skorDrag,skorUraian,
+benarMatch:s.benarMatch,benarDrag:s.benarDrag,
 jawaban:kuisState.jawaban,
 at:serverTimestamp()
 });
-}catch(e){
-alert('Gagal menyimpan: '+errText(e));
-return;
-}
+}catch(e){alert('Gagal menyimpan: '+errText(e));return;}
 
-const predikat=getPredikat(skorTotal);
+const finalSkorMatch=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.skorMatch||0) : s.skorMatch;
+const finalSkorDrag=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.skorDrag||0) : s.skorDrag;
+const finalSkorTotal=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.skorTotal||0) : skorTotal;
+const finalBenarMatch=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.benarMatch||0) : s.benarMatch;
+const finalBenarDrag=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.benarDrag||0) : s.benarDrag;
+
+const predikat=getPredikat(finalSkorTotal);
 const section=$('studentSection');
 section.innerHTML=`<div class="practice-area">
 <h3>Kuis Selesai! 🎉</h3>
 <div class="kuis-summary">
 <strong>Skor otomatis (Match + Drag):</strong>
-<div class="kuis-score">${Math.round(skorMatch+skorDrag)}/40</div>
-<p>Match: ${Math.round(skorMatch)}/20 (${benarMatch}/${totalPasang} benar)</p>
-<p>Drag: ${Math.round(skorDrag)}/20 (${benarDrag}/${totalKotak} benar)</p>
+<div class="kuis-score">${Math.round(finalSkorMatch+finalSkorDrag)}/40</div>
+<p>Match: ${Math.round(finalSkorMatch)}/20 (${finalBenarMatch}/${s.totalPasang} benar)</p>
+<p>Drag: ${Math.round(finalSkorDrag)}/20 (${finalBenarDrag}/${s.totalKotak} benar)</p>
 <p>Skor uraian: <em>Menunggu penilaian guru</em> (maks 60)</p>
-<p style="margin-top:10px"><strong>Skor sementara: ${Math.round(skorTotal)}/100</strong></p>
+<p style="margin-top:10px"><strong>Skor sementara: ${Math.round(finalSkorTotal)}/100</strong></p>
 <span class="kuis-predikat ${predikat.kelas}">Predikat ${predikat.label}</span>
+${finalSkorTotal > skorTotal ? '<p style="margin-top:8px;font-size:12px;color:#23866b">✓ Skor sebelumnya lebih tinggi — tetap dipakai.</p>' : ''}
 </div>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
 <button class="practice-btn" onclick="reviewKuis()">📝 Review Jawaban</button>
 <button class="practice-btn secondary" onclick="studentTab('kuis')">Kembali ke Kuis</button>
 </div>
-<p class="muted" style="margin-top:12px">Guru akan menilai uraianmu. Setelah dinilai, skor total dan feedback akan muncul di menu Kuis.</p>
 </div>`;
 }
 
 window.reviewKuis=()=>{
 const section=$('studentSection');
 let html='<div class="practice-area"><h3>📝 Review Jawaban Kuis</h3><p class="muted">Periksa jawabanmu di bawah ini.</p>';
-
 html+='<div class="detail-section"><h4>🔗 Menjodohkan</h4>';
 kuisData.match.forEach((m,mi)=>{
 html+=`<div style="background:#f8f2ff;border-radius:12px;padding:12px;margin-bottom:10px"><p style="font-size:12px;color:#6845ae;margin-bottom:8px">${esc(m.konteks)}</p>`;
@@ -1177,7 +1262,6 @@ html+=`<div class="detail-item ${cls}"><strong>${esc(p.term)}:</strong> ${esc(an
 html+='</div>';
 });
 html+='</div>';
-
 html+='<div class="detail-section"><h4>🧩 Drag</h4>';
 kuisData.drag.forEach((d,i)=>{
 const ans=kuisState.jawaban.drag[i]||'';
@@ -1186,14 +1270,12 @@ const cls=!ans?'empty':(ok?'correct':'wrong');
 html+=`<div class="detail-item ${cls}"><strong>Soal ${i+1}:</strong> ${esc(d.q)}<br>Jawabanmu: ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(d.answer)})`):''}</div>`;
 });
 html+='</div>';
-
 html+='<div class="detail-section"><h4>✍️ Uraian</h4>';
 kuisData.uraian.forEach((u,i)=>{
 const ans=kuisState.jawaban.uraian[i]||'';
 html+=`<div class="detail-item empty"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#8984a5">Pembahasan akan muncul setelah guru menilai.</em></div>`;
 });
 html+='</div>';
-
 html+='<button class="practice-btn" onclick="studentTab(\'kuis\')">Kembali ke Kuis</button></div>';
 section.innerHTML=html;
 };
@@ -1250,12 +1332,13 @@ feedbackMap[`${x.studentKode}_${x.studentNama}`]=x;
 });
 const total=progres.length;
 const selesai=progres.filter(p=>p.selesaiKuis).length;
+const sedang=progres.filter(p=>!p.selesaiKuis && p.currentIndex!==undefined).length;
 const sudahFeedback=Object.keys(feedbackMap).length;
 const belumFeedback=total-sudahFeedback;
 
 let ringkasan=`<div class="summary-box">
 <h4>📊 Ringkasan Kelas</h4>
-<p>${total} murid · <span class="good">${selesai} selesai kuis</span> · ${total-selesai} belum</p>
+<p>${total} murid · <span class="good">${selesai} selesai</span> · <span class="warn">${sedang} sedang mengerjakan</span> · ${total-selesai-sedang} belum mulai</p>
 <p>📝 Feedback terkirim: <strong>${sudahFeedback}</strong> · belum: <strong>${belumFeedback}</strong></p>
 </div>`;
 
@@ -1272,10 +1355,18 @@ const kode=p.studentKode||'-';
 const statusClass=p.selesaiKuis?'done':'pending';
 const statusText=p.selesaiKuis?'✅ Selesai':'⏳ Belum';
 const skorClass=skor<60?'low':'';
+const ci=p.currentIndex!==undefined?p.currentIndex:0;
+const ts=p.totalSoal||15;
+const progresText=p.selesaiKuis
+  ? '✅ Selesai semua'
+  : (p.currentIndex!==undefined
+    ? `📖 Soal ${Math.min(ci+1,ts)} dari ${ts}`
+    : '—');
 return `<tr>
 <td><input type="checkbox" class="cb-murid" data-nama="${esc(nama)}" data-kode="${esc(kode)}"></td>
 <td style="cursor:pointer" class="nama-murid" data-nama="${esc(nama)}" data-kode="${esc(kode)}"><strong>${esc(nama)}</strong><br><span style="font-size:11px;color:#8984a5">${esc(kode)}</span></td>
 <td class="score ${skorClass}">${Math.round(skor)}/100</td>
+<td class="progres-live">${progresText}</td>
 <td class="${statusClass}">${statusText}</td>
 <td>${p.skorUraian!==undefined && p.skorUraian!==null && p.skorUraian>0 ? Math.round(p.skorUraian)+'/60' : '—'}</td>
 <td>${fb?'✅ Sudah':'—'}</td>
@@ -1294,7 +1385,7 @@ el.innerHTML=ringkasan+`
 </div>
 <div style="overflow-x:auto">
 <table class="monitor-table">
-<thead><tr><th></th><th>Nama</th><th>Skor</th><th>Status</th><th>Uraian</th><th>Feedback</th><th>Aksi</th></tr></thead>
+<thead><tr><th></th><th>Nama</th><th>Skor</th><th>Progres</th><th>Status</th><th>Uraian</th><th>Feedback</th><th>Aksi</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </div>`;
@@ -1372,6 +1463,7 @@ modal.className='modal show';
 modal.innerHTML=`
 <div class="modal-card" style="max-width:640px">
 <h2>${esc(nama)} — ${esc(kode)}</h2>
+<p class="muted" style="margin-bottom:8px">Progres: ${p.selesaiKuis?'✅ Selesai semua':`📖 Soal ${Math.min((p.currentIndex||0)+1,p.totalSoal||15)} dari ${p.totalSoal||15}`}</p>
 <div class="tabs" style="margin-bottom:12px">
 <button class="tab-btn active" data-tab="jawaban">📝 Jawaban Terakhir</button>
 <button class="tab-btn" data-tab="riwayat">📜 Riwayat (${riwayat.length})</button>
