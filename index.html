@@ -141,13 +141,16 @@ h1 span{display:block;color:#8056d9}
 .kuis-match-row strong{font-size:14px;color:#35256c}
 .kuis-match-row select{width:100%;padding:11px;border:2px solid #e8def8;border-radius:10px;font-family:Nunito,sans-serif;font-size:13px;background:white;color:#35256c;cursor:pointer;outline:none}
 .kuis-match-row select:focus{border-color:#8056d9}
-.kuis-drag-items{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;padding:14px;background:#f8f2ff;border:1px dashed #d4c4f5;border-radius:14px}
-.kuis-drag-item{padding:10px 18px;background:white;border:2px solid #e8def8;border-radius:10px;font-weight:900;color:#35256c;cursor:grab;user-select:none;transition:.15s;font-size:14px}
+.kuis-drag-items{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;padding:14px;background:#f8f2ff;border:1px dashed #d4c4f5;border-radius:14px;min-height:60px}
+.kuis-drag-item{padding:10px 18px;background:white;border:2px solid #e8def8;border-radius:10px;font-weight:900;color:#35256c;cursor:grab;user-select:none;transition:.15s;font-size:14px;touch-action:none}
 .kuis-drag-item:hover{border-color:#8056d9;background:#faf5ff}
+.kuis-drag-item:active{cursor:grabbing}
+.kuis-drag-item.dragging{opacity:.5}
 .kuis-drag-item.selected{border-color:#8056d9;background:#f0e7ff}
 .kuis-drop-zone{padding:16px;border:2px dashed #c4aef0;border-radius:12px;background:white;text-align:center;color:#8984a5;font-weight:700;font-size:13px;margin-top:10px;cursor:pointer;transition:.15s;min-height:52px;display:flex;align-items:center;justify-content:center}
 .kuis-drop-zone:hover{background:#faf5ff;border-color:#8056d9}
 .kuis-drop-zone.filled{border-style:solid;border-color:#8056d9;background:#f0e7ff;color:#35256c;font-size:15px}
+.kuis-drop-zone.dragover{background:#e0f7ff;border-color:#3976d3;border-style:solid;transform:scale(1.02)}
 .kuis-summary{background:#f0e7ff;border-left:4px solid #8056d9;border-radius:14px;padding:18px;margin:15px 0;color:#4c2d8f;font-size:14px;line-height:1.7}
 .kuis-summary strong{color:#35256c}
 .kuis-score{font-size:42px;font-weight:900;color:#8056d9;line-height:1;margin:10px 0}
@@ -948,7 +951,7 @@ const benarMatch=prevDoc.benarMatch||0;
 const benarDrag=prevDoc.benarDrag||0;
 const uraianDinilai=prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0;
 
-// ===== HITUNG NILAI TERTINGGI DARI PERCOBAAN YANG URAIANNYA SUDAH DINILAI GURU =====
+// HITUNG NILAI TERTINGGI DARI PERCOBAAN YANG URAIANNYA SUDAH DINILAI GURU
 let nilaiTertinggi=null;
 let percobaanTertinggi=0;
 try{
@@ -958,7 +961,6 @@ where('studentNama','==',student.nama),
 where('studentKode','==',student.kode)
 ));
 const riwayat=rs.docs.map(d=>({id:d.id,...d.data()}));
-// Filter hanya percobaan yang uraiannya sudah dinilai (skorUraian > 0)
 const sudahDinilai=riwayat.filter(r=>r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
 if(sudahDinilai.length){
 nilaiTertinggi=Math.max(...sudahDinilai.map(r=>r.skor||0));
@@ -1076,7 +1078,6 @@ html+='<p class="muted">Semua percobaan kuis yang pernah kamu kerjakan. Nilai te
 if(!riwayat.length){
 html+='<div class="empty">Belum ada riwayat percobaan. Kerjakan kuis dulu ya.</div>';
 }else{
-// Nilai tertinggi hanya dari percobaan yang uraiannya sudah dinilai
 const sudahDinilai=riwayat.filter(r=>r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
 const tertinggi=sudahDinilai.length?Math.max(...sudahDinilai.map(r=>r.skor||0)):null;
 riwayat.forEach((r,i)=>{
@@ -1211,10 +1212,12 @@ bodyHTML=konteksHTML+pasanganHTML;
 const opts=kuisState.dragChoicesShuffled[s.idx];
 const val=kuisState.jawaban.drag[s.idx]||'';
 bodyHTML=`<h4>${esc(s.q)}</h4>
-<div class="kuis-drag-items">
-${opts.map(o=>`<div class="kuis-drag-item ${val===o?'selected':''}" data-val="${esc(o)}" onclick="pilihDragKuis(this)">${esc(o)}</div>`).join('')}
+<p class="muted" style="font-size:12px;margin:8px 0">💡 <strong>Seret</strong> pilihan ke kotak di bawah (drag & drop). Klik tidak berfungsi.</p>
+<div class="kuis-drag-items" id="dragItems">
+${opts.map(o=>`<div class="kuis-drag-item ${val===o?'selected':''}" data-val="${esc(o)}" draggable="true" ondragstart="mulaiDragKuis(event,this)">${esc(o)}</div>`).join('')}
 </div>
-<div class="kuis-drop-zone ${val?'filled':''}" id="kuisDropZone" onclick="kosongkanDropKuis()">${val?esc(val):'Ketuk salah satu pilihan di atas'}</div>`;
+<div class="kuis-drop-zone ${val?'filled':''}" id="kuisDropZone" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="jatuhkanDragKuis(event,this)">${val?esc(val):'🎯 Seret pilihan ke sini'}</div>
+${val?'<button class="practice-btn secondary" style="font-size:12px;padding:6px 12px" onclick="kosongkanDropKuis()">Kosongkan kotak</button>':''}`;
 }else if(s.jenis==='uraian'){
 const val=kuisState.jawaban.uraian[s.idx]||'';
 bodyHTML=`<h4>${esc(s.q)}</h4>
@@ -1255,30 +1258,101 @@ updateMatchOptions(s.idx);
 $('kuisInput').addEventListener('input',(e)=>{
 kuisState.jawaban.uraian[s.idx]=e.target.value;
 });
+}else if(s.jenis==='drag'){
+setupTouchDrag();
 }
 
 updateTimerDisplay();
 }
 
-window.pilihDragKuis=(el)=>{
+/* ===== DRAG & DROP MURNI ===== */
+
+let draggedItem=null;
+
+window.mulaiDragKuis=(event,el)=>{
+draggedItem=el;
+el.classList.add('dragging');
+event.dataTransfer.setData('text/plain',el.dataset.val);
+event.dataTransfer.effectAllowed='move';
+};
+
+window.jatuhkanDragKuis=(event,zone)=>{
+event.preventDefault();
+zone.classList.remove('dragover');
+if(!draggedItem) return;
 const s=kuisState.soal[kuisState.index];
-const val=el.dataset.val;
+const val=draggedItem.dataset.val;
 kuisState.jawaban.drag[s.idx]=val;
-document.querySelectorAll('.kuis-drag-item').forEach(x=>x.classList.remove('selected'));
-el.classList.add('selected');
-const zone=$('kuisDropZone');
-zone.textContent=val;
-zone.classList.add('filled');
+draggedItem.classList.remove('dragging');
+draggedItem=null;
+renderKuisSoal();
 };
 
 window.kosongkanDropKuis=()=>{
 const s=kuisState.soal[kuisState.index];
 kuisState.jawaban.drag[s.idx]='';
-document.querySelectorAll('.kuis-drag-item').forEach(x=>x.classList.remove('selected'));
-const zone=$('kuisDropZone');
-zone.textContent='Ketuk salah satu pilihan di atas';
-zone.classList.remove('filled');
+renderKuisSoal();
 };
+
+function setupTouchDrag(){
+const items=document.querySelectorAll('.kuis-drag-item');
+const zone=document.getElementById('kuisDropZone');
+if(!zone) return;
+
+let touchItem=null;
+let touchGhost=null;
+
+items.forEach(item=>{
+item.addEventListener('touchstart',(e)=>{
+touchItem=item;
+item.classList.add('dragging');
+const rect=item.getBoundingClientRect();
+touchGhost=item.cloneNode(true);
+touchGhost.style.position='fixed';
+touchGhost.style.left=rect.left+'px';
+touchGhost.style.top=rect.top+'px';
+touchGhost.style.width=rect.width+'px';
+touchGhost.style.pointerEvents='none';
+touchGhost.style.opacity='0.85';
+touchGhost.style.zIndex='9999';
+touchGhost.style.transform='scale(1.1)';
+document.body.appendChild(touchGhost);
+},{passive:true});
+
+item.addEventListener('touchmove',(e)=>{
+if(!touchItem) return;
+e.preventDefault();
+const touch=e.touches[0];
+if(touchGhost){
+touchGhost.style.left=(touch.clientX-touchGhost.offsetWidth/2)+'px';
+touchGhost.style.top=(touch.clientY-touchGhost.offsetHeight/2)+'px';
+}
+const zoneRect=zone.getBoundingClientRect();
+if(touch.clientX>=zoneRect.left && touch.clientX<=zoneRect.right &&
+touch.clientY>=zoneRect.top && touch.clientY<=zoneRect.bottom){
+zone.classList.add('dragover');
+}else{
+zone.classList.remove('dragover');
+}
+},{passive:false});
+
+item.addEventListener('touchend',(e)=>{
+if(!touchItem) return;
+const touch=e.changedTouches[0];
+const zoneRect=zone.getBoundingClientRect();
+if(touch.clientX>=zoneRect.left && touch.clientX<=zoneRect.right &&
+touch.clientY>=zoneRect.top && touch.clientY<=zoneRect.bottom){
+const s=kuisState.soal[kuisState.index];
+kuisState.jawaban.drag[s.idx]=touchItem.dataset.val;
+}
+if(touchGhost){touchGhost.remove();touchGhost=null;}
+touchItem.classList.remove('dragging');
+touchItem=null;
+zone.classList.remove('dragover');
+renderKuisSoal();
+});
+});
+}
 
 window.kuisPrev=()=>{
 if(kuisState.index>0){
@@ -1375,6 +1449,7 @@ updatedAt:serverTimestamp()
 
 simpanSukses=true;
 
+// Simpan riwayat — WAJIB simpan jawaban agar guru bisa nilai uraian per percobaan
 try{
 await addDoc(collection(db,'riwayat_soal'),{
 studentNama:student.nama,
@@ -1385,7 +1460,7 @@ jenis:'kuis',
 skor:skorTotal,
 skorMatch:s.skorMatch,skorDrag:s.skorDrag,skorUraian,
 benarMatch:s.benarMatch,benarDrag:s.benarDrag,
-jawaban:kuisState.jawaban,
+jawaban:kuisState.jawaban, // PENTING: simpan jawaban untuk nilai uraian nanti
 at:serverTimestamp()
 });
 }catch(errRiwayat){
@@ -1421,7 +1496,6 @@ const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama'
 feedbackSudah=fbs.size>0;
 }catch(e){}
 
-// Ambil progres untuk cek skorUraianPerSoal
 let progressData=null;
 try{
 const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
@@ -1679,16 +1753,23 @@ const cls=!ans?'empty':(ok?'correct':'wrong');
 return `<div class="detail-item ${cls}"><strong>Drag ${i+1}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(d.answer)})`):''}</div>`;
 }).join('');
 
+// Riwayat dengan tombol Nilai Uraian per percobaan
 const riwayatHTML=riwayat.length
-? riwayat.map((r,i)=>`
-<div class="riwayat-item">
+? riwayat.map((r,i)=>{
+const uraianDinilai=r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0;
+const tgl=r.at?.toDate?r.at.toDate().toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+return `<div class="riwayat-item">
 <div class="riwayat-head">
 <strong>Percobaan ${riwayat.length-i}</strong>
-<span>${r.at?.toDate?r.at.toDate().toLocaleString('id-ID'):''}</span>
+<span>${tgl}</span>
 </div>
-<div class="riwayat-score">Skor: ${Math.round(r.skor||0)}/100 ${r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0?'':'<em style="color:#946b08;font-size:11px">(uraian belum dinilai)</em>'}</div>
-<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0 ? Math.round(r.skorUraian)+'/60' : 'menunggu'}</p>
-</div>`).join('')
+<div class="riwayat-score">Skor: ${Math.round(r.skor||0)}/100 ${uraianDinilai?'':'<span style="background:#fff3d7;color:#946b08;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;margin-left:6px">⏳ Uraian belum dinilai</span>'}</div>
+<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${uraianDinilai ? Math.round(r.skorUraian)+'/60' : '<em style="color:#946b08">belum dinilai</em>'}</p>
+<div style="margin-top:8px">
+<button class="small-btn" onclick="bukaNilaiUraianRiwayat('${r.id}')">✍️ ${uraianDinilai?'Edit':'Nilai'} Uraian</button>
+</div>
+</div>`;
+}).join('')
 : '<div class="empty">Belum ada riwayat percobaan.</div>';
 
 const modal=document.createElement('div');
@@ -1714,7 +1795,7 @@ ${riwayatHTML}
 </div>
 
 <div data-tab-content="nilai" style="display:none">
-<h4 style="margin-bottom:10px;color:#6845ae">Beri nilai uraian (0–12 per soal, total maks 60)</h4>
+<h4 style="margin-bottom:10px;color:#6845ae">Beri nilai uraian percobaan TERAKHIR (0–12 per soal, total maks 60)</h4>
 ${kuisData.uraian.map((u,i)=>`
 <div style="margin-bottom:12px">
 <strong style="font-size:13px">Uraian ${i+1}:</strong>
@@ -1771,6 +1852,88 @@ modal.querySelector('#simpanNilai').disabled=false;
 }
 });
 }
+
+/* ===== FUNGSI BARU: Nilai Uraian per Percobaan (dari Riwayat) ===== */
+window.bukaNilaiUraianRiwayat=async(riwayatId)=>{
+try{
+const rd=await getDoc(doc(db,'riwayat_soal',riwayatId));
+if(!rd.exists()){alert('Data riwayat tidak ditemukan.');return;}
+const r=rd.data();
+const jawaban=r.jawaban||{uraian:{}};
+
+const modal=document.createElement('div');
+modal.className='modal show';
+modal.innerHTML=`
+<div class="modal-card" style="max-width:640px">
+<h2>✍️ Nilai Uraian — Percobaan ${r.at?.toDate?r.at.toDate().toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}</h2>
+<p style="font-size:13px;color:#8984a5;margin-bottom:14px">Skor saat ini: ${Math.round(r.skor||0)}/100 · Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20</p>
+<div style="background:#f8f2ff;border-radius:12px;padding:14px;margin-bottom:14px;max-height:350px;overflow-y:auto">
+<h4 style="color:#6845ae;margin:0 0 10px">Jawaban Uraian Murid:</h4>
+${kuisData.uraian.map((u,i)=>{
+const ans=jawaban.uraian && jawaban.uraian[i] ? jawaban.uraian[i] : '(kosong)';
+return `<div style="margin-bottom:14px;padding:10px;background:white;border-radius:8px">
+<strong style="font-size:13px">Soal ${i+1}:</strong> ${esc(u.q)}
+<p style="font-size:12px;color:#4a3f6b;margin:6px 0;padding:8px;background:#fcfaff;border-radius:6px"><em>Jawaban:</em> ${esc(ans)}</p>
+<label style="font-size:12px;font-weight:700">Nilai (0–12):</label>
+<input type="number" class="skor-uraian-riwayat" data-i="${i}" min="0" max="12" step="1" value="${r.skorUraianPerSoal && r.skorUraianPerSoal[i]!==undefined ? r.skorUraianPerSoal[i] : 0}" style="width:100px;padding:6px;border:2px solid #e6def4;border-radius:6px;font-family:Nunito,sans-serif">
+</div>`;
+}).join('')}
+</div>
+<button class="submit" id="simpanNilaiRiwayat">Simpan Nilai Uraian</button>
+<p class="message" id="msgNilaiRiwayat"></p>
+<div style="display:flex;justify-content:flex-end;margin-top:14px">
+<button class="secondary" id="closeNilaiRiwayat" style="padding:10px 20px">Tutup</button>
+</div>
+</div>`;
+document.body.appendChild(modal);
+
+modal.querySelector('#closeNilaiRiwayat').addEventListener('click',()=>modal.remove());
+modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+
+modal.querySelector('#simpanNilaiRiwayat').addEventListener('click',async()=>{
+const inputs=modal.querySelectorAll('.skor-uraian-riwayat');
+const perSoal={};
+let total=0;
+inputs.forEach(inp=>{
+const i=Number(inp.dataset.i);
+const v=Math.max(0,Math.min(12,Number(inp.value)||0));
+perSoal[i]=v;
+total+=v;
+});
+const skorMatch=r.skorMatch||0;
+const skorDrag=r.skorDrag||0;
+const skorUraian=total;
+const skorTotal=skorMatch+skorDrag+skorUraian;
+try{
+modal.querySelector('#simpanNilaiRiwayat').disabled=true;
+await updateDoc(doc(db,'riwayat_soal',riwayatId),{
+skorUraian,skorUraianPerSoal:perSoal,skorTotal,updatedAt:serverTimestamp()
+});
+// Update progres_soal kalau ini percobaan terakhir
+try{
+const docId=`${r.studentKode}_${r.studentNama.replace(/\s+/g,'_')}`;
+const pDoc=await getDoc(doc(db,'progres_soal',docId));
+if(pDoc.exists()){
+const pData=pDoc.data();
+if(pData.updatedAt && r.at && Math.abs(pData.updatedAt.toDate().getTime()-r.at.toDate().getTime()) < 5000){
+await updateDoc(doc(db,'progres_soal',docId),{
+skorUraian,skorUraianPerSoal:perSoal,skorTotal,updatedAt:serverTimestamp()
+});
+}
+}
+}catch(e2){console.warn('Gagal update progres_soal:',e2);}
+
+modal.remove();
+alert('✅ Nilai uraian tersimpan! Skor percobaan ini: '+Math.round(skorTotal)+'/100.');
+}catch(e){
+modal.querySelector('#msgNilaiRiwayat').textContent=errText(e);
+modal.querySelector('#simpanNilaiRiwayat').disabled=false;
+}
+});
+}catch(e){
+alert(errText(e));
+}
+};
 
 async function bukaFormFeedback(nama,kode,classId,progresList){
 const p=progresList.find(x=>x.studentNama===nama&&x.studentKode===kode);
