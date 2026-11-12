@@ -76,7 +76,7 @@ h1 span{display:block;color:#8056d9}
 .item h3{margin-bottom:8px}
 .item p{margin:7px 0}
 .actions,.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.tabs button{background:#f4effc;color:#6e49bd;border:0;border-radius:10px;padding:10px 16px;font-weight:900}
+.tabs button{background:#f4effc;color:#6e49bd;border:0;border-radius:10px;padding:10px 16px;font-weight:900;font-family:Nunito,sans-serif}
 .tabs button.active{background:#8056d9;color:white}
 .code{display:inline-block;font-weight:900;letter-spacing:2px;color:#6845ae;background:#f0e7ff;padding:8px 12px;border-radius:10px;margin:6px 0}
 .tag{display:inline-block;font-size:11px;font-weight:900;border-radius:20px;padding:5px 9px;background:#f0e7ff;color:#6e49bd}
@@ -149,7 +149,7 @@ h1 span{display:block;color:#8056d9}
 .kuis-drag-items{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;padding:14px;background:#f8f2ff;border:1px dashed #d4c4f5;border-radius:14px}
 .kuis-drag-item{padding:10px 18px;background:white;border:2px solid #e8def8;border-radius:10px;font-weight:900;color:#35256c;cursor:grab;user-select:none;transition:.15s;font-size:14px}
 .kuis-drag-item:hover{border-color:#8056d9;background:#faf5ff}
-.kuis-drag-item:active{cursor:grabbing}
+.kuis-drag-item.selected{border-color:#8056d9;background:#f0e7ff}
 .kuis-drop-zone{padding:16px;border:2px dashed #c4aef0;border-radius:12px;background:white;text-align:center;color:#8984a5;font-weight:700;font-size:13px;margin-top:10px;cursor:pointer;transition:.15s;min-height:52px;display:flex;align-items:center;justify-content:center}
 .kuis-drop-zone:hover{background:#faf5ff;border-color:#8056d9}
 .kuis-drop-zone.filled{border-style:solid;border-color:#8056d9;background:#f0e7ff;color:#35256c;font-size:15px}
@@ -164,12 +164,9 @@ h1 span{display:block;color:#8056d9}
 .kuis-predikat.e{background:#fff0f2;color:#b3425a}
 
 /* Monitoring */
-.badge-dot{display:inline-block;background:#b3425a;color:white;font-size:10px;font-weight:900;padding:2px 7px;border-radius:10px;margin-left:6px;vertical-align:middle}
 .feedback-panel{background:#eaf9f2;border-left:4px solid #23866b;border-radius:14px;padding:16px;margin:14px 0;color:#1a5f4d;font-size:14px;line-height:1.7}
 .feedback-panel strong{color:#166534}
 .feedback-panel .meta{font-size:12px;color:#23866b;font-weight:700;margin-top:8px;display:block}
-.auto-feedback{background:#f0e7ff;border-left:4px solid #8056d9;border-radius:14px;padding:16px;margin:14px 0;color:#4c2d8f;font-size:14px;line-height:1.7}
-.auto-feedback strong{color:#35256c}
 .template-btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
 .template-btns button{background:#f0e7ff;color:#6e49bd;border:0;border-radius:10px;padding:9px 14px;font-weight:900;font-size:12px;cursor:pointer;font-family:Nunito,sans-serif;transition:.15s}
 .template-btns button:hover{background:#e0d0ff;transform:translateY(-1px)}
@@ -194,14 +191,11 @@ h1 span{display:block;color:#8056d9}
 .monitor-table input[type="checkbox"]{accent-color:#8056d9;width:16px;height:16px}
 .detail-section{margin:16px 0}
 .detail-section h4{font-size:14px;color:#6845ae;margin:0 0 8px;font-weight:900}
-.detail-item{display:flex;gap:8px;padding:8px 10px;border-radius:8px;font-size:13px;margin-bottom:6px;line-height:1.5}
+.detail-item{display:flex;gap:8px;padding:8px 10px;border-radius:8px;font-size:13px;margin-bottom:6px;line-height:1.5;flex-wrap:wrap}
 .detail-item.correct{background:#eaf9f2;color:#166534}
 .detail-item.wrong{background:#fff0f2;color:#b3425a}
 .detail-item.empty{background:#f8f2ff;color:#8984a5}
 .detail-item strong{flex-shrink:0;font-weight:800}
-.progres-cell{font-size:12px;line-height:1.6}
-.progres-cell .p-ok{color:#23866b;font-weight:800}
-.progres-cell .p-no{color:#946b08;font-weight:800}
 .riwayat-item{background:#f8f2ff;border:1px solid #eae0fb;border-radius:12px;padding:14px;margin-bottom:10px}
 .riwayat-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
 .riwayat-head strong{font-size:13px;color:#35256c}
@@ -715,6 +709,7 @@ section.innerHTML=`
 <iframe src="materi.html?tab=${encodeURIComponent(tab)}" title="Materi"></iframe>
 </div>`;
 };
+
 /* ================= LATIHAN (PG) — TIDAK DINILAI ================= */
 
 const latihanData={
@@ -728,7 +723,6 @@ pg:[
 ]
 };
 
-// Render menu latihan
 window.renderLatihanMenu=()=>{
 const section=$('studentSection');
 section.innerHTML=`<div class="practice-area">
@@ -754,7 +748,6 @@ ${x.o.map((v,j)=>`
 </div>`).join('');
 };
 
-// Cek apakah semua soal sudah dijawab
 window.cekLatihanLengkap=()=>{
 let lengkap=true;
 latihanData.pg.forEach((_,i)=>{
@@ -764,7 +757,6 @@ const btn=$('latihanCheck');
 if(btn) btn.disabled=!lengkap;
 };
 
-// Periksa latihan — hanya tampilkan pembahasan, TIDAK disimpan ke Firestore
 window.periksaLatihan=()=>{
 let benar=0;
 const details=[];
@@ -785,54 +777,89 @@ $('latihanCheck').disabled=true;
 /* ================= KUIS — DINILAI ================= */
 
 const kuisData={
-uraian:[
-{q:'Dua dadu dilempar bersama-sama sebanyak 126 kali. Frekuensi harapan muncul dua mata dadu berjumlah kurang dari 6 adalah ... kali.',a:'n(S)=36. Jumlah < 6: (1,1),(1,2),(2,1),(1,3),(2,2),(3,1),(1,4),(2,3),(3,2),(4,1) → 10. P=10/36=5/18. Fh=5/18×126=35 kali.'},
-{q:'Kotak berisi 25 kelereng merah, 40 kelereng putih, dan 35 kelereng hijau. Diambil sebuah kelereng. Peluang terambil BUKAN kelereng hijau adalah ....',a:'n(S)=25+40+35=100. Hijau=35. Bukan hijau=65. P=65/100=13/20.'},
-{q:'Dari 5 siswa laki-laki dan 6 siswa perempuan akan dibentuk tim 3 siswa. Peluang terbentuk tim 1 laki-laki dan 2 perempuan adalah ....',a:'n(S)=C(11,3)=165. C(5,1)=5, C(6,2)=15. n(A)=75. P=75/165=5/11.'},
-{q:'Kardus I berisi 5 bolpoin merah dan 7 biru. Kardus II berisi 4 merah dan 10 biru. Diambil masing-masing 1. Peluang terambil merah dari kardus I dan biru dari kardus II adalah ....',a:'P(M1)=5/12. P(B2)=10/14. P=5/12×10/14=50/168=25/84.'},
-{q:'Kotak berisi 20 bola biru, 12 kuning, 8 hitam. Fadil, Dahlan, Gani mengambil bergantian tanpa pengembalian. Peluang berurutan biru, kuning, hitam adalah ....',a:'P(B)=20/40. P(K|B)=12/39. P(H|B∩K)=8/38. P=20/40×12/39×8/38=8/247.'},
-{q:'Pelatnas sepak bola: 5 senior dan 11 muda. Dibentuk tim 11 pemain. Peluang terpilih 2 atau 3 senior adalah ....',a:'n(S)=C(16,11)=4368. 2 senior: C(5,2)×C(11,9)=10×55=550. 3 senior: C(5,3)×C(11,8)=10×165=1650. n(A)=2200. P=2200/4368=275/546.'}
-],
 match:[
-{term:'Dua koin dilempar. Muncul dua sisi angka',answer:'1'},
-{term:'Dua koin dilempar. Muncul satu angka satu gambar',answer:'2'},
-{term:'Dua koin dilempar. Muncul paling sedikit satu gambar',answer:'3'},
-{term:'Dadu dilempar. Muncul mata dadu 5',answer:'1/6'},
-{term:'Dadu dilempar. Muncul mata dadu kurang dari 4',answer:'1/2'},
-{term:'Dadu dilempar. Muncul mata dadu paling banyak 6',answer:'1'},
-{term:'Dua dadu dilempar. Jumlah kedua mata dadu 7',answer:'1/6'},
-{term:'Dua dadu dilempar. Jumlah mata dadu faktor 6 sekaligus prima',answer:'1/12'},
-{term:'Dua dadu dilempar. Jumlah kedua mata dadu 2',answer:'1/36'},
-{term:'Kantong 6 merah, 4 kuning, 2 biru. Merah lalu kuning',answer:'2/11'},
-{term:'Kantong 6 merah, 4 kuning, 2 biru. Kuning lalu biru',answer:'2/33'},
-{term:'Kantong 6 merah, 4 kuning, 2 biru. Biru lalu merah',answer:'1/11'},
-{term:'Kotak 5 merah, 4 biru, 3 putih. Kedua bola merah',answer:'5/33'},
-{term:'Kotak 5 merah, 4 biru, 3 putih. Kedua bola biru',answer:'1/11'},
-{term:'Kotak 5 merah, 4 biru, 3 putih. Kedua bola putih',answer:'1/22'},
-{term:'Kotak I 6M 4P, Kotak II 3M 5P. Pertama merah, kedua merah',answer:'4/15'},
-{term:'Kotak I 6M 4P, Kotak II 3M 5P. Pertama merah, kedua putih',answer:'1/3'},
-{term:'Kotak I 6M 4P, Kotak II 3M 5P. Pertama putih, kedua merah',answer:'2/15'}
+{
+konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',
+pasangan:[
+{term:'Muncul dua sisi angka',answer:'1'},
+{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},
+{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}
+]
+},
+{
+konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',
+pasangan:[
+{term:'Muncul mata dadu angka 5',answer:'1/6'},
+{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},
+{term:'Muncul mata dadu paling banyak 6',answer:'1'}
+]
+},
+{
+konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',
+pasangan:[
+{term:'Jumlah kedua mata dadu 7',answer:'1/6'},
+{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},
+{term:'Jumlah kedua mata dadu 2',answer:'1/36'}
+]
+},
+{
+konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',
+pasangan:[
+{term:'Merah kemudian kuning',answer:'2/11'},
+{term:'Kuning kemudian biru',answer:'2/33'},
+{term:'Biru kemudian merah',answer:'1/11'}
+]
+},
+{
+konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',
+pasangan:[
+{term:'Kedua bola berwarna merah',answer:'5/33'},
+{term:'Kedua bola berwarna biru',answer:'1/11'},
+{term:'Kedua bola berwarna putih',answer:'1/22'}
+]
+}
 ],
 drag:[
-{q:'Sebuah dadu dilempar satu kali. Peluang muncul mata dadu bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2'},
-{q:'Kotak berisi 5 merah, 3 biru, 2 hijau. Diambil satu bola. Peluang terambil biru adalah ....',choices:['1/5','3/10','1/2','2/5'],answer:'3/10'},
-{q:'Kotak berisi 6 merah dan 4 putih. Diambil dua bola dengan pengembalian. Peluang merah lalu putih adalah ....',choices:['1/5','6/25','2/5','3/5'],answer:'6/25'},
-{q:'Kotak berisi 5 merah dan 3 biru. Diambil dua bola tanpa pengembalian. Peluang kedua merah adalah ....',choices:['5/14','5/16','3/8','1/2'],answer:'5/14'},
-{q:'Kotak berisi 8 baterai baik dan 4 rusak. Diambil dua tanpa pengembalian. Peluang kedua baik adalah ....',choices:['7/22','14/33','1/2','8/11'],answer:'14/33'},
-{q:'5 laki-laki dan 4 perempuan. Dipilih 3 siswa. Peluang tepat 2 laki-laki dan 1 perempuan adalah ....',choices:['5/14','10/21','3/7','2/3'],answer:'10/21'}
+{q:'Sebuah dadu bersisi enam dilempar sebanyak satu kali. Peluang munculnya mata dadu berupa bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2'},
+{q:'Dalam sebuah kotak terdapat 5 bola merah, 3 bola biru, dan 2 bola hijau. Jika satu bola diambil secara acak, peluang terambilnya bola biru adalah ....',choices:['1/5','3/10','1/2','2/5'],answer:'3/10'},
+{q:'Dalam sebuah kotak terdapat 6 bola merah dan 4 bola putih. Dua bola diambil satu per satu secara acak dengan pengembalian. Peluang terambil bola merah pada pengambilan pertama dan bola putih pada pengambilan kedua adalah ....',choices:['1/5','6/25','2/5','3/5'],answer:'6/25'},
+{q:'Dalam sebuah kotak terdapat 5 bola merah dan 3 bola biru. Dua bola diambil secara berurutan tanpa pengembalian. Peluang kedua bola yang terambil berwarna merah adalah ....',choices:['5/14','5/16','3/8','1/2'],answer:'5/14'},
+{q:'Dalam sebuah kotak terdapat 8 baterai dalam kondisi baik dan 4 baterai rusak. Dua baterai diambil secara berurutan tanpa pengembalian. Peluang kedua baterai yang terambil dalam kondisi baik adalah ....',choices:['7/22','14/33','1/2','8/11'],answer:'14/33'}
+],
+uraian:[
+{q:'Dua dadu dilempar bersama-sama sebanyak 126 kali. Frekuensi harapan muncul dua mata dadu berjumlah kurang dari 6 adalah ... kali.',a:'n(S)=36. Jumlah < 6: (1,1),(1,2),(2,1),(1,3),(2,2),(3,1),(1,4),(2,3),(3,2),(4,1) → 10. P=10/36=5/18. Fh=5/18×126=35 kali.'},
+{q:'Sebuah kotak berisi 25 kelereng merah, 40 kelereng putih, dan 35 kelereng hijau. Kemudian, diambil sebuah kelereng dari kotak tersebut. Peluang terambil bukan kelereng hijau adalah ....',a:'n(S)=25+40+35=100. Hijau=35. Bukan hijau=100-35=65. P=65/100=13/20.'},
+{q:'Dari 5 siswa laki-laki dan 6 siswa perempuan akan dibentuk sebuah tim yang terdiri atas 3 siswa. Peluang terbentuk tim yang terdiri atas 1 siswa laki-laki dan 2 siswa perempuan adalah ....',a:'n(S)=C(11,3)=165. C(5,1)=5, C(6,2)=15. n(A)=5×15=75. P=75/165=5/11.'},
+{q:'Kardus I berisi 5 bolpoin merah dan 7 bolpoin biru. Kardus II berisi 4 bolpoin merah dan 10 bolpoin biru. Dari kedua kardus tersebut akan diambil masing-masing 1 bolpoin secara acak. Peluang terambil bolpoin merah dari kardus 1 dan bolpoin biru dari kardus II adalah ....',a:'P(M1)=5/12. P(B2)=10/14. P=5/12×10/14=50/168=25/84.'},
+{q:'Sebuah kotak berisi 20 bola biru, 12 bola kuning, dan 8 bola hitam. Fadil mengambil sebuah bola dari kotak tersebut dan tidak dikembalikan. Kemudian, Dahlan dan Gani juga ikut mengambil bola secara bergantian dan juga tidak dikembalikan. Peluang bola yang terambil secara berurutan warna biru, kuning, dan hitam adalah ....',a:'P(B)=20/40. P(K|B)=12/39. P(H|B∩K)=8/38. P=20/40×12/39×8/38=8/247.'}
 ]
 };
 
-// Bobot: Match 20, Drag 20, Uraian 60
 const BOBOT={match:20,drag:20,uraian:60};
-const SKOR_URAIAN_MAKS=10;
+const SKOR_URAIAN_PER_SOAL=12;
 
 let kuisState=null;
+
+function getPredikat(nilai){
+if(nilai>=90) return {label:'A',kelas:'a'};
+if(nilai>=80) return {label:'B',kelas:'b'};
+if(nilai>=70) return {label:'C',kelas:'c'};
+if(nilai>=60) return {label:'D',kelas:'d'};
+return {label:'E',kelas:'e'};
+}
+
+function shuffle(arr){
+const a=[...arr];
+for(let i=a.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[a[i],a[j]]=[a[j],a[i]];
+}
+return a;
+}
 
 window.renderKuisMenu=async()=>{
 const section=$('studentSection');
 
-// Cek apakah sudah ada progres kuis sebelumnya
 let prevDoc=null;
 try{
 const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
@@ -842,18 +869,25 @@ if(d.exists()) prevDoc=d.data();
 
 let statusHTML='';
 if(prevDoc && prevDoc.selesaiKuis){
-const predikat=getPredikat(prevDoc.skorTotal||0);
+const total=Math.round(prevDoc.skorTotal||0);
+const predikat=getPredikat(total);
+const totalPasang=kuisData.match.reduce((s,m)=>s+m.pasangan.length,0);
+const totalKotak=kuisData.drag.length;
+const benarMatch=prevDoc.benarMatch||0;
+const benarDrag=prevDoc.benarDrag||0;
+const uraianDinilai=prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0;
 statusHTML=`<div class="kuis-summary">
 <strong>Kuis sudah kamu kumpulkan.</strong>
-<div class="kuis-score">${Math.round(prevDoc.skorTotal||0)}</div>
+<div class="kuis-score">${total}</div>
 <span class="kuis-predikat ${predikat.kelas}">Predikat ${predikat.label}</span>
-<p style="margin-top:10px">Skor otomatis (Match + Drag): ${Math.round((prevDoc.skorMatch||0)+(prevDoc.skorDrag||0))}/40</p>
-<p>Skor uraian: ${prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null ? Math.round(prevDoc.skorUraian)+'/60' : '<em>Menunggu penilaian guru</em>'}</p>
-<p style="margin-top:10px"><strong>Skor total: ${Math.round(prevDoc.skorTotal||0)}/100</strong></p>
+<p style="margin-top:10px"><strong>Rincian nilai:</strong></p>
+<p>🔗 Match: ${Math.round(prevDoc.skorMatch||0)}/20 (${benarMatch}/${totalPasang} benar)</p>
+<p>🧩 Drag: ${Math.round(prevDoc.skorDrag||0)}/20 (${benarDrag}/${totalKotak} benar)</p>
+<p>✍️ Uraian: ${uraianDinilai ? Math.round(prevDoc.skorUraian)+'/60 (dinilai guru)' : '<em>Menunggu penilaian guru</em> (maks 60)'}</p>
+<p style="margin-top:10px"><strong>Skor total: ${uraianDinilai ? total+'/100' : Math.round((prevDoc.skorMatch||0)+(prevDoc.skorDrag||0))+'/40 (sementara)'}</strong></p>
 </div>`;
 }
 
-// Cek feedback guru
 let feedbackHTML='';
 try{
 const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
@@ -866,42 +900,35 @@ feedbackHTML=`<div class="feedback-panel"><strong>💬 Feedback dari guru:</stro
 
 section.innerHTML=`<div class="practice-area">
 <h3>Kuis Peluang</h3>
-<p class="muted">Kuis terdiri dari 6 uraian, 6 menjodohkan, dan 6 drag. Total 18 soal. Kuis dinilai.</p>
-${feedbackHTML}
+<p class="muted">Kuis terdiri dari 5 soal menjodohkan, 5 soal drag, dan 5 soal uraian. Total 15 soal. Kuis dinilai.</p>
 ${statusHTML}
-<div style="margin-top:16px">
+${feedbackHTML}
+<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
 ${prevDoc && prevDoc.selesaiKuis 
-  ? `<button class="practice-btn" onclick="mulaiKuis()">Ulangi Kuis (skor tertinggi diambil)</button>`
+  ? `<button class="practice-btn" onclick="mulaiKuis()">Ulangi Kuis (skor tertinggi diambil)</button>
+     <button class="practice-btn secondary" onclick="reviewKuisTerakhir()">📝 Review Jawaban</button>`
   : `<button class="practice-btn" onclick="mulaiKuis()">Mulai Kuis</button>`}
 </div>
 </div>`;
 };
 
-function getPredikat(nilai){
-if(nilai>=90) return {label:'A',kelas:'a'};
-if(nilai>=80) return {label:'B',kelas:'b'};
-if(nilai>=70) return {label:'C',kelas:'c'};
-if(nilai>=60) return {label:'D',kelas:'d'};
-return {label:'E',kelas:'e'};
-}
+window.reviewKuisTerakhir=async()=>{
+try{
+const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
+const d=await getDoc(doc(db,'progres_soal',docId));
+if(!d.exists()){alert('Belum ada data kuis.');return;}
+const data=d.data();
+kuisState={jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}}};
+reviewKuis();
+}catch(e){alert(errText(e));}
+};
 
-// Bangun daftar soal kuis (urut: 6 uraian, 6 match, 6 drag)
 function buildKuisSoal(){
 const soal=[];
-kuisData.uraian.forEach((u,i)=>soal.push({jenis:'uraian',idx:i,...u}));
-kuisData.match.forEach((m,i)=>soal.push({jenis:'match',idx:i,...m}));
-kuisData.drag.forEach((d,i)=>soal.push({jenis:'drag',idx:i,...d}));
+kuisData.match.forEach((m,i)=>soal.push({jenis:'match',idx:i,konteks:m.konteks,pasangan:m.pasangan}));
+kuisData.drag.forEach((d,i)=>soal.push({jenis:'drag',idx:i,q:d.q,choices:d.choices,answer:d.answer}));
+kuisData.uraian.forEach((u,i)=>soal.push({jenis:'uraian',idx:i,q:u.q,a:u.a}));
 return soal;
-}
-
-// Acak array
-function shuffle(arr){
-const a=[...arr];
-for(let i=a.length-1;i>0;i--){
-const j=Math.floor(Math.random()*(i+1));
-[a[i],a[j]]=[a[j],a[i]];
-}
-return a;
 }
 
 window.mulaiKuis=()=>{
@@ -911,23 +938,14 @@ soal,
 index:0,
 jawaban:{uraian:{},match:{},drag:{}},
 matchOptionsShuffled:{},
-dragChoicesShuffled:{},
-matchMap:{},
-dragMap:{}
+dragChoicesShuffled:{}
 };
 
-// Siapkan opsi match (diacak) — 18 istilah, masing-masing punya 3 pilihan (3 jawaban benar dari 3 soal)
-// Untuk setiap kelompok 3 match (satu soal), acak pilihan jawabannya
-const jawabanUnik=[...new Set(kuisData.match.map(x=>x.answer))];
 soal.filter(s=>s.jenis==='match').forEach(s=>{
-// ambil 3 jawaban benar dari soal match ke-(s.idx mod 3) kelompok
-const kelompok=Math.floor(s.idx/3);
-const jawabanKelompok=kuisData.match.slice(kelompok*3,kelompok*3+3).map(x=>x.answer);
-const acak=shuffle(jawabanKelompok);
-kuisState.matchOptionsShuffled[s.idx]=acak;
+const jawabanSoal=s.pasangan.map(p=>p.answer);
+kuisState.matchOptionsShuffled[s.idx]=shuffle(jawabanSoal);
 });
 
-// Siapkan opsi drag (diacak per soal)
 soal.filter(s=>s.jenis==='drag').forEach(s=>{
 kuisState.dragChoicesShuffled[s.idx]=shuffle(s.choices);
 });
@@ -943,29 +961,32 @@ const persen=Math.round(nomor/total*100);
 
 let bodyHTML='';
 
-if(s.jenis==='uraian'){
-const val=kuisState.jawaban.uraian[s.idx]||'';
-bodyHTML=`<h4>${s.q}</h4>
-<textarea class="kuis-input" id="kuisInput" placeholder="Tuliskan jawaban dan langkah penyelesaian...">${esc(val)}</textarea>`;
-}else if(s.jenis==='match'){
+if(s.jenis==='match'){
 const opts=kuisState.matchOptionsShuffled[s.idx];
-const val=kuisState.jawaban.match[s.idx]||'';
-bodyHTML=`<h4>${s.term}</h4>
-<div class="kuis-match-row">
-<strong>Pilih jawaban:</strong>
-<select id="kuisSelect">
+const konteksHTML=`<p style="font-size:13px;color:#6845ae;background:#f0e7ff;padding:10px 14px;border-radius:10px;margin-bottom:14px;line-height:1.6">${esc(s.konteks)}</p>`;
+const pasanganHTML=s.pasangan.map((p,pi)=>{
+const val=kuisState.jawaban.match[s.idx] && kuisState.jawaban.match[s.idx][pi] ? kuisState.jawaban.match[s.idx][pi] : '';
+return `<div class="kuis-match-row">
+<strong>${esc(p.term)}</strong>
+<select class="match-select" data-pi="${pi}">
 <option value="">— Pilih —</option>
 ${opts.map(o=>`<option value="${esc(o)}" ${val===o?'selected':''}>${esc(o)}</option>`).join('')}
 </select>
 </div>`;
+}).join('');
+bodyHTML=konteksHTML+pasanganHTML;
 }else if(s.jenis==='drag'){
 const opts=kuisState.dragChoicesShuffled[s.idx];
 const val=kuisState.jawaban.drag[s.idx]||'';
-bodyHTML=`<h4>${s.q}</h4>
+bodyHTML=`<h4>${esc(s.q)}</h4>
 <div class="kuis-drag-items">
 ${opts.map(o=>`<div class="kuis-drag-item ${val===o?'selected':''}" data-val="${esc(o)}" onclick="pilihDragKuis(this)">${esc(o)}</div>`).join('')}
 </div>
 <div class="kuis-drop-zone ${val?'filled':''}" id="kuisDropZone" onclick="kosongkanDropKuis()">${val?esc(val):'Ketuk salah satu pilihan di atas'}</div>`;
+}else if(s.jenis==='uraian'){
+const val=kuisState.jawaban.uraian[s.idx]||'';
+bodyHTML=`<h4>${esc(s.q)}</h4>
+<textarea class="kuis-input" id="kuisInput" placeholder="Tuliskan jawaban dan langkah penyelesaian...">${esc(val)}</textarea>`;
 }
 
 const section=$('studentSection');
@@ -987,14 +1008,17 @@ ${bodyHTML}
 <p class="muted" style="margin-top:12px;font-size:12px">Jawaban tersimpan otomatis saat kamu pindah soal.</p>
 </div>`;
 
-// Simpan jawaban saat input berubah
-if(s.jenis==='uraian'){
+if(s.jenis==='match'){
+document.querySelectorAll('.match-select').forEach(sel=>{
+sel.addEventListener('change',(e)=>{
+const pi=Number(e.target.dataset.pi);
+if(!kuisState.jawaban.match[s.idx]) kuisState.jawaban.match[s.idx]={};
+kuisState.jawaban.match[s.idx][pi]=e.target.value;
+});
+});
+}else if(s.jenis==='uraian'){
 $('kuisInput').addEventListener('input',(e)=>{
 kuisState.jawaban.uraian[s.idx]=e.target.value;
-});
-}else if(s.jenis==='match'){
-$('kuisSelect').addEventListener('change',(e)=>{
-kuisState.jawaban.match[s.idx]=e.target.value;
 });
 }
 }
@@ -1025,13 +1049,13 @@ if(kuisState.index>0){kuisState.index--;renderKuisSoal();}
 
 window.kuisNext=async()=>{
 const s=kuisState.soal[kuisState.index];
-// Validasi jawaban saat ini
 let ok=true;
 if(s.jenis==='uraian'){
 const v=(kuisState.jawaban.uraian[s.idx]||'').trim();
 if(!v){ok=false;}
 }else if(s.jenis==='match'){
-if(!kuisState.jawaban.match[s.idx]) ok=false;
+const jm=kuisState.jawaban.match[s.idx]||{};
+if(s.pasangan.some((p,pi)=>!jm[pi])) ok=false;
 }else if(s.jenis==='drag'){
 if(!kuisState.jawaban.drag[s.idx]) ok=false;
 }
@@ -1042,10 +1066,12 @@ return;
 }
 
 if(kuisState.index===kuisState.soal.length-1){
-// Kumpulkan
-const semuaLengkap=kuisState.soal.every((so,i)=>{
+const semuaLengkap=kuisState.soal.every(so=>{
 if(so.jenis==='uraian') return (kuisState.jawaban.uraian[so.idx]||'').trim().length>0;
-if(so.jenis==='match') return !!kuisState.jawaban.match[so.idx];
+if(so.jenis==='match'){
+const jm=kuisState.jawaban.match[so.idx]||{};
+return so.pasangan.every((p,pi)=>!!jm[pi]);
+}
 if(so.jenis==='drag') return !!kuisState.jawaban.drag[so.idx];
 });
 if(!semuaLengkap){
@@ -1061,27 +1087,35 @@ renderKuisSoal();
 };
 
 async function kumpulkanKuis(){
-// Hitung skor match (20), drag (20), uraian (0 dulu, guru isi nanti)
 let benarMatch=0,benarDrag=0;
 kuisData.match.forEach((m,i)=>{
-if(kuisState.jawaban.match[i]===m.answer) benarMatch++;
+const jm=kuisState.jawaban.match[i]||{};
+m.pasangan.forEach((p,pi)=>{
+if(jm[pi]===p.answer) benarMatch++;
+});
 });
 kuisData.drag.forEach((d,i)=>{
 if(kuisState.jawaban.drag[i]===d.answer) benarDrag++;
 });
-const skorMatch=(benarMatch/kuisData.match.length)*BOBOT.match;
-const skorDrag=(benarDrag/kuisData.drag.length)*BOBOT.drag;
-const skorUraian=0; // sementara
+const totalPasang=kuisData.match.reduce((s,m)=>s+m.pasangan.length,0);
+const totalKotak=kuisData.drag.length;
+const skorMatch=(benarMatch/totalPasang)*BOBOT.match;
+const skorDrag=(benarDrag/totalKotak)*BOBOT.drag;
+const skorUraian=0;
 const skorTotal=skorMatch+skorDrag+skorUraian;
 
-// Simpan ke Firestore
 try{
 const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
+let ownerUid=student.data.ownerUid;
+if(!ownerUid){
+const cd=await getDoc(doc(db,'classes',student.id));
+if(cd.exists()) ownerUid=cd.data().ownerUid;
+}
 await setDoc(doc(db,'progres_soal',docId),{
 studentNama:student.nama,
 studentKode:student.kode,
 classId:student.id,
-classOwnerUid:student.data.ownerUid,
+classOwnerUid:ownerUid,
 jawabanKuis:kuisState.jawaban,
 skorMatch,skorDrag,skorUraian,skorTotal,
 benarMatch,benarDrag,
@@ -1089,12 +1123,11 @@ selesaiKuis:true,
 updatedAt:serverTimestamp()
 },{merge:true});
 
-// Simpan riwayat (A+A)
 await addDoc(collection(db,'riwayat_soal'),{
 studentNama:student.nama,
 studentKode:student.kode,
 classId:student.id,
-classOwnerUid:student.data.ownerUid,
+classOwnerUid:ownerUid,
 jenis:'kuis',
 skor:skorTotal,
 skorMatch,skorDrag,skorUraian,
@@ -1107,7 +1140,6 @@ alert('Gagal menyimpan: '+errText(e));
 return;
 }
 
-// Render hasil
 const predikat=getPredikat(skorTotal);
 const section=$('studentSection');
 section.innerHTML=`<div class="practice-area">
@@ -1115,15 +1147,56 @@ section.innerHTML=`<div class="practice-area">
 <div class="kuis-summary">
 <strong>Skor otomatis (Match + Drag):</strong>
 <div class="kuis-score">${Math.round(skorMatch+skorDrag)}/40</div>
-<p>Match: ${Math.round(skorMatch)}/20 · Drag: ${Math.round(skorDrag)}/20</p>
+<p>Match: ${Math.round(skorMatch)}/20 (${benarMatch}/${totalPasang} benar)</p>
+<p>Drag: ${Math.round(skorDrag)}/20 (${benarDrag}/${totalKotak} benar)</p>
 <p>Skor uraian: <em>Menunggu penilaian guru</em> (maks 60)</p>
 <p style="margin-top:10px"><strong>Skor sementara: ${Math.round(skorTotal)}/100</strong></p>
 <span class="kuis-predikat ${predikat.kelas}">Predikat ${predikat.label}</span>
 </div>
-<p class="muted">Guru akan menilai uraianmu. Setelah dinilai, skor total dan feedback akan muncul di menu Kuis.</p>
-<button class="practice-btn" onclick="studentTab('kuis')">Kembali ke Kuis</button>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+<button class="practice-btn" onclick="reviewKuis()">📝 Review Jawaban</button>
+<button class="practice-btn secondary" onclick="studentTab('kuis')">Kembali ke Kuis</button>
+</div>
+<p class="muted" style="margin-top:12px">Guru akan menilai uraianmu. Setelah dinilai, skor total dan feedback akan muncul di menu Kuis.</p>
 </div>`;
 }
+
+window.reviewKuis=()=>{
+const section=$('studentSection');
+let html='<div class="practice-area"><h3>📝 Review Jawaban Kuis</h3><p class="muted">Periksa jawabanmu di bawah ini.</p>';
+
+html+='<div class="detail-section"><h4>🔗 Menjodohkan</h4>';
+kuisData.match.forEach((m,mi)=>{
+html+=`<div style="background:#f8f2ff;border-radius:12px;padding:12px;margin-bottom:10px"><p style="font-size:12px;color:#6845ae;margin-bottom:8px">${esc(m.konteks)}</p>`;
+m.pasangan.forEach((p,pi)=>{
+const ans=(kuisState.jawaban.match[mi]||{})[pi]||'';
+const ok=ans===p.answer;
+const cls=!ans?'empty':(ok?'correct':'wrong');
+html+=`<div class="detail-item ${cls}"><strong>${esc(p.term)}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(p.answer)})`):''}</div>`;
+});
+html+='</div>';
+});
+html+='</div>';
+
+html+='<div class="detail-section"><h4>🧩 Drag</h4>';
+kuisData.drag.forEach((d,i)=>{
+const ans=kuisState.jawaban.drag[i]||'';
+const ok=ans===d.answer;
+const cls=!ans?'empty':(ok?'correct':'wrong');
+html+=`<div class="detail-item ${cls}"><strong>Soal ${i+1}:</strong> ${esc(d.q)}<br>Jawabanmu: ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(d.answer)})`):''}</div>`;
+});
+html+='</div>';
+
+html+='<div class="detail-section"><h4>✍️ Uraian</h4>';
+kuisData.uraian.forEach((u,i)=>{
+const ans=kuisState.jawaban.uraian[i]||'';
+html+=`<div class="detail-item empty"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#8984a5">Pembahasan akan muncul setelah guru menilai.</em></div>`;
+});
+html+='</div>';
+
+html+='<button class="practice-btn" onclick="studentTab(\'kuis\')">Kembali ke Kuis</button></div>';
+section.innerHTML=html;
+};
 
 
 /* ================= MONITORING GURU ================= */
@@ -1204,7 +1277,7 @@ return `<tr>
 <td style="cursor:pointer" class="nama-murid" data-nama="${esc(nama)}" data-kode="${esc(kode)}"><strong>${esc(nama)}</strong><br><span style="font-size:11px;color:#8984a5">${esc(kode)}</span></td>
 <td class="score ${skorClass}">${Math.round(skor)}/100</td>
 <td class="${statusClass}">${statusText}</td>
-<td>${p.skorUraian!==undefined && p.skorUraian!==null ? Math.round(p.skorUraian)+'/60' : '—'}</td>
+<td>${p.skorUraian!==undefined && p.skorUraian!==null && p.skorUraian>0 ? Math.round(p.skorUraian)+'/60' : '—'}</td>
 <td>${fb?'✅ Sudah':'—'}</td>
 <td><button class="btn-feedback" data-nama="${esc(nama)}" data-kode="${esc(kode)}">${fb?'Edit':'Beri'}</button></td>
 </tr>`;
@@ -1242,12 +1315,10 @@ el.innerHTML=`<div class="empty">${esc(errText(e))}</div>`;
 }
 }
 
-// Modal detail jawaban kuis per murid
 async function bukaDetailKuis(p){
 const nama=p.studentNama||'-';
 const kode=p.studentKode||'-';
 
-// Ambil riwayat
 let riwayat=[];
 try{
 const rs=await getDocs(query(collection(db,'riwayat_soal'),where('studentNama','==',nama),where('studentKode','==',kode)));
@@ -1260,18 +1331,21 @@ return tb-ta;
 
 const jawaban=p.jawabanKuis||{};
 
-// Render jawaban terakhir
 const uraianHTML=kuisData.uraian.map((u,i)=>{
 const ans=jawaban.uraian && jawaban.uraian[i] ? esc(jawaban.uraian[i]) : '(belum dijawab)';
-const skorGuru=p.skorUraianPerSoal && p.skorUraianPerSoal[i]!==undefined ? `<br><em style="color:#8056d9">Skor guru: ${p.skorUraianPerSoal[i]}/10</em>` : '';
+const skorGuru=p.skorUraianPerSoal && p.skorUraianPerSoal[i]!==undefined ? `<br><em style="color:#8056d9">Skor guru: ${p.skorUraianPerSoal[i]}/12</em>` : '';
 return `<div class="detail-item empty"><strong>Uraian ${i+1}:</strong> ${ans}${skorGuru}</div>`;
 }).join('');
 
-const matchHTML=kuisData.match.map((m,i)=>{
-const ans=jawaban.match && jawaban.match[i] ? jawaban.match[i] : '';
-const ok=ans===m.answer;
+const matchHTML=kuisData.match.map((m,mi)=>{
+let inner='';
+m.pasangan.forEach((p,pi)=>{
+const ans=(jawaban.match&&jawaban.match[mi])?jawaban.match[mi][pi]:'';
+const ok=ans===p.answer;
 const cls=!ans?'empty':(ok?'correct':'wrong');
-return `<div class="detail-item ${cls}"><strong>Match ${i+1}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(m.answer)})`):''}</div>`;
+inner+=`<div class="detail-item ${cls}"><strong>${esc(p.term)}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(p.answer)})`):''}</div>`;
+});
+return `<div style="background:#f8f2ff;border-radius:12px;padding:10px;margin-bottom:8px"><p style="font-size:11px;color:#6845ae;margin-bottom:6px">${esc(m.konteks)}</p>${inner}</div>`;
 }).join('');
 
 const dragHTML=kuisData.drag.map((d,i)=>{
@@ -1289,7 +1363,7 @@ const riwayatHTML=riwayat.length
 <span>${r.at?.toDate?r.at.toDate().toLocaleString('id-ID'):''}</span>
 </div>
 <div class="riwayat-score">Skor: ${Math.round(r.skor||0)}/100</div>
-<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${r.skorUraian!==undefined && r.skorUraian!==null ? Math.round(r.skorUraian)+'/60' : 'menunggu'}</p>
+<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0 ? Math.round(r.skorUraian)+'/60' : 'menunggu'}</p>
 </div>`).join('')
 : '<div class="empty">Belum ada riwayat percobaan.</div>';
 
@@ -1305,9 +1379,9 @@ modal.innerHTML=`
 </div>
 
 <div data-tab-content="jawaban">
-<div class="detail-section"><h4>✍️ Uraian</h4>${uraianHTML}</div>
 <div class="detail-section"><h4>🔗 Menjodohkan</h4>${matchHTML}</div>
 <div class="detail-section"><h4>🧩 Drag</h4>${dragHTML}</div>
+<div class="detail-section"><h4>✍️ Uraian</h4>${uraianHTML}</div>
 </div>
 
 <div data-tab-content="riwayat" style="display:none">
@@ -1315,12 +1389,12 @@ ${riwayatHTML}
 </div>
 
 <div data-tab-content="nilai" style="display:none">
-<h4 style="margin-bottom:10px;color:#6845ae">Beri nilai uraian (0–10 per soal)</h4>
+<h4 style="margin-bottom:10px;color:#6845ae">Beri nilai uraian (0–12 per soal, total maks 60)</h4>
 ${kuisData.uraian.map((u,i)=>`
 <div style="margin-bottom:12px">
 <strong style="font-size:13px">Uraian ${i+1}:</strong>
 <p style="font-size:12px;color:#8984a5;margin:4px 0">${esc(jawaban.uraian && jawaban.uraian[i] ? jawaban.uraian[i] : '(kosong)')}</p>
-<input type="number" class="skor-uraian" data-i="${i}" min="0" max="10" step="1" value="${p.skorUraianPerSoal && p.skorUraianPerSoal[i]!==undefined ? p.skorUraianPerSoal[i] : 0}" style="width:100px;padding:8px;border:2px solid #e6def4;border-radius:8px;font-family:Nunito,sans-serif">
+<input type="number" class="skor-uraian" data-i="${i}" min="0" max="12" step="1" value="${p.skorUraianPerSoal && p.skorUraianPerSoal[i]!==undefined ? p.skorUraianPerSoal[i] : 0}" style="width:100px;padding:8px;border:2px solid #e6def4;border-radius:8px;font-family:Nunito,sans-serif">
 </div>`).join('')}
 <button class="submit" id="simpanNilai" style="margin-top:10px">Simpan Nilai Uraian</button>
 <p class="message" id="msgNilai"></p>
@@ -1332,7 +1406,6 @@ ${kuisData.uraian.map((u,i)=>`
 </div>`;
 document.body.appendChild(modal);
 
-// Tab switching
 modal.querySelectorAll('.tab-btn').forEach(btn=>{
 btn.addEventListener('click',()=>{
 modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1346,18 +1419,16 @@ c.style.display=c.dataset.tabContent===btn.dataset.tab?'block':'none';
 modal.querySelector('#closeDetail').addEventListener('click',()=>modal.remove());
 modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
 
-// Simpan nilai uraian
 modal.querySelector('#simpanNilai').addEventListener('click',async()=>{
 const inputs=modal.querySelectorAll('.skor-uraian');
 const perSoal={};
 let total=0;
 inputs.forEach(inp=>{
 const i=Number(inp.dataset.i);
-const v=Math.max(0,Math.min(10,Number(inp.value)||0));
+const v=Math.max(0,Math.min(12,Number(inp.value)||0));
 perSoal[i]=v;
 total+=v;
 });
-// total 0-60. Skor total = match + drag + uraian
 const skorMatch=p.skorMatch||0;
 const skorDrag=p.skorDrag||0;
 const skorUraian=total;
@@ -1375,7 +1446,6 @@ modal.querySelector('#msgNilai').textContent=errText(e);
 });
 }
 
-// Form feedback
 async function bukaFormFeedback(nama,kode,classId,progresList){
 const p=progresList.find(x=>x.studentNama===nama&&x.studentKode===kode);
 if(!p)return;
