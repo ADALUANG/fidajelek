@@ -158,6 +158,11 @@ h1 span{display:block;color:#8056d9}
 .kuis-predikat.d{background:#ffe8d4;color:#a85617}
 .kuis-predikat.e{background:#fff0f2;color:#b3425a}
 
+.kuis-timer{display:inline-flex;align-items:center;gap:8px;background:#fff3d7;color:#946b08;padding:8px 16px;border-radius:10px;font-weight:900;font-size:14px;font-family:Nunito,sans-serif}
+.kuis-timer.warning{background:#ffe8d4;color:#a85617;animation:pulse 1s infinite}
+.kuis-timer.danger{background:#fff0f2;color:#b3425a;animation:pulse .5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
 .feedback-panel{background:#eaf9f2;border-left:4px solid #23866b;border-radius:14px;padding:16px;margin:14px 0;color:#1a5f4d;font-size:14px;line-height:1.7}
 .feedback-panel strong{color:#166534}
 .feedback-panel .meta{font-size:12px;color:#23866b;font-weight:700;margin-top:8px;display:block}
@@ -331,7 +336,7 @@ h1{font-size:45px}
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import{getFirestore,collection,doc,getDoc,getDocs,addDoc,setDoc,updateDoc,deleteDoc,query,where,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import{getFirestore,collection,doc,getDoc,getDocs,addDoc,setDoc,updateDoc,deleteDoc,query,where,serverTimestamp,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const ADMIN_EMAIL='umumbgt5@gmail.com';
 
@@ -476,6 +481,7 @@ else teacherDashboard();
 }
 
 window.logout=async()=>{
+hentikanMonitor();
 if(auth.currentUser)await signOut(auth);
 profile=null;student=null;
 $('app').classList.remove('show');
@@ -773,46 +779,11 @@ $('latihanCheck').disabled=true;
 
 const kuisData={
 match:[
-{
-konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',
-pasangan:[
-{term:'Muncul dua sisi angka',answer:'1'},
-{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},
-{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}
-]
-},
-{
-konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',
-pasangan:[
-{term:'Muncul mata dadu angka 5',answer:'1/6'},
-{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},
-{term:'Muncul mata dadu paling banyak 6',answer:'1'}
-]
-},
-{
-konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',
-pasangan:[
-{term:'Jumlah kedua mata dadu 7',answer:'1/6'},
-{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},
-{term:'Jumlah kedua mata dadu 2',answer:'1/36'}
-]
-},
-{
-konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',
-pasangan:[
-{term:'Merah kemudian kuning',answer:'2/11'},
-{term:'Kuning kemudian biru',answer:'2/33'},
-{term:'Biru kemudian merah',answer:'1/11'}
-]
-},
-{
-konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',
-pasangan:[
-{term:'Kedua bola berwarna merah',answer:'5/33'},
-{term:'Kedua bola berwarna biru',answer:'1/11'},
-{term:'Kedua bola berwarna putih',answer:'1/22'}
-]
-}
+{konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',pasangan:[{term:'Muncul dua sisi angka',answer:'1'},{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}]},
+{konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Muncul mata dadu angka 5',answer:'1/6'},{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},{term:'Muncul mata dadu paling banyak 6',answer:'1'}]},
+{konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',pasangan:[{term:'Jumlah kedua mata dadu 7',answer:'1/6'},{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},{term:'Jumlah kedua mata dadu 2',answer:'1/36'}]},
+{konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Merah kemudian kuning',answer:'2/11'},{term:'Kuning kemudian biru',answer:'2/33'},{term:'Biru kemudian merah',answer:'1/11'}]},
+{konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Kedua bola berwarna merah',answer:'5/33'},{term:'Kedua bola berwarna biru',answer:'1/11'},{term:'Kedua bola berwarna putih',answer:'1/22'}]}
 ],
 drag:[
 {q:'Sebuah dadu bersisi enam dilempar sebanyak satu kali. Peluang munculnya mata dadu berupa bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2'},
@@ -831,8 +802,12 @@ uraian:[
 };
 
 const BOBOT={match:20,drag:20,uraian:60};
+const KUIS_DURASI_MENIT=45;
 
 let kuisState=null;
+let kuisTimer=null;
+let kuisWaktuSisa=0;
+let monitorUnsubscribe=null;
 
 function getPredikat(nilai){
 if(nilai>=90) return {label:'A',kelas:'a'};
@@ -869,6 +844,46 @@ const skorDrag=(benarDrag/totalKotak)*BOBOT.drag;
 return {benarMatch,benarDrag,totalPasang,totalKotak,skorMatch,skorDrag};
 }
 
+function mulaiTimer(){
+hentikanTimer();
+kuisWaktuSisa=KUIS_DURASI_MENIT*60;
+updateTimerDisplay();
+kuisTimer=setInterval(()=>{
+kuisWaktuSisa--;
+updateTimerDisplay();
+if(kuisWaktuSisa<=0){
+hentikanTimer();
+alert('⏰ Waktu habis! Kuis otomatis dikumpulkan.');
+kumpulkanKuis(true);
+}
+},1000);
+}
+
+function hentikanTimer(){
+if(kuisTimer){
+clearInterval(kuisTimer);
+kuisTimer=null;
+}
+}
+
+function updateTimerDisplay(){
+const el=document.getElementById('kuisTimer');
+if(!el) return;
+const m=Math.floor(kuisWaktuSisa/60);
+const s=kuisWaktuSisa%60;
+el.textContent=`⏰ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+el.classList.remove('warning','danger');
+if(kuisWaktuSisa<=60) el.classList.add('danger');
+else if(kuisWaktuSisa<=300) el.classList.add('warning');
+}
+
+function hentikanMonitor(){
+if(monitorUnsubscribe){
+monitorUnsubscribe();
+monitorUnsubscribe=null;
+}
+}
+
 async function simpanProgresLive(){
 if(!kuisState || !student) return;
 try{
@@ -893,9 +908,8 @@ skorMatch:s.skorMatch,skorDrag:s.skorDrag,
 benarMatch:s.benarMatch,benarDrag:s.benarDrag,
 updatedAt:serverTimestamp()
 },{merge:true});
-console.log('✅ Progres live:',kuisState.index+1,'/',total);
 }catch(e){
-console.error('❌ Gagal simpan live:',e);
+console.error('Gagal simpan live:',e);
 }
 }
 
@@ -948,7 +962,7 @@ feedbackHTML=`<div class="feedback-panel"><strong>💬 Feedback dari guru:</stro
 
 section.innerHTML=`<div class="practice-area">
 <h3>Kuis Peluang</h3>
-<p class="muted">Kuis terdiri dari 5 soal menjodohkan, 5 soal drag, dan 5 soal uraian. Total 15 soal. Kuis dinilai.</p>
+<p class="muted">Kuis terdiri dari 5 soal menjodohkan, 5 soal drag, dan 5 soal uraian. Total 15 soal. Kuis dinilai. Waktu: ${KUIS_DURASI_MENIT} menit.</p>
 ${statusHTML}
 ${feedbackHTML}
 <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
@@ -970,7 +984,7 @@ const d=await getDoc(doc(db,'progres_soal',docId));
 if(!d.exists()){alert('Belum ada data kuis.');return;}
 const data=d.data();
 kuisState={jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}}};
-reviewKuis();
+await reviewKuis();
 }catch(e){alert(errText(e));}
 };
 
@@ -1000,6 +1014,7 @@ kuisState.dragChoicesShuffled[s.idx]=shuffle(s.choices);
 });
 renderKuisSoal();
 simpanProgresLive();
+mulaiTimer();
 };
 
 window.lanjutkanKuis=async()=>{
@@ -1024,8 +1039,28 @@ soal.filter(s=>s.jenis==='drag').forEach(s=>{
 kuisState.dragChoicesShuffled[s.idx]=shuffle(s.choices);
 });
 renderKuisSoal();
+mulaiTimer();
 }catch(e){alert(errText(e));}
 };
+
+function updateMatchOptions(idx){
+const jm=kuisState.jawaban.match[idx]||{};
+const selects=document.querySelectorAll('.match-select');
+const chosenValues=new Set(Object.values(jm).filter(v=>v));
+selects.forEach(sel=>{
+const currentVal=sel.value;
+sel.querySelectorAll('option').forEach(opt=>{
+if(!opt.value) return;
+if(opt.value===currentVal){
+opt.disabled=false;
+}else if(chosenValues.has(opt.value)){
+opt.disabled=true;
+}else{
+opt.disabled=false;
+}
+});
+});
+}
 
 function renderKuisSoal(){
 const s=kuisState.soal[kuisState.index];
@@ -1069,6 +1104,7 @@ section.innerHTML=`<div class="practice-area">
 <div class="kuis-progress-text">Soal ${nomor} dari ${total} · ${s.jenis.toUpperCase()}</div>
 <div class="kuis-progress-bar"><div class="kuis-progress-fill" style="width:${persen}%"></div></div>
 </div>
+<div class="kuis-timer" id="kuisTimer">⏰ --:--</div>
 </div>
 <div class="kuis-question">
 <span class="kuis-type-badge">${s.jenis==='uraian'?'✍️ URAIAN':s.jenis==='match'?'🔗 MENJODOHKAN':'🧩 DRAG'}</span>
@@ -1087,13 +1123,17 @@ sel.addEventListener('change',(e)=>{
 const pi=Number(e.target.dataset.pi);
 if(!kuisState.jawaban.match[s.idx]) kuisState.jawaban.match[s.idx]={};
 kuisState.jawaban.match[s.idx][pi]=e.target.value;
+updateMatchOptions(s.idx);
 });
 });
+updateMatchOptions(s.idx);
 }else if(s.jenis==='uraian'){
 $('kuisInput').addEventListener('input',(e)=>{
 kuisState.jawaban.uraian[s.idx]=e.target.value;
 });
 }
+
+updateTimerDisplay();
 }
 
 window.pilihDragKuis=(el)=>{
@@ -1149,7 +1189,7 @@ if(so.jenis==='drag') return !!kuisState.jawaban.drag[so.idx];
 });
 if(!semuaLengkap){alert('Masih ada soal yang belum dijawab. Periksa kembali dengan tombol Sebelumnya.');return;}
 if(!confirm('Kumpulkan kuis? Setelah dikumpulkan, jawaban tidak bisa diubah.')) return;
-await kumpulkanKuis();
+await kumpulkanKuis(false);
 }else{
 kuisState.index++;
 renderKuisSoal();
@@ -1157,10 +1197,14 @@ await simpanProgresLive();
 }
 };
 
-async function kumpulkanKuis(){
+async function kumpulkanKuis(otomatis=false){
+hentikanTimer();
 const s=hitungSkorSementara();
 const skorUraian=0;
 const skorTotal=s.skorMatch+s.skorDrag+skorUraian;
+
+let simpanSukses=false;
+
 try{
 const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
 let ownerUid=student.data.ownerUid;
@@ -1169,7 +1213,6 @@ const cd=await getDoc(doc(db,'classes',student.id));
 if(cd.exists()) ownerUid=cd.data().ownerUid;
 }
 
-// Cek skor lama — kalau lebih tinggi, pertahankan
 const oldDoc=await getDoc(doc(db,'progres_soal',docId));
 const oldData=oldDoc.exists()?oldDoc.data():null;
 
@@ -1189,7 +1232,6 @@ finalSkorTotal=oldData.skorTotal||0;
 finalBenarMatch=oldData.benarMatch||0;
 finalBenarDrag=oldData.benarDrag||0;
 finalJawaban=oldData.jawabanKuis||kuisState.jawaban;
-console.log('Skor lama lebih tinggi — pertahankan:',oldData.skorTotal);
 }
 
 await setDoc(doc(db,'progres_soal',docId),{
@@ -1206,6 +1248,9 @@ selesaiKuis:true,
 updatedAt:serverTimestamp()
 },{merge:true});
 
+simpanSukses=true;
+
+try{
 await addDoc(collection(db,'riwayat_soal'),{
 studentNama:student.nama,
 studentKode:student.kode,
@@ -1218,38 +1263,46 @@ benarMatch:s.benarMatch,benarDrag:s.benarDrag,
 jawaban:kuisState.jawaban,
 at:serverTimestamp()
 });
-}catch(e){alert('Gagal menyimpan: '+errText(e));return;}
-
-const finalSkorMatch=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.skorMatch||0) : s.skorMatch;
-const finalSkorDrag=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.skorDrag||0) : s.skorDrag;
-const finalSkorTotal=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.skorTotal||0) : skorTotal;
-const finalBenarMatch=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.benarMatch||0) : s.benarMatch;
-const finalBenarDrag=(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal) ? (oldData.benarDrag||0) : s.benarDrag;
-
-const predikat=getPredikat(finalSkorTotal);
-const section=$('studentSection');
-section.innerHTML=`<div class="practice-area">
-<h3>Kuis Selesai! 🎉</h3>
-<div class="kuis-summary">
-<strong>Skor otomatis (Match + Drag):</strong>
-<div class="kuis-score">${Math.round(finalSkorMatch+finalSkorDrag)}/40</div>
-<p>Match: ${Math.round(finalSkorMatch)}/20 (${finalBenarMatch}/${s.totalPasang} benar)</p>
-<p>Drag: ${Math.round(finalSkorDrag)}/20 (${finalBenarDrag}/${s.totalKotak} benar)</p>
-<p>Skor uraian: <em>Menunggu penilaian guru</em> (maks 60)</p>
-<p style="margin-top:10px"><strong>Skor sementara: ${Math.round(finalSkorTotal)}/100</strong></p>
-<span class="kuis-predikat ${predikat.kelas}">Predikat ${predikat.label}</span>
-${finalSkorTotal > skorTotal ? '<p style="margin-top:8px;font-size:12px;color:#23866b">✓ Skor sebelumnya lebih tinggi — tetap dipakai.</p>' : ''}
-</div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
-<button class="practice-btn" onclick="reviewKuis()">📝 Review Jawaban</button>
-<button class="practice-btn secondary" onclick="studentTab('kuis')">Kembali ke Kuis</button>
-</div>
-</div>`;
+}catch(errRiwayat){
+console.warn('Riwayat gagal disimpan:',errRiwayat);
 }
 
-window.reviewKuis=()=>{
+}catch(e){
+console.error('Gagal simpan progres:',e);
+alert('Gagal menyimpan progres: '+errText(e));
+return;
+}
+
+if(!simpanSukses){
+alert('Gagal menyimpan progres. Coba lagi.');
+return;
+}
+
+if(otomatis){
+alert('⏰ Waktu habis! Kuis otomatis dikumpulkan. Skor bisa dilihat di menu Kuis.');
+}else{
+alert('✅ Kuis berhasil dikumpulkan! Skor bisa dilihat di menu Kuis.');
+}
+kuisState=null;
+renderStudent();
+}
+
+window.reviewKuis=async()=>{
 const section=$('studentSection');
-let html='<div class="practice-area"><h3>📝 Review Jawaban Kuis</h3><p class="muted">Periksa jawabanmu di bawah ini.</p>';
+
+let feedbackSudah=false;
+try{
+const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
+feedbackSudah=fbs.size>0;
+}catch(e){}
+
+let html='<div class="practice-area"><h3>📝 Review Jawaban Kuis</h3>';
+if(feedbackSudah){
+html+='<div class="feedback-panel" style="margin-bottom:14px"><strong>✅ Guru sudah memberi feedback.</strong> Pembahasan lengkap ditampilkan di bawah.</div>';
+}else{
+html+='<p class="muted">Pembahasan lengkap akan muncul setelah guru memberi feedback.</p>';
+}
+
 html+='<div class="detail-section"><h4>🔗 Menjodohkan</h4>';
 kuisData.match.forEach((m,mi)=>{
 html+=`<div style="background:#f8f2ff;border-radius:12px;padding:12px;margin-bottom:10px"><p style="font-size:12px;color:#6845ae;margin-bottom:8px">${esc(m.konteks)}</p>`;
@@ -1262,6 +1315,7 @@ html+=`<div class="detail-item ${cls}"><strong>${esc(p.term)}:</strong> ${esc(an
 html+='</div>';
 });
 html+='</div>';
+
 html+='<div class="detail-section"><h4>🧩 Drag</h4>';
 kuisData.drag.forEach((d,i)=>{
 const ans=kuisState.jawaban.drag[i]||'';
@@ -1270,18 +1324,24 @@ const cls=!ans?'empty':(ok?'correct':'wrong');
 html+=`<div class="detail-item ${cls}"><strong>Soal ${i+1}:</strong> ${esc(d.q)}<br>Jawabanmu: ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(d.answer)})`):''}</div>`;
 });
 html+='</div>';
+
 html+='<div class="detail-section"><h4>✍️ Uraian</h4>';
 kuisData.uraian.forEach((u,i)=>{
 const ans=kuisState.jawaban.uraian[i]||'';
+if(feedbackSudah){
+html+=`<div class="detail-item empty"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><strong style="color:#23866b">📖 Pembahasan:</strong> ${esc(u.a)}</div>`;
+}else{
 html+=`<div class="detail-item empty"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#8984a5">Pembahasan akan muncul setelah guru menilai.</em></div>`;
+}
 });
 html+='</div>';
+
 html+='<button class="practice-btn" onclick="studentTab(\'kuis\')">Kembali ke Kuis</button></div>';
 section.innerHTML=html;
 };
 
 
-/* ================= MONITORING GURU ================= */
+/* ================= MONITORING GURU (REAL-TIME) ================= */
 
 const TEMPLATE_FB={
 pujian:'Kerja bagus, [nama]! Kamu sudah memahami materi peluang dengan baik. Pertahankan! 🎉',
@@ -1291,10 +1351,11 @@ perbaikan:'[nama], perhatikan kembali konsep yang belum tepat. Diskusikan dengan
 };
 
 async function renderMonitoringGuru(){
+hentikanMonitor();
 $('content').innerHTML=`
 <section class="panel">
-<h2>📊 Monitoring Kuis</h2>
-<p class="muted">Pantau progres kuis murid di kelasmu dan beri feedback.</p>
+<h2>📊 Monitoring Kuis <span style="font-size:12px;color:#23866b;font-weight:700">● Live</span></h2>
+<p class="muted">Pantau progres kuis murid secara real-time — update otomatis tanpa refresh.</p>
 <div id="kelasSelectWrap"></div>
 <div id="monitorContent"></div>
 </section>`;
@@ -1320,14 +1381,41 @@ window.renderMonitoringGuru=renderMonitoringGuru;
 
 async function loadMonitorKelas(classId){
 const el=$('monitorContent');
+hentikanMonitor();
 el.innerHTML='<div class="empty">Memuat progres murid...</div>';
+
 try{
-const progresSnap=await getDocs(query(collection(db,'progres_soal'),where('classId','==',classId)));
-const progres=progresSnap.docs.map(d=>({id:d.id,...d.data()}));
-const feedbackSnap=await getDocs(query(collection(db,'feedback_soal'),where('classId','==',classId)));
+const qProgres=query(collection(db,'progres_soal'),where('classId','==',classId));
+const qFeedback=query(collection(db,'feedback_soal'),where('classId','==',classId));
+
+let progresData=[];
+let feedbackData=[];
+
+const unsubProgres=onSnapshot(qProgres,(snap)=>{
+progresData=snap.docs.map(d=>({id:d.id,...d.data()}));
+renderMonitor(el,progresData,feedbackData,classId);
+},(err)=>{
+el.innerHTML=`<div class="empty">${esc(errText(err))}</div>`;
+});
+
+const unsubFeedback=onSnapshot(qFeedback,(snap)=>{
+feedbackData=snap.docs.map(d=>({id:d.id,...d.data()}));
+renderMonitor(el,progresData,feedbackData,classId);
+},(err)=>{console.error('Feedback listener error:',err);});
+
+monitorUnsubscribe=()=>{
+unsubProgres();
+unsubFeedback();
+};
+
+}catch(e){
+el.innerHTML=`<div class="empty">${esc(errText(e))}</div>`;
+}
+}
+
+function renderMonitor(el,progres,feedbackList,classId){
 const feedbackMap={};
-feedbackSnap.docs.forEach(d=>{
-const x=d.data();
+feedbackList.forEach(x=>{
 feedbackMap[`${x.studentKode}_${x.studentNama}`]=x;
 });
 const total=progres.length;
@@ -1400,10 +1488,6 @@ const p=progres.find(x=>x.studentNama===td.dataset.nama && x.studentKode===td.da
 if(p) bukaDetailKuis(p);
 });
 });
-
-}catch(e){
-el.innerHTML=`<div class="empty">${esc(errText(e))}</div>`;
-}
 }
 
 async function bukaDetailKuis(p){
@@ -1531,7 +1615,6 @@ skorUraian,skorUraianPerSoal:perSoal,skorTotal,updatedAt:serverTimestamp()
 });
 modal.querySelector('#msgNilai').textContent='Nilai uraian tersimpan. Skor total: '+Math.round(skorTotal)+'/100';
 modal.querySelector('#msgNilai').classList.add('ok');
-await loadMonitorKelas(p.classId);
 }catch(e){
 modal.querySelector('#msgNilai').textContent=errText(e);
 }
@@ -1595,7 +1678,6 @@ createdAt:serverTimestamp()
 });
 }
 modal.remove();
-await loadMonitorKelas(classId);
 }catch(e){
 modal.querySelector('#fbMsg').textContent=errText(e);
 modal.querySelector('#fbSave').disabled=false;
@@ -1628,7 +1710,6 @@ ok++;
 }catch(e){console.error(e);}
 }
 alert(`Feedback terkirim ke ${ok} murid.`);
-await loadMonitorKelas(classId);
 };
 
 </script>
