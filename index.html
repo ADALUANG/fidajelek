@@ -951,20 +951,26 @@ const benarMatch=prevDoc.benarMatch||0;
 const benarDrag=prevDoc.benarDrag||0;
 const uraianDinilai=prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0;
 
-// HITUNG NILAI TERTINGGI DARI PERCOBAAN YANG URAIANNYA SUDAH DINILAI GURU
+// HITUNG NILAI TERTINGGI DARI GABUNGAN (progres_soal + riwayat_soal yang uraiannya sudah dinilai)
 let nilaiTertinggi=null;
 let percobaanTertinggi=0;
 try{
+const kandidat=[];
+if(prevDoc && prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0){
+kandidat.push(prevDoc.skorTotal||0);
+}
 const rs=await getDocs(query(
 collection(db,'riwayat_soal'),
 where('studentNama','==',student.nama),
 where('studentKode','==',student.kode)
 ));
-const riwayat=rs.docs.map(d=>({id:d.id,...d.data()}));
+const riwayat=rs.docs.map(d=>d.data());
 const sudahDinilai=riwayat.filter(r=>r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
-if(sudahDinilai.length){
-nilaiTertinggi=Math.max(...sudahDinilai.map(r=>r.skor||0));
-percobaanTertinggi=sudahDinilai.length;
+sudahDinilai.forEach(r=>kandidat.push(r.skor||0));
+
+if(kandidat.length){
+nilaiTertinggi=Math.max(...kandidat);
+percobaanTertinggi=kandidat.length;
 }
 }catch(e){}
 
@@ -1766,7 +1772,7 @@ return `<div class="riwayat-item">
 <div class="riwayat-score">Skor: ${Math.round(r.skor||0)}/100 ${uraianDinilai?'':'<span style="background:#fff3d7;color:#946b08;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;margin-left:6px">⏳ Uraian belum dinilai</span>'}</div>
 <p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${uraianDinilai ? Math.round(r.skorUraian)+'/60' : '<em style="color:#946b08">belum dinilai</em>'}</p>
 <div style="margin-top:8px">
-<button class="small-btn" onclick="bukaNilaiUraianRiwayat('${r.id}')">✍️ ${uraianDinilai?'Edit':'Nilai'} Uraian</button>
+<button class="small-btn" onclick="bukaNilaiUraianRiwayat('${r.id}','${esc(nama)}','${esc(kode)}')">✍️ ${uraianDinilai?'Edit':'Nilai'} Uraian</button>
 </div>
 </div>`;
 }).join('')
@@ -1854,7 +1860,7 @@ modal.querySelector('#simpanNilai').disabled=false;
 }
 
 /* ===== FUNGSI BARU: Nilai Uraian per Percobaan (dari Riwayat) ===== */
-window.bukaNilaiUraianRiwayat=async(riwayatId)=>{
+window.bukaNilaiUraianRiwayat=async(riwayatId,nama,kode)=>{
 try{
 const rd=await getDoc(doc(db,'riwayat_soal',riwayatId));
 if(!rd.exists()){alert('Data riwayat tidak ditemukan.');return;}
@@ -1923,8 +1929,28 @@ skorUraian,skorUraianPerSoal:perSoal,skorTotal,updatedAt:serverTimestamp()
 }
 }catch(e2){console.warn('Gagal update progres_soal:',e2);}
 
+// Tutup modal nilai
 modal.remove();
+
+// Tutup modal detail lama, lalu buka ulang dengan data terbaru
+const detailModal = document.querySelector('.modal.show');
+if(detailModal) detailModal.remove();
+
+// Refresh data progres
+const docId = `${r.studentKode}_${r.studentNama.replace(/\s+/g,'_')}`;
+const pDoc = await getDoc(doc(db,'progres_soal',docId));
+if(pDoc.exists()){
+const pData = {id:docId, ...pDoc.data()};
+bukaDetailKuis(pData);
+}
+
 alert('✅ Nilai uraian tersimpan! Skor percobaan ini: '+Math.round(skorTotal)+'/100.');
+
+// Update tabel monitoring di belakang (jika ada)
+if(document.getElementById('pilihKelasMonitor')){
+loadMonitorKelas(document.getElementById('pilihKelasMonitor').value);
+}
+
 }catch(e){
 modal.querySelector('#msgNilaiRiwayat').textContent=errText(e);
 modal.querySelector('#simpanNilaiRiwayat').disabled=false;
