@@ -948,24 +948,46 @@ const benarMatch=prevDoc.benarMatch||0;
 const benarDrag=prevDoc.benarDrag||0;
 const uraianDinilai=prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0;
 
+// ===== HITUNG NILAI TERTINGGI DARI PERCOBAAN YANG URAIANNYA SUDAH DINILAI GURU =====
+let nilaiTertinggi=null;
+let percobaanTertinggi=0;
+try{
+const rs=await getDocs(query(
+collection(db,'riwayat_soal'),
+where('studentNama','==',student.nama),
+where('studentKode','==',student.kode)
+));
+const riwayat=rs.docs.map(d=>({id:d.id,...d.data()}));
+// Filter hanya percobaan yang uraiannya sudah dinilai (skorUraian > 0)
+const sudahDinilai=riwayat.filter(r=>r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
+if(sudahDinilai.length){
+nilaiTertinggi=Math.max(...sudahDinilai.map(r=>r.skor||0));
+percobaanTertinggi=sudahDinilai.length;
+}
+}catch(e){}
+
 nilaiTertinggiHTML=`<div class="kuis-summary" style="background:#e8f4ff;border-left-color:#3976d3">
 <strong>🏆 Nilai Tertinggi Kamu:</strong>
-<div class="kuis-score" style="color:#3976d3">${total}/100</div>
-<span class="kuis-predikat ${predikat.kelas}">Predikat ${predikat.label}</span>
-<p style="margin-top:8px;font-size:12px;color:#4a3f6b">Diambil dari seluruh percobaan yang pernah kamu lakukan.</p>
+${nilaiTertinggi!==null 
+  ? `<div class="kuis-score" style="color:#3976d3">${Math.round(nilaiTertinggi)}/100</div>
+     <span class="kuis-predikat ${getPredikat(nilaiTertinggi).kelas}">Predikat ${getPredikat(nilaiTertinggi).label}</span>
+     <p style="margin-top:8px;font-size:12px;color:#4a3f6b">Diambil dari ${percobaanTertinggi} percobaan yang uraiannya sudah dinilai guru.</p>`
+  : `<p style="margin-top:8px;font-size:13px;color:#946b08"><em>⏳ Belum ada percobaan yang uraiannya dinilai guru.</em></p>
+     <p style="font-size:12px;color:#8984a5">Nilai tertinggi akan muncul setelah guru menilai uraianmu.</p>`}
 </div>`;
 
 let keteranganKMK='';
 if(feedbackData){
-if(total < 75){
+const nilaiUntukKKM=nilaiTertinggi!==null?nilaiTertinggi:total;
+if(nilaiUntukKKM < 75){
 keteranganKMK=`<div class="kuis-summary" style="background:#fff0f2;border-left:5px solid #b3425a;color:#b3425a">
 <strong style="color:#b3425a;font-size:15px">⚠️ Nilaimu di bawah KKM (75), wajib kerjakan ulang kuis!</strong>
-<p style="margin-top:8px;font-size:13px">Nilai kamu: <strong>${total}/100</strong> · KKM: <strong>75</strong></p>
+<p style="margin-top:8px;font-size:13px">Nilai tertinggi: <strong>${Math.round(nilaiUntukKKM)}/100</strong> · KKM: <strong>75</strong></p>
 </div>`;
 }else{
 keteranganKMK=`<div class="kuis-summary" style="background:#e2f8ee;border-left:5px solid #23866b;color:#166534">
 <strong style="color:#166534;font-size:15px">🎉 Selamat! Untuk mendapatkan nilai lebih bagus, kamu boleh mengerjakan ulang.</strong>
-<p style="margin-top:8px;font-size:13px">Nilai kamu: <strong>${total}/100</strong> · KKM: <strong>75</strong></p>
+<p style="margin-top:8px;font-size:13px">Nilai tertinggi: <strong>${Math.round(nilaiUntukKKM)}/100</strong> · KKM: <strong>75</strong></p>
 </div>`;
 }
 }else{
@@ -983,7 +1005,7 @@ ${keteranganKMK}
 <strong>📊 Rincian Nilai (percobaan terakhir):</strong>
 <p style="margin-top:8px">🔗 Match: ${Math.round(prevDoc.skorMatch||0)}/20 (${benarMatch}/${totalPasang} benar)</p>
 <p>🧩 Drag: ${Math.round(prevDoc.skorDrag||0)}/20 (${benarDrag}/${totalKotak} benar)</p>
-<p>✍️ Uraian: ${uraianDinilai ? Math.round(prevDoc.skorUraian)+'/60 (dinilai guru)' : '<em>Menunggu penilaian guru</em> (maks 60)'}</p>
+<p>✍️ Uraian: ${uraianDinilai ? Math.round(prevDoc.skorUraian)+'/60 (dinilai guru)' : '<em>⏳ Menunggu penilaian guru</em> (maks 60)'}</p>
 <p style="margin-top:10px"><strong>Skor total: ${uraianDinilai ? total+'/100' : Math.round((prevDoc.skorMatch||0)+(prevDoc.skorDrag||0))+'/40 (sementara)'}</strong></p>
 </div>`;
 }else if(prevDoc && prevDoc.currentIndex!==undefined && !prevDoc.selesaiKuis){
@@ -1024,7 +1046,10 @@ const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
 const d=await getDoc(doc(db,'progres_soal',docId));
 if(!d.exists()){alert('Belum ada data kuis.');return;}
 const data=d.data();
-kuisState={jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}}};
+kuisState={
+jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}},
+skorUraianPerSoal:data.skorUraianPerSoal||null
+};
 await reviewKuis();
 }catch(e){alert(errText(e));}
 };
@@ -1046,22 +1071,25 @@ return tb-ta;
 });
 
 let html='<div class="practice-area"><h3>📜 Riwayat Nilai Kuis</h3>';
-html+='<p class="muted">Semua percobaan kuis yang pernah kamu kerjakan. Nilai tertinggi yang dipakai.</p>';
+html+='<p class="muted">Semua percobaan kuis yang pernah kamu kerjakan. Nilai tertinggi (yang uraiannya sudah dinilai guru) yang dipakai.</p>';
 
 if(!riwayat.length){
 html+='<div class="empty">Belum ada riwayat percobaan. Kerjakan kuis dulu ya.</div>';
 }else{
-const tertinggi=Math.max(...riwayat.map(r=>r.skor||0));
+// Nilai tertinggi hanya dari percobaan yang uraiannya sudah dinilai
+const sudahDinilai=riwayat.filter(r=>r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
+const tertinggi=sudahDinilai.length?Math.max(...sudahDinilai.map(r=>r.skor||0)):null;
 riwayat.forEach((r,i)=>{
 const tgl=r.at?.toDate?r.at.toDate().toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-const isTertinggi=(r.skor||0)===tertinggi;
+const uraianDinilai=r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0;
+const isTertinggi=uraianDinilai && tertinggi!==null && (r.skor||0)===tertinggi;
 html+=`<div class="riwayat-item" style="${isTertinggi?'border:2px solid #23866b;background:#eaf9f2':''}">
 <div class="riwayat-head">
 <strong>Percobaan ${riwayat.length-i}${isTertinggi?' 🏆 Tertinggi':''}</strong>
 <span>${tgl}</span>
 </div>
-<div class="riwayat-score" style="${isTertinggi?'color:#23866b':''}">Skor: ${Math.round(r.skor||0)}/100</div>
-<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0 ? Math.round(r.skorUraian)+'/60' : 'menunggu'}</p>
+<div class="riwayat-score" style="${isTertinggi?'color:#23866b':''}">Skor: ${Math.round(r.skor||0)}/100 ${uraianDinilai?'':'<em style="color:#946b08;font-size:12px">(sementara — uraian belum dinilai)</em>'}</div>
+<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${uraianDinilai ? Math.round(r.skorUraian)+'/60' : '<em style="color:#946b08">⏳ belum dinilai</em>'}</p>
 </div>`;
 });
 }
@@ -1393,6 +1421,18 @@ const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama'
 feedbackSudah=fbs.size>0;
 }catch(e){}
 
+// Ambil progres untuk cek skorUraianPerSoal
+let progressData=null;
+try{
+const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
+const d=await getDoc(doc(db,'progres_soal',docId));
+if(d.exists()) progressData=d.data();
+}catch(e){}
+
+if(progressData && progressData.skorUraianPerSoal){
+kuisState.skorUraianPerSoal=progressData.skorUraianPerSoal;
+}
+
 let html='<div class="practice-area"><h3>📝 Review Jawaban Kuis</h3>';
 if(feedbackSudah){
 html+='<div class="feedback-panel" style="margin-bottom:14px"><strong>✅ Guru sudah memberi feedback.</strong> Pembahasan lengkap ditampilkan di bawah.</div>';
@@ -1432,8 +1472,13 @@ html+='</div>';
 html+='<div class="detail-section"><h4>✍️ Uraian</h4>';
 kuisData.uraian.forEach((u,i)=>{
 const ans=kuisState.jawaban.uraian[i]||'';
-if(feedbackSudah){
-html+=`<div class="detail-item empty"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><strong style="color:#23866b">📖 Pembahasan:</strong> ${esc(u.a)}</div>`;
+const sudahDinilai=kuisState.skorUraianPerSoal && kuisState.skorUraianPerSoal[i]!==undefined && kuisState.skorUraianPerSoal[i]!==null;
+const skorSoal=kuisState.skorUraianPerSoal && kuisState.skorUraianPerSoal[i]!==undefined ? kuisState.skorUraianPerSoal[i] : null;
+
+if(feedbackSudah && sudahDinilai){
+html+=`<div class="detail-item correct"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#23866b">Skor guru: ${skorSoal}/12</em><br><strong style="color:#23866b">📖 Pembahasan:</strong> ${esc(u.a)}</div>`;
+}else if(feedbackSudah && !sudahDinilai){
+html+=`<div class="detail-item empty" style="border-left:4px solid #e7ad35"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><span style="background:#fff3d7;color:#946b08;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700">⏳ Belum dinilai guru</span></div>`;
 }else{
 html+=`<div class="detail-item empty"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#8984a5">Pembahasan akan muncul setelah guru menilai.</em></div>`;
 }
@@ -1641,7 +1686,7 @@ const riwayatHTML=riwayat.length
 <strong>Percobaan ${riwayat.length-i}</strong>
 <span>${r.at?.toDate?r.at.toDate().toLocaleString('id-ID'):''}</span>
 </div>
-<div class="riwayat-score">Skor: ${Math.round(r.skor||0)}/100</div>
+<div class="riwayat-score">Skor: ${Math.round(r.skor||0)}/100 ${r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0?'':'<em style="color:#946b08;font-size:11px">(uraian belum dinilai)</em>'}</div>
 <p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0 ? Math.round(r.skorUraian)+'/60' : 'menunggu'}</p>
 </div>`).join('')
 : '<div class="empty">Belum ada riwayat percobaan.</div>';
