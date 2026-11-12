@@ -949,14 +949,14 @@ const totalPasang=kuisData.match.reduce((s,m)=>s+m.pasangan.length,0);
 const totalKotak=kuisData.drag.length;
 const benarMatch=prevDoc.benarMatch||0;
 const benarDrag=prevDoc.benarDrag||0;
-const uraianDinilai=prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0;
+const uraianDinilai=prevDoc.uraianDinilai===true || (prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0);
 
 // HITUNG NILAI TERTINGGI DARI GABUNGAN (progres_soal + riwayat_soal yang uraiannya sudah dinilai)
 let nilaiTertinggi=null;
 let percobaanTertinggi=0;
 try{
 const kandidat=[];
-if(prevDoc && prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0){
+if(prevDoc && (prevDoc.uraianDinilai===true || (prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0))){
 kandidat.push(prevDoc.skorTotal||0);
 }
 const rs=await getDocs(query(
@@ -965,8 +965,8 @@ where('studentNama','==',student.nama),
 where('studentKode','==',student.kode)
 ));
 const riwayat=rs.docs.map(d=>d.data());
-const sudahDinilai=riwayat.filter(r=>r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
-sudahDinilai.forEach(r=>kandidat.push(r.skor||0));
+const sudahDinilai=riwayat.filter(r=>r.uraianDinilai===true || (r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0));
+sudahDinilai.forEach(r=>kandidat.push(r.skorTotal!=null ? r.skorTotal : (r.skor||0)));
 
 if(kandidat.length){
 nilaiTertinggi=Math.max(...kandidat);
@@ -1066,6 +1066,10 @@ window.reviewRiwayatMurid=async()=>{
 const section=$('studentSection');
 section.innerHTML='<div class="practice-area"><h3>📜 Riwayat Nilai Kuis</h3><div class="empty">Memuat riwayat...</div></div>';
 
+// helper: nilai efektif & status dinilai
+const nilaiRiwayat = r => (r.skorTotal!=null ? r.skorTotal : (r.skor||0));
+const sudahDinilai = r => r.uraianDinilai===true || (r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
+
 try{
 const rs=await getDocs(query(
 collection(db,'riwayat_soal'),
@@ -1084,19 +1088,20 @@ html+='<p class="muted">Semua percobaan kuis yang pernah kamu kerjakan. Nilai te
 if(!riwayat.length){
 html+='<div class="empty">Belum ada riwayat percobaan. Kerjakan kuis dulu ya.</div>';
 }else{
-const sudahDinilai=riwayat.filter(r=>r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
-const tertinggi=sudahDinilai.length?Math.max(...sudahDinilai.map(r=>r.skor||0)):null;
+const dinilai=riwayat.filter(sudahDinilai);
+const tertinggi=dinilai.length?Math.max(...dinilai.map(nilaiRiwayat)):null;
 riwayat.forEach((r,i)=>{
 const tgl=r.at?.toDate?r.at.toDate().toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-const uraianDinilai=r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0;
-const isTertinggi=uraianDinilai && tertinggi!==null && (r.skor||0)===tertinggi;
+const graded=sudahDinilai(r);
+const nilai=nilaiRiwayat(r);
+const isTertinggi=graded && tertinggi!==null && nilai===tertinggi;
 html+=`<div class="riwayat-item" style="${isTertinggi?'border:2px solid #23866b;background:#eaf9f2':''}">
 <div class="riwayat-head">
 <strong>Percobaan ${riwayat.length-i}${isTertinggi?' 🏆 Tertinggi':''}</strong>
 <span>${tgl}</span>
 </div>
-<div class="riwayat-score" style="${isTertinggi?'color:#23866b':''}">Skor: ${Math.round(r.skor||0)}/100 ${uraianDinilai?'':'<em style="color:#946b08;font-size:12px">(sementara — uraian belum dinilai)</em>'}</div>
-<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${uraianDinilai ? Math.round(r.skorUraian)+'/60' : '<em style="color:#946b08">⏳ belum dinilai</em>'}</p>
+<div class="riwayat-score" style="${isTertinggi?'color:#23866b':''}">Skor: ${Math.round(nilai)}/100 ${graded?'':'<em style="color:#946b08;font-size:12px">(sementara — uraian belum dinilai)</em>'}</div>
+<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${graded ? Math.round(r.skorUraian||0)+'/60' : '<em style="color:#946b08">⏳ belum dinilai</em>'}</p>
 </div>`;
 });
 }
@@ -1467,6 +1472,7 @@ skor:skorTotal,
 skorMatch:s.skorMatch,skorDrag:s.skorDrag,skorUraian,
 benarMatch:s.benarMatch,benarDrag:s.benarDrag,
 jawaban:kuisState.jawaban, // PENTING: simpan jawaban untuk nilai uraian nanti
+uraianDinilai:false,       // penanda: uraian belum dinilai guru
 at:serverTimestamp()
 });
 }catch(errRiwayat){
@@ -1762,15 +1768,16 @@ return `<div class="detail-item ${cls}"><strong>Drag ${i+1}:</strong> ${esc(ans|
 // Riwayat dengan tombol Nilai Uraian per percobaan
 const riwayatHTML=riwayat.length
 ? riwayat.map((r,i)=>{
-const uraianDinilai=r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0;
+const uraianDinilai=r.uraianDinilai===true || (r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
 const tgl=r.at?.toDate?r.at.toDate().toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+const nilaiTampil = r.skorTotal!=null ? r.skorTotal : (r.skor||0);
 return `<div class="riwayat-item">
 <div class="riwayat-head">
 <strong>Percobaan ${riwayat.length-i}</strong>
 <span>${tgl}</span>
 </div>
-<div class="riwayat-score">Skor: ${Math.round(r.skor||0)}/100 ${uraianDinilai?'':'<span style="background:#fff3d7;color:#946b08;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;margin-left:6px">⏳ Uraian belum dinilai</span>'}</div>
-<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${uraianDinilai ? Math.round(r.skorUraian)+'/60' : '<em style="color:#946b08">belum dinilai</em>'}</p>
+<div class="riwayat-score">Skor: ${Math.round(nilaiTampil)}/100 ${uraianDinilai?'':'<span style="background:#fff3d7;color:#946b08;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;margin-left:6px">⏳ Uraian belum dinilai</span>'}</div>
+<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${uraianDinilai ? Math.round(r.skorUraian||0)+'/60' : '<em style="color:#946b08">belum dinilai</em>'}</p>
 <div style="margin-top:8px">
 <button class="small-btn" onclick="bukaNilaiUraianRiwayat('${r.id}','${esc(nama)}','${esc(kode)}')">✍️ ${uraianDinilai?'Edit':'Nilai'} Uraian</button>
 </div>
@@ -1787,7 +1794,6 @@ modal.innerHTML=`
 <div class="tabs" style="margin-bottom:12px">
 <button class="tab-btn active" data-tab="jawaban">📝 Jawaban Terakhir</button>
 <button class="tab-btn" data-tab="riwayat">📜 Riwayat (${riwayat.length})</button>
-<button class="tab-btn" data-tab="nilai">✍️ Nilai Uraian</button>
 </div>
 
 <div data-tab-content="jawaban">
@@ -1798,18 +1804,6 @@ modal.innerHTML=`
 
 <div data-tab-content="riwayat" style="display:none">
 ${riwayatHTML}
-</div>
-
-<div data-tab-content="nilai" style="display:none">
-<h4 style="margin-bottom:10px;color:#6845ae">Beri nilai uraian percobaan TERAKHIR (0–12 per soal, total maks 60)</h4>
-${kuisData.uraian.map((u,i)=>`
-<div style="margin-bottom:12px">
-<strong style="font-size:13px">Uraian ${i+1}:</strong>
-<p style="font-size:12px;color:#8984a5;margin:4px 0">${esc(jawaban.uraian && jawaban.uraian[i] ? jawaban.uraian[i] : '(kosong)')}</p>
-<input type="number" class="skor-uraian" data-i="${i}" min="0" max="12" step="1" value="${p.skorUraianPerSoal && p.skorUraianPerSoal[i]!==undefined ? p.skorUraianPerSoal[i] : 0}" style="width:100px;padding:8px;border:2px solid #e6def4;border-radius:8px;font-family:Nunito,sans-serif">
-</div>`).join('')}
-<button class="submit" id="simpanNilai" style="margin-top:10px">Simpan Nilai Uraian</button>
-<p class="message" id="msgNilai"></p>
 </div>
 
 <div style="display:flex;justify-content:flex-end;margin-top:14px">
@@ -1830,36 +1824,9 @@ c.style.display=c.dataset.tabContent===btn.dataset.tab?'block':'none';
 
 modal.querySelector('#closeDetail').addEventListener('click',()=>modal.remove());
 modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
-
-modal.querySelector('#simpanNilai').addEventListener('click',async()=>{
-const inputs=modal.querySelectorAll('.skor-uraian');
-const perSoal={};
-let total=0;
-inputs.forEach(inp=>{
-const i=Number(inp.dataset.i);
-const v=Math.max(0,Math.min(12,Number(inp.value)||0));
-perSoal[i]=v;
-total+=v;
-});
-const skorMatch=p.skorMatch||0;
-const skorDrag=p.skorDrag||0;
-const skorUraian=total;
-const skorTotal=skorMatch+skorDrag+skorUraian;
-try{
-modal.querySelector('#simpanNilai').disabled=true;
-await updateDoc(doc(db,'progres_soal',p.id),{
-skorUraian,skorUraianPerSoal:perSoal,skorTotal,updatedAt:serverTimestamp()
-});
-modal.remove();
-alert('✅ Nilai uraian tersimpan! Skor total: '+Math.round(skorTotal)+'/100. Kembali ke monitoring.');
-}catch(e){
-modal.querySelector('#msgNilai').textContent=errText(e);
-modal.querySelector('#simpanNilai').disabled=false;
-}
-});
 }
 
-/* ===== FUNGSI BARU: Nilai Uraian per Percobaan (dari Riwayat) ===== */
+/* ===== FUNGSI: Nilai Uraian per Percobaan (dari Riwayat) ===== */
 window.bukaNilaiUraianRiwayat=async(riwayatId,nama,kode)=>{
 try{
 const rd=await getDoc(doc(db,'riwayat_soal',riwayatId));
@@ -1872,7 +1839,7 @@ modal.className='modal show';
 modal.innerHTML=`
 <div class="modal-card" style="max-width:640px">
 <h2>✍️ Nilai Uraian — Percobaan ${r.at?.toDate?r.at.toDate().toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}</h2>
-<p style="font-size:13px;color:#8984a5;margin-bottom:14px">Skor saat ini: ${Math.round(r.skor||0)}/100 · Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20</p>
+<p style="font-size:13px;color:#8984a5;margin-bottom:14px">Skor saat ini: ${Math.round(r.skorTotal!=null?r.skorTotal:(r.skor||0))}/100 · Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20</p>
 <div style="background:#f8f2ff;border-radius:12px;padding:14px;margin-bottom:14px;max-height:350px;overflow-y:auto">
 <h4 style="color:#6845ae;margin:0 0 10px">Jawaban Uraian Murid:</h4>
 ${kuisData.uraian.map((u,i)=>{
@@ -1912,8 +1879,12 @@ const skorUraian=total;
 const skorTotal=skorMatch+skorDrag+skorUraian;
 try{
 modal.querySelector('#simpanNilaiRiwayat').disabled=true;
+// PERBAIKAN: tulis juga field 'skor' & 'uraianDinilai' agar riwayat murid ikut ter-update
 await updateDoc(doc(db,'riwayat_soal',riwayatId),{
-skorUraian,skorUraianPerSoal:perSoal,skorTotal,updatedAt:serverTimestamp()
+skorUraian,skorUraianPerSoal:perSoal,skorTotal,
+skor:skorTotal,
+uraianDinilai:true,
+updatedAt:serverTimestamp()
 });
 // Update progres_soal kalau ini percobaan terakhir
 try{
@@ -1923,7 +1894,9 @@ if(pDoc.exists()){
 const pData=pDoc.data();
 if(pData.updatedAt && r.at && Math.abs(pData.updatedAt.toDate().getTime()-r.at.toDate().getTime()) < 5000){
 await updateDoc(doc(db,'progres_soal',docId),{
-skorUraian,skorUraianPerSoal:perSoal,skorTotal,updatedAt:serverTimestamp()
+skorUraian,skorUraianPerSoal:perSoal,skorTotal,
+uraianDinilai:true,
+updatedAt:serverTimestamp()
 });
 }
 }
