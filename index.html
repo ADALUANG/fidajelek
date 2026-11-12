@@ -773,8 +773,6 @@ result.classList.add('show');
 result.scrollIntoView({behavior:'smooth',block:'start'});
 $('latihanCheck').disabled=true;
 };
-
-
 /* ================= KUIS ================= */
 
 const kuisData={
@@ -935,14 +933,12 @@ if(d.exists()) prevDoc=d.data();
 let statusHTML='';
 let nilaiTertinggiHTML='';
 
-// ===== CEK FEEDBACK GURU =====
 let feedbackData=null;
 try{
 const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
 if(fbs.size) feedbackData=fbs.docs[0].data();
 }catch(e){}
 
-// ===== JIKA SUDAH PERNAH KUMPUL =====
 if(prevDoc && prevDoc.selesaiKuis){
 const total=Math.round(prevDoc.skorTotal||0);
 const predikat=getPredikat(total);
@@ -952,7 +948,6 @@ const benarMatch=prevDoc.benarMatch||0;
 const benarDrag=prevDoc.benarDrag||0;
 const uraianDinilai=prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0;
 
-// ===== NILAI TERTINGGI =====
 nilaiTertinggiHTML=`<div class="kuis-summary" style="background:#e8f4ff;border-left-color:#3976d3">
 <strong>🏆 Nilai Tertinggi Kamu:</strong>
 <div class="kuis-score" style="color:#3976d3">${total}/100</div>
@@ -960,7 +955,6 @@ nilaiTertinggiHTML=`<div class="kuis-summary" style="background:#e8f4ff;border-l
 <p style="margin-top:8px;font-size:12px;color:#4a3f6b">Diambil dari seluruh percobaan yang pernah kamu lakukan.</p>
 </div>`;
 
-// ===== KETERANGAN KKM =====
 let keteranganKMK='';
 if(feedbackData){
 if(total < 75){
@@ -1000,7 +994,6 @@ statusHTML=`<div class="kuis-summary">
 </div>`;
 }
 
-// ===== FEEDBACK GURU =====
 let feedbackHTML='';
 if(feedbackData){
 const tgl=feedbackData.createdAt?.toDate?feedbackData.createdAt.toDate().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):'';
@@ -1015,7 +1008,8 @@ ${feedbackHTML}
 <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
 ${prevDoc && prevDoc.selesaiKuis 
   ? `<button class="practice-btn" onclick="mulaiKuis()">🔄 Ulangi Kuis (nilai tertinggi diambil)</button>
-     <button class="practice-btn secondary" onclick="reviewKuisTerakhir()">📝 Review Jawaban</button>`
+     <button class="practice-btn secondary" onclick="reviewKuisTerakhir()">📝 Review Jawaban</button>
+     <button class="practice-btn secondary" onclick="reviewRiwayatMurid()">📜 Riwayat Nilai</button>`
   : prevDoc && prevDoc.currentIndex!==undefined
     ? `<button class="practice-btn" onclick="lanjutkanKuis()">▶ Lanjutkan Kuis</button>
        <button class="practice-btn secondary" onclick="mulaiKuis()">Mulai Ulang</button>`
@@ -1033,6 +1027,49 @@ const data=d.data();
 kuisState={jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}}};
 await reviewKuis();
 }catch(e){alert(errText(e));}
+};
+
+window.reviewRiwayatMurid=async()=>{
+const section=$('studentSection');
+section.innerHTML='<div class="practice-area"><h3>📜 Riwayat Nilai Kuis</h3><div class="empty">Memuat riwayat...</div></div>';
+
+try{
+const rs=await getDocs(query(
+collection(db,'riwayat_soal'),
+where('studentNama','==',student.nama),
+where('studentKode','==',student.kode)
+));
+let riwayat=rs.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+const ta=a.at?.toDate?a.at.toDate().getTime():0;
+const tb=b.at?.toDate?b.at.toDate().getTime():0;
+return tb-ta;
+});
+
+let html='<div class="practice-area"><h3>📜 Riwayat Nilai Kuis</h3>';
+html+='<p class="muted">Semua percobaan kuis yang pernah kamu kerjakan. Nilai tertinggi yang dipakai.</p>';
+
+if(!riwayat.length){
+html+='<div class="empty">Belum ada riwayat percobaan. Kerjakan kuis dulu ya.</div>';
+}else{
+const tertinggi=Math.max(...riwayat.map(r=>r.skor||0));
+riwayat.forEach((r,i)=>{
+const tgl=r.at?.toDate?r.at.toDate().toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+const isTertinggi=(r.skor||0)===tertinggi;
+html+=`<div class="riwayat-item" style="${isTertinggi?'border:2px solid #23866b;background:#eaf9f2':''}">
+<div class="riwayat-head">
+<strong>Percobaan ${riwayat.length-i}${isTertinggi?' 🏆 Tertinggi':''}</strong>
+<span>${tgl}</span>
+</div>
+<div class="riwayat-score" style="${isTertinggi?'color:#23866b':''}">Skor: ${Math.round(r.skor||0)}/100</div>
+<p style="font-size:12px;margin-top:6px">Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20 · Uraian: ${r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0 ? Math.round(r.skorUraian)+'/60' : 'menunggu'}</p>
+</div>`;
+});
+}
+html+='<button class="practice-btn" onclick="studentTab(\'kuis\')">← Kembali ke Kuis</button></div>';
+section.innerHTML=html;
+}catch(e){
+section.innerHTML=`<div class="practice-area"><h3>📜 Riwayat Nilai Kuis</h3><div class="empty">Gagal memuat: ${esc(errText(e))}</div><button class="practice-btn" onclick="studentTab('kuis')">← Kembali ke Kuis</button></div>`;
+}
 };
 
 function buildKuisSoal(){
