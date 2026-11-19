@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ayo Dalami Peluang! — ADALUANG</title>
+<title>MATHIC — Mathematic Interaction Class</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
@@ -327,7 +327,7 @@ h1{font-size:45px}
 
 <div class="app" id="app">
 <header class="app-top">
-<div class="brand">ADA<span>LUANG</span></div>
+<div class="brand">MAT<span>HIC</span></div>
 <div>
 <div class="userline" id="userLine"></div>
 <button type="button" class="small-btn" onclick="logout()">Keluar</button>
@@ -398,7 +398,7 @@ const r=doc(db,'users',u.uid);
 const s=await getDoc(r);
 if(s.exists())return s.data();
 if((u.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()){
-const p={nama:'Admin ADALUANG',email:u.email,role:'admin',status:'approved',createdAt:serverTimestamp()};
+const p={nama:'Admin MATHIC',email:u.email,role:'admin',status:'approved',createdAt:serverTimestamp()};
 await setDoc(r,p);
 return p;
 }
@@ -501,7 +501,7 @@ async function adminDashboard(){
 $('content').innerHTML=`
 <section class="panel">
 <h2>Dashboard Admin</h2>
-<p class="muted">Kelola pendaftaran guru, pantau status akun, dan kelola kelas ADALUANG.</p>
+<p class="muted">Kelola pendaftaran guru, pantau status akun, dan kelola kelas MATHIC.</p>
 <div id="adminStats" class="stats"><div class="empty">Memuat statistik...</div></div>
 <div class="tabs">
 <button type="button" onclick="adminTab('guru')">Manajemen Guru</button>
