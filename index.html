@@ -807,13 +807,15 @@ result.scrollIntoView({behavior:'smooth',block:'start'});
 $('latihanCheck').disabled=true;
 renderKaTeX(result);
 };
-/* ================= KUIS — REVISI PECAHAN VERTIKAL ================= */
+/* ================= KUIS — REVISI PECAHAN VERTIKAL + FOTO URAIAN ================= */
 
 /*
 CATATAN FORMAT:
-- Field `answer` (untuk match & drag) = PLAIN TEXT (dipakai di <select> / dicocokkan).
-- Field `answerLatex` (opsional) = versi LaTeX untuk display vertikal di pembahasan.
+- Field `answer` (match & drag) = PLAIN TEXT (dipakai di <select> / dicocokkan).
+- Field `choices` (drag) = LaTeX untuk display vertikal.
+- Field `choicesPlain` = plain text untuk data-val (cadangan).
 - Field `term` / `q` / `pembahasan` = pakai \\( ... \\) dengan \\dfrac untuk vertikal.
+- FITUR BARU: foto uraian (base64) disimpan di jawaban.fotoUraian[soalIdx] = [b64_1, b64_2].
 */
 
 const kuisData={
@@ -842,6 +844,12 @@ uraian:[
 
 const BOBOT={match:20,drag:20,uraian:60};
 const KUIS_DURASI_MENIT=45;
+
+/* ===== KONFIG FOTO URAIAN ===== */
+const FOTO_MAX=2;                 // maks 2 foto per soal
+const FOTO_MAX_BYTES=180*1024;    // 180KB base64 per foto (aman dari limit 1MB)
+const FOTO_MAX_DIM=600;           // resize maks 600px
+const FOTO_QUALITY=0.45;          // kompresi JPEG
 
 let kuisState=null;
 let kuisTimer=null;
@@ -926,6 +934,83 @@ monitorUnsubscribe();
 monitorUnsubscribe=null;
 }
 }
+
+/* ===== FOTO URAIAN: helper ===== */
+function getFotoUraian(idx){
+if(!kuisState || !kuisState.jawaban.fotoUraian) return [];
+const v=kuisState.jawaban.fotoUraian[idx];
+if(!v) return [];
+if(typeof v==='string') return [v];
+if(Array.isArray(v)) return v;
+return [];
+}
+
+function kompresFoto(file,maxDim=FOTO_MAX_DIM,quality=FOTO_QUALITY){
+return new Promise((resolve,reject)=>{
+const reader=new FileReader();
+reader.onload=e=>{
+const img=new Image();
+img.onload=()=>{
+let w=img.width,h=img.height;
+if(w>maxDim||h>maxDim){
+if(w>h){h=Math.round(h*maxDim/w);w=maxDim;}
+else{w=Math.round(w*maxDim/h);h=maxDim;}
+}
+const canvas=document.createElement('canvas');
+canvas.width=w;canvas.height=h;
+const ctx=canvas.getContext('2d');
+ctx.fillStyle='#fff';
+ctx.fillRect(0,0,w,h);
+ctx.drawImage(img,0,0,w,h);
+resolve(canvas.toDataURL('image/jpeg',quality));
+};
+img.onerror=()=>reject(new Error('Gagal baca gambar'));
+img.src=e.target.result;
+};
+reader.onerror=()=>reject(new Error('Gagal baca file'));
+reader.readAsDataURL(file);
+});
+}
+
+window.uploadFotoUraian=async(event,idx)=>{
+const files=[...event.target.files];
+if(!files.length)return;
+if(!kuisState.jawaban.fotoUraian) kuisState.jawaban.fotoUraian={};
+
+let arr=getFotoUraian(idx);
+const sisa=FOTO_MAX-arr.length;
+if(sisa<=0){alert(`Maksimal ${FOTO_MAX} foto per soal. Hapus dulu yang lama.`);event.target.value='';return;}
+if(files.length>sisa) alert(`Hanya ${sisa} foto bisa ditambahkan (maks ${FOTO_MAX}).`);
+
+const baru=files.slice(0,sisa);
+for(const f of baru){
+if(!f.type.startsWith('image/')){alert(`${f.name} bukan gambar.`);continue;}
+try{
+let b64=await kompresFoto(f);
+if(b64.length>FOTO_MAX_BYTES){
+b64=await kompresFoto(f,500,0.35);
+}
+if(b64.length>FOTO_MAX_BYTES){
+alert('Foto terlalu besar setelah kompres, lewati. Coba foto lain.');
+continue;
+}
+arr.push(b64);
+}catch(e){console.warn(e);alert('Gagal proses foto: '+e.message);}
+}
+kuisState.jawaban.fotoUraian[idx]=arr;
+renderKuisSoal();
+simpanProgresLive();
+};
+
+window.hapusFotoUraian=(idx,fi)=>{
+let arr=getFotoUraian(idx);
+if(fi===undefined){ arr=arr.slice(0,-1); }
+else{ arr.splice(fi,1); }
+if(!arr.length) delete kuisState.jawaban.fotoUraian[idx];
+else kuisState.jawaban.fotoUraian[idx]=arr;
+renderKuisSoal();
+simpanProgresLive();
+};
 
 async function simpanProgresLive(isMulai=false){
 if(!kuisState || !student) return;
@@ -1093,7 +1178,7 @@ const d=await getDoc(doc(db,'progres_soal',docId));
 if(!d.exists()){alert('Belum ada data kuis.');return;}
 const data=d.data();
 kuisState={
-jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}},
+jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{},fotoUraian:{}},
 skorUraianPerSoal:data.skorUraianPerSoal||null
 };
 await reviewKuis();
@@ -1164,7 +1249,7 @@ const soal=buildKuisSoal();
 kuisState={
 soal,
 index:0,
-jawaban:{uraian:{},match:{},drag:{}},
+jawaban:{uraian:{},match:{},drag:{},fotoUraian:{}},
 matchOptionsShuffled:{},
 dragChoicesShuffled:{}
 };
@@ -1173,7 +1258,6 @@ const jawabanSoal=s.pasangan.map(p=>p.answer);
 kuisState.matchOptionsShuffled[s.idx]=shuffle(jawabanSoal);
 });
 soal.filter(s=>s.jenis==='drag').forEach(s=>{
-// Shuffle pasangan {latex, plain} supaya sinkron
 const pairs=s.choices.map((c,ci)=>({latex:c,plain:s.choicesPlain[ci]}));
 kuisState.dragChoicesShuffled[s.idx]=shuffle(pairs);
 });
@@ -1192,10 +1276,11 @@ const soal=buildKuisSoal();
 kuisState={
 soal,
 index:data.currentIndex||0,
-jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}},
+jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{},fotoUraian:{}},
 matchOptionsShuffled:{},
 dragChoicesShuffled:{}
 };
+if(!kuisState.jawaban.fotoUraian) kuisState.jawaban.fotoUraian={};
 soal.filter(s=>s.jenis==='match').forEach(s=>{
 const jawabanSoal=s.pasangan.map(p=>p.answer);
 kuisState.matchOptionsShuffled[s.idx]=shuffle(jawabanSoal);
@@ -1273,8 +1358,23 @@ ${pairs.map(p=>`<div class="kuis-drag-item ${val===p.latex?'selected':''}" data-
 ${val?'<button class="practice-btn secondary" style="font-size:12px;padding:6px 12px" onclick="kosongkanDropKuis()">Kosongkan kotak</button>':''}`;
 }else if(s.jenis==='uraian'){
 const val=kuisState.jawaban.uraian[s.idx]||'';
+const fotoArr=getFotoUraian(s.idx);
+const fotoPreview=fotoArr.length?`
+<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
+${fotoArr.map((f,fi)=>`
+<div style="position:relative;display:inline-block">
+<img src="${f}" style="max-width:160px;max-height:160px;border-radius:10px;border:2px solid #e8def8;display:block">
+<button type="button" onclick="hapusFotoUraian(${s.idx},${fi})" style="position:absolute;top:4px;right:4px;background:#b3425a;color:white;border:0;border-radius:50%;width:24px;height:24px;font-weight:900;cursor:pointer;font-size:12px;line-height:1">✕</button>
+</div>`).join('')}
+</div>`:'';
 bodyHTML=`<h4>${esc(s.q)}</h4>
-<textarea class="kuis-input" id="kuisInput" placeholder="Tuliskan jawaban dan langkah penyelesaian...">${esc(val)}</textarea>`;
+<textarea class="kuis-input" id="kuisInput" placeholder="Tuliskan jawaban dan langkah penyelesaian...">${esc(val)}</textarea>
+<div style="margin-top:12px;padding:12px;background:#f0e7ff;border-radius:12px;border:1px dashed #c4aef0">
+<p style="font-size:12px;font-weight:800;color:#6e49bd;margin-bottom:8px">📷 Lampirkan foto jawaban (opsional, maks ${FOTO_MAX} foto)</p>
+<input type="file" id="fotoInput" accept="image/*" multiple style="font-size:12px;width:100%" onchange="uploadFotoUraian(event,${s.idx})">
+<div id="fotoPreviewWrap" style="margin-top:10px">${fotoPreview}</div>
+<p class="muted" style="font-size:11px;margin-top:6px">💡 Jawab dengan teks ATAU foto (salah satu cukup). Foto dikompres otomatis.</p>
+</div>`;
 }
 
 const section=$('studentSection');
@@ -1421,7 +1521,8 @@ const s=kuisState.soal[kuisState.index];
 let ok=true;
 if(s.jenis==='uraian'){
 const v=(kuisState.jawaban.uraian[s.idx]||'').trim();
-if(!v){ok=false;}
+const adaFoto=getFotoUraian(s.idx).length>0;
+if(!v && !adaFoto){ok=false;}
 }else if(s.jenis==='match'){
 const jm=kuisState.jawaban.match[s.idx]||{};
 if(s.pasangan.some((p,pi)=>!jm[pi])) ok=false;
@@ -1432,7 +1533,11 @@ if(!ok){alert('Lengkapi jawaban soal ini dulu ya.');return;}
 
 if(kuisState.index===kuisState.soal.length-1){
 const semuaLengkap=kuisState.soal.every(so=>{
-if(so.jenis==='uraian') return (kuisState.jawaban.uraian[so.idx]||'').trim().length>0;
+if(so.jenis==='uraian'){
+const v=(kuisState.jawaban.uraian[so.idx]||'').trim();
+const adaFoto=getFotoUraian(so.idx).length>0;
+return v.length>0 || adaFoto;
+}
 if(so.jenis==='match'){
 const jm=kuisState.jawaban.match[so.idx]||{};
 return so.pasangan.every((p,pi)=>!!jm[pi]);
@@ -1603,12 +1708,18 @@ const ans=kuisState.jawaban.uraian[i]||'';
 const sudahDinilai=kuisState.skorUraianPerSoal && kuisState.skorUraianPerSoal[i]!==undefined && kuisState.skorUraianPerSoal[i]!==null;
 const skorSoal=kuisState.skorUraianPerSoal && kuisState.skorUraianPerSoal[i]!==undefined ? kuisState.skorUraianPerSoal[i] : null;
 
+const fotoArr=getFotoUraian(i);
+const fotoHTMLReview=fotoArr.length?`
+<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">
+${fotoArr.map(f=>`<a href="${f}" target="_blank"><img src="${f}" style="max-width:140px;max-height:140px;border-radius:6px;border:2px solid #e8def8"></a>`).join('')}
+</div>`:'';
+
 if(feedbackSudah && sudahDinilai){
-html+=`<div class="detail-item correct"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#23866b">Skor guru: ${skorSoal}/12</em><br><strong style="color:#23866b">📖 Pembahasan:</strong> ${u.a}</div>`;
+html+=`<div class="detail-item correct"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}${fotoHTMLReview}<br><em style="color:#23866b">Skor guru: ${skorSoal}/12</em><br><strong style="color:#23866b">📖 Pembahasan:</strong> ${u.a}</div>`;
 }else if(feedbackSudah && !sudahDinilai){
-html+=`<div class="detail-item empty" style="border-left:4px solid #e7ad35"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><span style="background:#fff3d7;color:#946b08;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700">⏳ Belum dinilai guru</span></div>`;
+html+=`<div class="detail-item empty" style="border-left:4px solid #e7ad35"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}${fotoHTMLReview}<br><span style="background:#fff3d7;color:#946b08;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700">⏳ Belum dinilai guru</span></div>`;
 }else{
-html+=`<div class="detail-item empty"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#8984a5">Pembahasan akan muncul setelah guru menilai.</em></div>`;
+html+=`<div class="detail-item empty"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}${fotoHTMLReview}<br><em style="color:#8984a5">Pembahasan akan muncul setelah guru menilai.</em></div>`;
 }
 });
 html+='</div>';
@@ -1617,7 +1728,7 @@ html+='<button class="practice-btn" onclick="studentTab(\'kuis\')">Kembali ke Ku
 section.innerHTML=html;
 renderKaTeX(section);
 };
-/* ================= MONITORING GURU (REAL-TIME) ================= */
+  /* ================= MONITORING GURU (REAL-TIME) ================= */
 
 const TEMPLATE_FB={
 pujian:'Kerja bagus, [nama]! Kamu sudah memahami materi peluang dengan baik. Pertahankan! 🎉',
@@ -1727,9 +1838,21 @@ const progresText=p.selesaiKuis
   : (p.currentIndex!==undefined
     ? `📖 Soal ${Math.min(ci+1,ts)} dari ${ts}`
     : '—');
+
+// Cek apakah ada foto uraian
+const fotoUraian=p.jawabanKuis && p.jawabanKuis.fotoUraian;
+let adaFoto=false;
+if(fotoUraian){
+adaFoto=Object.values(fotoUraian).some(v=>{
+if(typeof v==='string') return v.length>0;
+if(Array.isArray(v)) return v.length>0;
+return false;
+});
+}
+
 return `<tr>
 <td><input type="checkbox" class="cb-murid" data-nama="${esc(nama)}" data-kode="${esc(kode)}"></td>
-<td style="cursor:pointer" class="nama-murid" data-nama="${esc(nama)}" data-kode="${esc(kode)}"><strong>${esc(nama)}</strong><br><span style="font-size:11px;color:#8984a5">${esc(kode)}</span></td>
+<td style="cursor:pointer" class="nama-murid" data-nama="${esc(nama)}" data-kode="${esc(kode)}"><strong>${esc(nama)}</strong><br><span style="font-size:11px;color:#8984a5">${esc(kode)}</span>${adaFoto?' <span style="font-size:10px;color:#8056d9">📷</span>':''}</td>
 <td class="score ${skorClass}">${Math.round(skor)}/100</td>
 <td class="progres-live">${progresText}</td>
 <td class="${statusClass}">${statusText}</td>
@@ -1784,10 +1907,21 @@ return tb-ta;
 
 const jawaban=p.jawabanKuis||{};
 
+/* ===== URAIAN: TAMPILKAN TEKS + FOTO ===== */
 const uraianHTML=kuisData.uraian.map((u,i)=>{
 const ans=jawaban.uraian && jawaban.uraian[i] ? esc(jawaban.uraian[i]) : '(belum dijawab)';
+const fotoData=jawaban.fotoUraian && jawaban.fotoUraian[i];
+let fotoArr=[];
+if(typeof fotoData==='string') fotoArr=[fotoData];
+else if(Array.isArray(fotoData)) fotoArr=fotoData;
+
+const fotoHTML=fotoArr.length?`
+<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px">
+${fotoArr.map(f=>`<a href="${f}" target="_blank"><img src="${f}" style="max-width:180px;max-height:180px;border-radius:8px;border:2px solid #e8def8;cursor:zoom-in" title="Klik untuk perbesar"></a>`).join('')}
+</div>`:'';
+
 const skorGuru=p.skorUraianPerSoal && p.skorUraianPerSoal[i]!==undefined ? `<br><em style="color:#8056d9">Skor guru: ${p.skorUraianPerSoal[i]}/12</em>` : '';
-return `<div class="detail-item empty"><strong>Uraian ${i+1}:</strong> ${ans}${skorGuru}</div>`;
+return `<div class="detail-item empty" style="flex-direction:column;align-items:flex-start"><strong>Uraian ${i+1}:</strong> <span>${ans}</span>${fotoHTML}${skorGuru}</div>`;
 }).join('');
 
 const matchHTML=kuisData.match.map((m,mi)=>{
@@ -1869,7 +2003,7 @@ modal.querySelector('#closeDetail').addEventListener('click',()=>modal.remove())
 modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
 }
 
-/* ===== FUNGSI: Nilai Uraian per Percobaan (dari Riwayat) ===== */
+/* ===== FUNGSI: Nilai Uraian per Percobaan (dari Riwayat) — LIHAT FOTO ===== */
 window.bukaNilaiUraianRiwayat=async(riwayatId,nama,kode)=>{
 try{
 const rd=await getDoc(doc(db,'riwayat_soal',riwayatId));
@@ -1883,13 +2017,24 @@ modal.innerHTML=`
 <div class="modal-card" style="max-width:640px">
 <h2>✍️ Nilai Uraian — Percobaan ${r.at?.toDate?r.at.toDate().toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}</h2>
 <p style="font-size:13px;color:#8984a5;margin-bottom:14px">Skor saat ini: ${Math.round(r.skorTotal!=null?r.skorTotal:(r.skor||0))}/100 · Match: ${Math.round(r.skorMatch||0)}/20 · Drag: ${Math.round(r.skorDrag||0)}/20</p>
-<div style="background:#f8f2ff;border-radius:12px;padding:14px;margin-bottom:14px;max-height:350px;overflow-y:auto">
+<div style="background:#f8f2ff;border-radius:12px;padding:14px;margin-bottom:14px;max-height:400px;overflow-y:auto">
 <h4 style="color:#6845ae;margin:0 0 10px">Jawaban Uraian Murid:</h4>
 ${kuisData.uraian.map((u,i)=>{
 const ans=jawaban.uraian && jawaban.uraian[i] ? jawaban.uraian[i] : '(kosong)';
+const fotoData=jawaban.fotoUraian && jawaban.fotoUraian[i];
+let fotoArr=[];
+if(typeof fotoData==='string') fotoArr=[fotoData];
+else if(Array.isArray(fotoData)) fotoArr=fotoData;
+
+const fotoHTML=fotoArr.length?`
+<div style="margin:6px 0;display:flex;flex-wrap:wrap;gap:6px">
+${fotoArr.map(f=>`<a href="${f}" target="_blank"><img src="${f}" style="max-width:150px;max-height:150px;border-radius:6px;border:2px solid #e8def8;cursor:zoom-in" title="Klik untuk perbesar"></a>`).join('')}
+</div>`:'';
+
 return `<div style="margin-bottom:14px;padding:10px;background:white;border-radius:8px">
 <strong style="font-size:13px">Soal ${i+1}:</strong> ${esc(u.q)}
-<p style="font-size:12px;color:#4a3f6b;margin:6px 0;padding:8px;background:#fcfaff;border-radius:6px"><em>Jawaban:</em> ${esc(ans)}</p>
+<p style="font-size:12px;color:#4a3f6b;margin:6px 0;padding:8px;background:#fcfaff;border-radius:6px"><em>Jawaban teks:</em> ${esc(ans)}</p>
+${fotoHTML}
 <label style="font-size:12px;font-weight:700">Nilai (0–12):</label>
 <input type="number" class="skor-uraian-riwayat" data-i="${i}" min="0" max="12" step="1" value="${r.skorUraianPerSoal && r.skorUraianPerSoal[i]!==undefined ? r.skorUraianPerSoal[i] : 0}" style="width:100px;padding:6px;border:2px solid #e6def4;border-radius:6px;font-family:Nunito,sans-serif">
 </div>`;
