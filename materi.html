@@ -37,7 +37,7 @@ button{cursor:pointer}
 #materiA input,#materiA select{padding:10px;border:1px solid #e6def4;border-radius:10px;font-size:14px;max-width:100%}
 #materiA input:focus,#materiA select:focus{outline:2px solid #b89be9}
 #materiA .m-result{background:#eaf9f2;border-left:5px solid #23866b;padding:14px 17px;border-radius:12px;margin-top:15px;color:#1a5f4d}
-#materiA .m-formula{background:#f0e7ff;color:#6845ae;padding:15px;border-radius:12px;text-align:center;font-size:18px;font-weight:800;margin:15px 0}
+#materiA .m-formula{background:#f0e7ff;color:#6845ae;padding:15px;border-radius:12px;text-align:center;font-size:18px;font-weight:800;margin:15px 0;overflow-wrap:anywhere}
 #materiA .m-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:15px 0}
 #materiA .m-stat-card{background:#f7f1ff;border:1px solid #eee6fa;border-radius:14px;padding:14px;text-align:center}
 #materiA .m-stat-card strong{display:block;font-size:22px;color:#6845ae}
@@ -297,7 +297,7 @@ button{cursor:pointer}
   <div class="m-activity">
     <h3>Eksplorasi Ruang Sampel Dua Dadu</h3>
     <p>Dua buah dadu dilempar bersama-sama satu kali. Setiap dadu memiliki enam kemungkinan hasil. Amati seluruh pasangan hasil yang mungkin muncul.</p>
-    <div class="m-formula">\(n(S) = 6 \times 6 = 36\)</div>
+    <div class="m-formula">\( n(S) = 6 \times 6 = 36 \)</div>
     <div class="m-table-wrap">
       <table>
         <thead><tr><th>Dadu 1 \ Dadu 2</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
@@ -322,7 +322,7 @@ button{cursor:pointer}
 <div class="m-panel">
   <h2>2. Frekuensi Relatif</h2>
   <p>Frekuensi relatif merupakan perbandingan antara banyaknya suatu kejadian muncul dengan banyaknya seluruh percobaan.</p>
-  <div class="m-formula">\(\text{Frekuensi Relatif} = \dfrac{\text{Banyak Kejadian}}{\text{Banyak Percobaan}}\)</div>
+  <div class="m-formula">\( \text{Frekuensi Relatif} = \dfrac{\text{Banyak Kejadian}}{\text{Banyak Percobaan}} \)</div>
   <div class="m-activity">
     <h3>Simulasi Pelemparan Koin</h3>
     <p>Sebuah koin memiliki dua sisi, yaitu Angka (A) dan Gambar (G). Lakukan simulasi pelemparan koin untuk mengamati frekuensi relatif masing-masing sisi.</p>
@@ -339,8 +339,8 @@ button{cursor:pointer}
       <div class="m-stat-card"><strong id="tailsTotal">0</strong><span>Gambar (G)</span></div>
     </div>
     <div class="m-grid-2">
-      <div class="m-info-card"><h4>Frekuensi Relatif Angka</h4><div class="m-formula" id="headsRelative">0/0 = 0</div></div>
-      <div class="m-info-card"><h4>Frekuensi Relatif Gambar</h4><div class="m-formula" id="tailsRelative">0/0 = 0</div></div>
+      <div class="m-info-card"><h4>Frekuensi Relatif Angka</h4><div class="m-formula" id="headsRelative">\( \dfrac{0}{0} = 0 \)</div></div>
+      <div class="m-info-card"><h4>Frekuensi Relatif Gambar</h4><div class="m-formula" id="tailsRelative">\( \dfrac{0}{0} = 0 \)</div></div>
     </div>
     <h4>Riwayat Hasil Pelemparan</h4>
     <div id="coinHistory" class="m-history">Belum ada percobaan.</div>
@@ -351,7 +351,7 @@ button{cursor:pointer}
 <div class="m-panel">
   <h2>3. Peluang Suatu Kejadian</h2>
   <p>Peluang suatu kejadian adalah perbandingan antara banyaknya hasil yang mendukung kejadian dengan banyaknya seluruh anggota ruang sampel, apabila setiap hasil memiliki kemungkinan yang sama.</p>
-  <div class="m-formula">\(P(A) = \dfrac{n(A)}{n(S)}\)</div>
+  <div class="m-formula">\( P(A) = \dfrac{n(A)}{n(S)} \)</div>
   <div class="m-activity">
     <h3>Eksplorasi Visual Peluang Suatu Kejadian</h3>
     <p>Perhatikan ilustrasi sebuah kotak yang berisi beberapa bola. Atur jumlah bola yang menjadi kejadian A dan amati perubahan peluangnya.</p>
@@ -363,11 +363,11 @@ button{cursor:pointer}
       <p style="text-align:center"><span class="m-chip">Hijau = Kejadian A</span><span class="m-chip">Abu-abu = Bukan A</span></p>
     </div>
     <div class="m-stats">
-      <div class="m-stat-card"><strong id="eventNTotal">10</strong><span>\(n(S)\)</span></div>
-      <div class="m-stat-card"><strong id="eventNFavorable">5</strong><span>\(n(A)\)</span></div>
-      <div class="m-stat-card"><strong id="eventProbability">0,50</strong><span>\(P(A)\)</span></div>
+      <div class="m-stat-card"><strong id="eventNTotal">10</strong><span>\( n(S) \)</span></div>
+      <div class="m-stat-card"><strong id="eventNFavorable">5</strong><span>\( n(A) \)</span></div>
+      <div class="m-stat-card"><strong id="eventProbability">0,50</strong><span>\( P(A) \)</span></div>
     </div>
-    <div class="m-formula" id="eventFormula">\(P(A) = \dfrac{5}{10} = 0{,}50\)</div>
+    <div class="m-formula" id="eventFormula">\( P(A) = \dfrac{5}{10} = 0{,}50 \)</div>
     <div id="eventExplanation" class="m-result"></div>
   </div>
 </div>
@@ -375,7 +375,7 @@ button{cursor:pointer}
 <div class="m-panel">
   <h2>4. Peluang Komplemen</h2>
   <p>Komplemen suatu kejadian merupakan kejadian yang berisi semua hasil dalam ruang sampel yang tidak termasuk dalam kejadian tersebut.</p>
-  <div class="m-formula">\(P(A^c) = 1 - P(A)\)</div>
+  <div class="m-formula">\( P(A^{c}) = 1 - P(A) \)</div>
   <div class="m-activity">
     <h3>Eksplorasi Visual Peluang Komplemen</h3>
     <p>Ubah jumlah bola yang termasuk kejadian A. Amati hubungan antara peluang kejadian A dengan peluang komplemennya.</p>
@@ -387,10 +387,10 @@ button{cursor:pointer}
       <p style="text-align:center"><span class="m-chip">Hijau = Kejadian A</span><span class="m-chip">Abu-abu = Komplemen A</span></p>
     </div>
     <div class="m-grid-2">
-      <div class="m-stat-card"><strong id="probA">0,50</strong><span>\(P(A)\)</span></div>
-      <div class="m-stat-card"><strong id="probComplement">0,50</strong><span>\(P(A^c)\)</span></div>
+      <div class="m-stat-card"><strong id="probA">0,50</strong><span>\( P(A) \)</span></div>
+      <div class="m-stat-card"><strong id="probComplement">0,50</strong><span>\( P(A^{c}) \)</span></div>
     </div>
-    <div class="m-formula" id="complementFormula">\(P(A^c) = 1 - 0{,}50 = 0{,}50\)</div>
+    <div class="m-formula" id="complementFormula">\( P(A^{c}) = 1 - 0{,}50 = 0{,}50 \)</div>
     <div class="m-result" id="complementExplanation"></div>
   </div>
 </div>
@@ -398,12 +398,12 @@ button{cursor:pointer}
 <div class="m-panel">
   <h2>5. Frekuensi Harapan</h2>
   <p>Frekuensi harapan adalah perkiraan banyaknya suatu kejadian yang muncul dalam sejumlah percobaan berdasarkan peluang kejadian tersebut.</p>
-  <div class="m-formula">\(F_h(A) = P(A) \times n\)</div>
+  <div class="m-formula">\( F_h(A) = P(A) \times n \)</div>
   <div class="m-activity">
     <h3>Visualisasi Frekuensi Harapan</h3>
     <div class="m-grid-2">
-      <div><label><strong>Banyak percobaan (\(n\))</strong></label><input type="number" id="fhN" min="1" value="0" placeholder="0"></div>
-      <div><label><strong>Peluang kejadian \(P(A)\)</strong></label><input type="number" id="fhP" min="0" max="1" step="0.01" value="0" placeholder="0"></div>
+      <div><label><strong>Banyak percobaan (\( n \))</strong></label><input type="number" id="fhN" min="1" value="0" placeholder="0"></div>
+      <div><label><strong>Peluang kejadian \( P(A) \)</strong></label><input type="number" id="fhP" min="0" max="1" step="0.01" value="0" placeholder="0"></div>
     </div>
     <button onclick="calculateExpectedFrequency()">Hitung Frekuensi Harapan</button>
     <div id="expectedResult" class="m-result" style="display:none"></div>
@@ -449,13 +449,13 @@ button{cursor:pointer}
 <circle id="mB1CircleB" class="m-venn-circle" cx="355" cy="120" r="68" fill="#a887e8" fill-opacity=".72" stroke="#6845ae" stroke-width="3"/>
 <text x="145" y="124" text-anchor="middle" font-size="20" font-weight="900" fill="#35256c">A</text>
 <text x="355" y="124" text-anchor="middle" font-size="20" font-weight="900" fill="#35256c">B</text>
-<text id="mB1EmptyIntersection" x="250" y="205" text-anchor="middle" font-size="16" font-weight="900" fill="#b3425a" opacity="0">A ∩ B = ∅</text>
+<text id="mB1EmptyIntersection" x="250" y="205" text-anchor="middle" font-size="16" font-weight="900" fill="#b3425a" opacity="0">\( A \cap B = \emptyset \)</text>
 </svg>
 <div class="m-button-row" style="justify-content:center">
 <button class="m-primary" id="mB1Animate">▶ Amati diagram</button>
 <button class="m-secondary" id="mB1ResetDiagram">Ulangi dari awal</button>
 </div>
-<div class="m-venn-step" id="mB1DiagramText" aria-live="polite">Tekan “Amati diagram” untuk memulai Pengamatan 1.</div>
+<div class="m-venn-step" id="mB1DiagramText" aria-live="polite">Tekan "Amati diagram" untuk memulai Pengamatan 1.</div>
 </div>
 </section>
 
@@ -505,7 +505,7 @@ button{cursor:pointer}
 <button class="m-secondary" id="mB2ObserveI" disabled>Amati irisan</button>
 <button class="m-secondary" id="mB2Reset">Ulangi</button>
 </div>
-<div class="m-venn-step" id="mB2DiagramText" aria-live="polite">Tekan “Mulai animasi” untuk melihat kedua kejadian bergerak hingga beririsan.</div>
+<div class="m-venn-step" id="mB2DiagramText" aria-live="polite">Tekan "Mulai animasi" untuk melihat kedua kejadian bergerak hingga beririsan.</div>
 </div>
 </section>
 
@@ -516,10 +516,10 @@ button{cursor:pointer}
 <p>Masukkan data sesuai soal atau ubah angkanya. Hitung peluang seorang siswa yang dipilih secara acak mengikuti klub sains atau klub bahasa.</p>
 </div>
 <div class="m-input-grid">
-<div><label for="mB2Total">Jumlah seluruh siswa, \(n(S)\)</label><input id="mB2Total" type="number" min="1" step="1" value="0"></div>
-<div><label for="mB2A">Mengikuti klub sains, \(n(A)\)</label><input id="mB2A" type="number" min="0" step="1" value="0"></div>
-<div><label for="mB2B">Mengikuti klub bahasa, \(n(B)\)</label><input id="mB2B" type="number" min="0" step="1" value="0"></div>
-<div><label for="mB2I">Mengikuti keduanya, \(n(A \cap B)\)</label><input id="mB2I" type="number" min="0" step="1" value="0"></div>
+<div><label for="mB2Total">Jumlah seluruh siswa, \( n(S) \)</label><input id="mB2Total" type="number" min="1" step="1" value="0"></div>
+<div><label for="mB2A">Mengikuti klub sains, \( n(A) \)</label><input id="mB2A" type="number" min="0" step="1" value="0"></div>
+<div><label for="mB2B">Mengikuti klub bahasa, \( n(B) \)</label><input id="mB2B" type="number" min="0" step="1" value="0"></div>
+<div><label for="mB2I">Mengikuti keduanya, \( n(A \cap B) \)</label><input id="mB2I" type="number" min="0" step="1" value="0"></div>
 </div>
 <button class="m-primary" id="mB2Calculate">Hitung Peluang Gabungan</button>
 <div class="m-result" id="mB2Result" aria-live="polite"></div>
@@ -532,7 +532,7 @@ button{cursor:pointer}
 <span class="m-badge">Materi 3</span>
 <h2>Peluang Kejadian Saling Bebas</h2>
 <p>Dua kejadian saling bebas apabila terjadinya kejadian pertama tidak mengubah peluang terjadinya kejadian kedua.</p>
-<div class="m-math">\(P(A \cap B) = P(A) \times P(B)\)</div>
+<div class="m-math">\( P(A \cap B) = P(A) \times P(B) \)</div>
 <div class="m-visual">
 <h3>Eksperimen Interaktif: Melempar Koin dan Dadu</h3>
 <p>Sebuah koin dan sebuah dadu dilempar secara bersamaan. Amati hasil yang muncul dari kedua benda tersebut.</p>
@@ -572,11 +572,11 @@ button{cursor:pointer}
 <section class="m-panel">
 <h2>Analisis Hasil Percobaan</h2>
 <p>Perhatikan hasil percobaan yang telah dilakukan. Apakah kejadian muncul Gambar pada koin dan muncul angka 6 pada dadu saling memengaruhi?</p>
-<div class="m-math">\(P(A) = \dfrac{1}{2}\)</div>
-<div class="m-math">\(P(B) = \dfrac{1}{6}\)</div>
-<div class="m-math">\(P(A \cap B) = P(A) \times P(B)\)</div>
-<div class="m-math">\(P(A \cap B) = \dfrac{1}{2} \times \dfrac{1}{6} = \dfrac{1}{12}\)</div>
-<p>Artinya, peluang koin menunjukkan Gambar dan dadu menunjukkan angka 6 secara bersamaan adalah \(\dfrac{1}{12}\) atau sekitar \(8{,}33\%\).</p>
+<div class="m-math">\( P(A) = \dfrac{1}{2} \)</div>
+<div class="m-math">\( P(B) = \dfrac{1}{6} \)</div>
+<div class="m-math">\( P(A \cap B) = P(A) \times P(B) \)</div>
+<div class="m-math">\( P(A \cap B) = \dfrac{1}{2} \times \dfrac{1}{6} = \dfrac{1}{12} \)</div>
+<p>Artinya, peluang koin menunjukkan Gambar dan dadu menunjukkan angka 6 secara bersamaan adalah \( \dfrac{1}{12} \) atau sekitar \( 8{,}33\% \).</p>
 <p class="m-note">Hasil percobaan dapat berbeda-beda karena setiap lemparan bersifat acak. Semakin banyak percobaan, frekuensi relatif dapat memberikan gambaran yang lebih baik mengenai peluang teoretis.</p>
 </section>
 
@@ -597,7 +597,7 @@ button{cursor:pointer}
 </section>
 </section>
 
-<!-- ===== B4: PELUANG BERSYARAT (LENGKAP) ===== -->
+<!-- ===== B4: PELUANG BERSYARAT ===== -->
 <section class="m-topic" id="mB4" role="tabpanel">
 <section class="m-panel">
 <span class="m-badge">Materi 4</span>
@@ -612,56 +612,56 @@ button{cursor:pointer}
 <section class="m-panel">
 <h2>1. Peluang Kejadian A dengan Syarat B Terjadi</h2>
 <p>Peluang kejadian A dengan syarat B telah terjadi adalah peluang terjadinya A setelah diketahui bahwa B sudah terjadi.</p>
-<div class="m-math">\(P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}\)</div>
+<div class="m-math">\( P(A \mid B) = \dfrac{P(A \cap B)}{P(B)} \)</div>
 <p><strong>Keterangan:</strong></p>
 <ul>
-<li>\(P(A \mid B)\) = peluang A jika B telah terjadi.</li>
-<li>\(P(A \cap B)\) = peluang A dan B terjadi bersamaan.</li>
-<li>\(P(B)\) = peluang kejadian B.</li>
+<li>\( P(A \mid B) \) = peluang A jika B telah terjadi.</li>
+<li>\( P(A \cap B) \) = peluang A dan B terjadi bersamaan.</li>
+<li>\( P(B) \) = peluang kejadian B.</li>
 </ul>
-<p class="m-note">Syarat penggunaan rumus adalah \(P(B) > 0\).</p>
+<p class="m-note">Syarat penggunaan rumus adalah \( P(B) > 0 \).</p>
 <div class="m-visual">
 <h3>Contoh Soal 1</h3>
 <p>Dalam sebuah kelas terdapat 40 siswa. Sebanyak 20 siswa menyukai Matematika (A), 15 siswa menyukai Fisika (B), dan 10 siswa menyukai keduanya.</p>
 <p>Jika diketahui seorang siswa menyukai Fisika, berapakah peluang siswa tersebut juga menyukai Matematika?</p>
 <p><strong>Diketahui:</strong></p>
-<div class="m-math">\(n(S) = 40\)</div>
-<div class="m-math">\(n(A \cap B) = 10\)</div>
-<div class="m-math">\(n(B) = 15\)</div>
-<p><strong>Ditanyakan:</strong> \(P(A \mid B)\).</p>
+<div class="m-math">\( n(S) = 40 \)</div>
+<div class="m-math">\( n(A \cap B) = 10 \)</div>
+<div class="m-math">\( n(B) = 15 \)</div>
+<p><strong>Ditanyakan:</strong> \( P(A \mid B) \).</p>
 <p><strong>Penyelesaian:</strong></p>
-<div class="m-math">\(P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}\)</div>
-<div class="m-math">\(P(A \mid B) = \dfrac{10/40}{15/40}\)</div>
-<div class="m-math">\(P(A \mid B) = \dfrac{10}{15} = \dfrac{2}{3}\)</div>
-<p>Jadi, peluang siswa menyukai Matematika jika diketahui menyukai Fisika adalah \(\dfrac{2}{3}\) atau sekitar \(66{,}67\%\).</p>
+<div class="m-math">\( P(A \mid B) = \dfrac{P(A \cap B)}{P(B)} \)</div>
+<div class="m-math">\( P(A \mid B) = \dfrac{10/40}{15/40} \)</div>
+<div class="m-math">\( P(A \mid B) = \dfrac{10}{15} = \dfrac{2}{3} \)</div>
+<p>Jadi, peluang siswa menyukai Matematika jika diketahui menyukai Fisika adalah \( \dfrac{2}{3} \) atau sekitar \( 66{,}67\% \).</p>
 </div>
 </section>
 
 <section class="m-panel">
 <h2>2. Peluang Kejadian B dengan Syarat A Terjadi</h2>
 <p>Peluang kejadian B dengan syarat A telah terjadi adalah peluang terjadinya B setelah diketahui bahwa A sudah terjadi.</p>
-<div class="m-math">\(P(B \mid A) = \dfrac{P(A \cap B)}{P(A)}\)</div>
+<div class="m-math">\( P(B \mid A) = \dfrac{P(A \cap B)}{P(A)} \)</div>
 <p><strong>Keterangan:</strong></p>
 <ul>
-<li>\(P(B \mid A)\) = peluang B jika A telah terjadi.</li>
-<li>\(P(A \cap B)\) = peluang A dan B terjadi bersamaan.</li>
-<li>\(P(A)\) = peluang kejadian A.</li>
+<li>\( P(B \mid A) \) = peluang B jika A telah terjadi.</li>
+<li>\( P(A \cap B) \) = peluang A dan B terjadi bersamaan.</li>
+<li>\( P(A) \) = peluang kejadian A.</li>
 </ul>
-<p class="m-note">Syarat penggunaan rumus adalah \(P(A) > 0\).</p>
+<p class="m-note">Syarat penggunaan rumus adalah \( P(A) > 0 \).</p>
 <div class="m-visual">
 <h3>Contoh Soal 2</h3>
 <p>Menggunakan data sebelumnya, terdapat 40 siswa. Sebanyak 20 siswa menyukai Matematika (A), 15 siswa menyukai Fisika (B), dan 10 siswa menyukai keduanya.</p>
 <p>Jika diketahui seorang siswa menyukai Matematika, berapakah peluang siswa tersebut juga menyukai Fisika?</p>
 <p><strong>Diketahui:</strong></p>
-<div class="m-math">\(n(S) = 40\)</div>
-<div class="m-math">\(n(A \cap B) = 10\)</div>
-<div class="m-math">\(n(A) = 20\)</div>
-<p><strong>Ditanyakan:</strong> \(P(B \mid A)\).</p>
+<div class="m-math">\( n(S) = 40 \)</div>
+<div class="m-math">\( n(A \cap B) = 10 \)</div>
+<div class="m-math">\( n(A) = 20 \)</div>
+<p><strong>Ditanyakan:</strong> \( P(B \mid A) \).</p>
 <p><strong>Penyelesaian:</strong></p>
-<div class="m-math">\(P(B \mid A) = \dfrac{P(A \cap B)}{P(A)}\)</div>
-<div class="m-math">\(P(B \mid A) = \dfrac{10/40}{20/40}\)</div>
-<div class="m-math">\(P(B \mid A) = \dfrac{10}{20} = \dfrac{1}{2}\)</div>
-<p>Jadi, peluang siswa menyukai Fisika jika diketahui menyukai Matematika adalah \(\dfrac{1}{2}\) atau \(50\%\).</p>
+<div class="m-math">\( P(B \mid A) = \dfrac{P(A \cap B)}{P(A)} \)</div>
+<div class="m-math">\( P(B \mid A) = \dfrac{10/40}{20/40} \)</div>
+<div class="m-math">\( P(B \mid A) = \dfrac{10}{20} = \dfrac{1}{2} \)</div>
+<p>Jadi, peluang siswa menyukai Fisika jika diketahui menyukai Matematika adalah \( \dfrac{1}{2} \) atau \( 50\% \).</p>
 </div>
 </section>
 
@@ -670,12 +670,12 @@ button{cursor:pointer}
 <p>Kedua rumus memiliki pembilang yang sama, yaitu peluang kejadian A dan B terjadi bersamaan. Perbedaannya terletak pada penyebutnya.</p>
 <table>
 <tr><th>Jenis</th><th>Rumus</th><th>Penyebut</th></tr>
-<tr><td>A dengan syarat B</td><td>\(P(A \mid B)\)</td><td>\(P(B)\)</td></tr>
-<tr><td>B dengan syarat A</td><td>\(P(B \mid A)\)</td><td>\(P(A)\)</td></tr>
+<tr><td>A dengan syarat B</td><td>\( P(A \mid B) \)</td><td>\( P(B) \)</td></tr>
+<tr><td>B dengan syarat A</td><td>\( P(B \mid A) \)</td><td>\( P(A) \)</td></tr>
 </table>
 <div class="m-visual">
 <strong>Hal penting:</strong>
-<p>\(P(A \mid B)\) tidak selalu sama dengan \(P(B \mid A)\). Perhatikan kejadian yang menjadi syarat karena itulah yang menentukan penyebut dalam rumus.</p>
+<p>\( P(A \mid B) \) tidak selalu sama dengan \( P(B \mid A) \). Perhatikan kejadian yang menjadi syarat karena itulah yang menentukan penyebut dalam rumus.</p>
 </div>
 </section>
 
@@ -683,9 +683,9 @@ button{cursor:pointer}
 <h2>4. Kalkulator Peluang Kejadian Bersyarat</h2>
 <p>Masukkan nilai peluang A, peluang B, dan peluang irisan A dan B. Gunakan bilangan desimal antara 0 dan 1.</p>
 <div class="m-input-grid three">
-<div><label for="mB4PA">\(P(A)\)</label><input id="mB4PA" type="number" min="0" max="1" step="any" placeholder="Contoh: 0.5"></div>
-<div><label for="mB4PB">\(P(B)\)</label><input id="mB4PB" type="number" min="0" max="1" step="any" placeholder="Contoh: 0.375"></div>
-<div><label for="mB4PAB">\(P(A \cap B)\)</label><input id="mB4PAB" type="number" min="0" max="1" step="any" placeholder="Contoh: 0.25"></div>
+<div><label for="mB4PA">\( P(A) \)</label><input id="mB4PA" type="number" min="0" max="1" step="any" placeholder="Contoh: 0.5"></div>
+<div><label for="mB4PB">\( P(B) \)</label><input id="mB4PB" type="number" min="0" max="1" step="any" placeholder="Contoh: 0.375"></div>
+<div><label for="mB4PAB">\( P(A \cap B) \)</label><input id="mB4PAB" type="number" min="0" max="1" step="any" placeholder="Contoh: 0.25"></div>
 </div>
 <div class="m-button-row">
 <button class="m-primary" id="mB4ProbabilityCalculate">Hitung Kedua Peluang</button>
@@ -701,13 +701,13 @@ button{cursor:pointer}
 <p><strong>Kejadian A:</strong> siswa mengikuti ekstrakurikuler sains.</p>
 <p><strong>Kejadian B:</strong> siswa mengikuti ekstrakurikuler matematika.</p>
 <p>Jika seorang siswa diketahui mengikuti ekstrakurikuler matematika, tentukan peluang siswa tersebut juga mengikuti ekstrakurikuler sains.</p>
-<p><strong>Ditanyakan:</strong> \(P(A \mid B)\).</p>
+<p><strong>Ditanyakan:</strong> \( P(A \mid B) \).</p>
 </div>
 <div class="m-input-grid">
 <div><label for="mB4Total">Jumlah seluruh siswa</label><input id="mB4Total" type="number" min="1" step="1" value="0"></div>
-<div><label for="mB4A">Siswa mengikuti sains, \(n(A)\)</label><input id="mB4A" type="number" min="0" step="1" value="0"></div>
-<div><label for="mB4B">Siswa mengikuti matematika, \(n(B)\)</label><input id="mB4B" type="number" min="0" step="1" value="0"></div>
-<div><label for="mB4Intersection">Siswa mengikuti keduanya, \(n(A \cap B)\)</label><input id="mB4Intersection" type="number" min="0" step="1" value="0"></div>
+<div><label for="mB4A">Siswa mengikuti sains, \( n(A) \)</label><input id="mB4A" type="number" min="0" step="1" value="0"></div>
+<div><label for="mB4B">Siswa mengikuti matematika, \( n(B) \)</label><input id="mB4B" type="number" min="0" step="1" value="0"></div>
+<div><label for="mB4Intersection">Siswa mengikuti keduanya, \( n(A \cap B) \)</label><input id="mB4Intersection" type="number" min="0" step="1" value="0"></div>
 </div>
 <p class="m-note">Jumlah siswa yang mengikuti masing-masing ekstrakurikuler tidak boleh melebihi jumlah seluruh siswa. Jumlah siswa yang mengikuti keduanya tidak boleh melebihi jumlah siswa yang mengikuti sains maupun matematika.</p>
 <div class="m-button-row">
@@ -722,10 +722,10 @@ button{cursor:pointer}
 <span class="m-badge">Kesimpulan Akhir</span>
 <h2>Kesimpulan Pembelajaran</h2>
 <p>Selamat! Kamu telah mencoba seluruh materi peluang kejadian majemuk. Berdasarkan kegiatan dan perhitungan yang telah dilakukan, berikut kesimpulan dari keempat materi.</p>
-<div class="m-visual"><h3>1. Peluang Kejadian Saling Lepas</h3><p>Dua kejadian disebut saling lepas apabila tidak memiliki anggota yang sama sehingga tidak dapat terjadi secara bersamaan.</p><div class="m-math">\(P(A \cup B) = P(A) + P(B)\)</div></div>
-<div class="m-visual"><h3>2. Peluang Kejadian Tidak Saling Lepas</h3><p>Dua kejadian disebut tidak saling lepas apabila memiliki anggota yang sama atau dapat terjadi secara bersamaan.</p><div class="m-math">\(P(A \cup B) = P(A) + P(B) - P(A \cap B)\)</div></div>
-<div class="m-visual"><h3>3. Peluang Kejadian Saling Bebas</h3><p>Dua kejadian disebut saling bebas apabila terjadinya kejadian pertama tidak memengaruhi peluang terjadinya kejadian kedua.</p><div class="m-math">\(P(A \cap B) = P(A) \times P(B)\)</div></div>
-<div class="m-visual"><h3>4. Peluang Kejadian Bersyarat</h3><p>Peluang kejadian bersyarat digunakan untuk menentukan peluang suatu kejadian berdasarkan informasi bahwa kejadian lainnya telah terjadi.</p><div class="m-math">\(P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}\)</div><div class="m-math">\(P(B \mid A) = \dfrac{P(A \cap B)}{P(A)}\)</div><p>Kedua rumus memiliki penyebut yang berbeda karena kejadian yang menjadi syarat juga berbeda.</p></div>
+<div class="m-visual"><h3>1. Peluang Kejadian Saling Lepas</h3><p>Dua kejadian disebut saling lepas apabila tidak memiliki anggota yang sama sehingga tidak dapat terjadi secara bersamaan.</p><div class="m-math">\( P(A \cup B) = P(A) + P(B) \)</div></div>
+<div class="m-visual"><h3>2. Peluang Kejadian Tidak Saling Lepas</h3><p>Dua kejadian disebut tidak saling lepas apabila memiliki anggota yang sama atau dapat terjadi secara bersamaan.</p><div class="m-math">\( P(A \cup B) = P(A) + P(B) - P(A \cap B) \)</div></div>
+<div class="m-visual"><h3>3. Peluang Kejadian Saling Bebas</h3><p>Dua kejadian disebut saling bebas apabila terjadinya kejadian pertama tidak memengaruhi peluang terjadinya kejadian kedua.</p><div class="m-math">\( P(A \cap B) = P(A) \times P(B) \)</div></div>
+<div class="m-visual"><h3>4. Peluang Kejadian Bersyarat</h3><p>Peluang kejadian bersyarat digunakan untuk menentukan peluang suatu kejadian berdasarkan informasi bahwa kejadian lainnya telah terjadi.</p><div class="m-math">\( P(A \mid B) = \dfrac{P(A \cap B)}{P(B)} \)</div><div class="m-math">\( P(B \mid A) = \dfrac{P(A \cap B)}{P(A)} \)</div><p>Kedua rumus memiliki penyebut yang berbeda karena kejadian yang menjadi syarat juga berbeda.</p></div>
 <div class="m-result show"><h3>Kesimpulan Umum</h3><p>Setiap jenis peluang kejadian majemuk memiliki karakteristik dan rumus yang berbeda. Oleh karena itu, sebelum menentukan rumus yang digunakan, kita perlu memahami hubungan antara kejadian A dan B serta informasi yang diketahui dalam soal.</p></div>
 </section>
 
@@ -790,9 +790,9 @@ button{cursor:pointer}
 <div class="m-answer-area" id="mCAnswerArea">
 <h2>4. Tentukan Peluang Teoretis</h2>
 <p class="m-note">Semua kemungkinan hasil telah diamati. Tentukan banyak anggota kejadian dan peluang teoretis.</p>
-<label for="mCNA">Banyak anggota kejadian, \(n(A)\)</label>
+<label for="mCNA">Banyak anggota kejadian, \( n(A) \)</label>
 <input type="number" id="mCNA" min="0" step="1" placeholder="Masukkan banyak anggota kejadian">
-<label for="mCPA">Peluang teoretis, \(P(A)\)</label>
+<label for="mCPA">Peluang teoretis, \( P(A) \)</label>
 <input type="text" id="mCPA" placeholder="Contoh: 1/6 atau 0,167">
 <button class="m-primary" id="mCCheckButton" style="margin-top:14px">Periksa Jawaban</button>
 <p id="mCFeedback" class="m-feedback" aria-live="polite"></p>
@@ -808,17 +808,57 @@ button{cursor:pointer}
 
 <script>
 /* ============================================================
-   ROUTING — pilih materi berdasarkan ?tab= di URL
+   HELPER FORMAT — dipakai semua materi
+   ============================================================ */
+function fmtFrac(n,d){
+  if(d===0) return '\\text{tidak terdefinisi}';
+  if(n===0) return '0';
+  const gcd=(a,b)=>b===0?a:gcd(b,a%b);
+  const g=gcd(Math.abs(n),Math.abs(d));
+  const sn=n/g, sd=d/g;
+  return sd===1 ? `${sn}` : `\\dfrac{${sn}}{${sd}}`;
+}
+function fmtDec(v){ return Number(v).toFixed(2).replace('.',','); }
+function fmtPct(v){ return (v*100).toLocaleString('id-ID',{maximumFractionDigits:2})+'\\%'; }
+
+function renderMathNow(el){
+  if(!el || typeof renderMathInElement!=='function') return;
+  renderMathInElement(el,{
+    delimiters:[
+      {left:"\\(",right:"\\)",display:false},
+      {left:"\\[",right:"\\]",display:true},
+      {left:"$$",right:"$$",display:true}
+    ],
+    throwOnError:false,
+    ignoredTags:["script","noscript","style","textarea","pre","code"]
+  });
+}
+
+/* Render awal setelah KaTeX siap */
+document.addEventListener('DOMContentLoaded',function(){
+  if(typeof renderMathInElement==='function'){
+    renderMathInElement(document.body,{
+      delimiters:[
+        {left:"\\(",right:"\\)",display:false},
+        {left:"\\[",right:"\\]",display:true}
+      ],
+      throwOnError:false,
+      ignoredTags:["script","noscript","style","textarea","pre","code"]
+    });
+  }
+});
+
+/* ============================================================
+   ROUTING
    ============================================================ */
 (function(){
-  const params = new URLSearchParams(location.search);
-  const tab = params.get('tab') || 'materiA';
-  const valid = ['materiA','materiB','materiC'];
-  const id = valid.includes(tab) ? tab : 'materiA';
-  const el = document.getElementById(id);
+  const params=new URLSearchParams(location.search);
+  const tab=params.get('tab')||'materiA';
+  const valid=['materiA','materiB','materiC'];
+  const id=valid.includes(tab)?tab:'materiA';
+  const el=document.getElementById(id);
   if(el) el.classList.add('aktif');
 })();
-
 
 /* ============================================================
    MATERI A — KONSEP DASAR PELUANG
@@ -828,7 +868,7 @@ function createSampleTable(){
   if(!body) return;
   for(let i=1;i<=6;i++){
     let row=`<tr><th>${i}</th>`;
-    for(let j=1;j<=6;j++){ row+=`<td>(${i},${j})</td>`; }
+    for(let j=1;j<=6;j++){row+=`<td>(${i},${j})</td>`;}
     row+='</tr>';
     body.innerHTML+=row;
   }
@@ -845,17 +885,16 @@ function updateTree(){
     item.style.width='65px';
     leaves.appendChild(item);
   }
-  document.getElementById('treeExplanation').textContent=
-    `Jika dadu pertama menunjukkan angka ${first}, dadu kedua dapat menunjukkan angka 1 sampai 6. Jadi terdapat 6 kemungkinan pasangan hasil.`;
+  const expEl=document.getElementById('treeExplanation');
+  expEl.innerHTML=`Jika dadu pertama menunjukkan angka <strong>${first}</strong>, dadu kedua dapat menunjukkan angka 1 sampai 6. Jadi terdapat <strong>6</strong> kemungkinan pasangan hasil.`;
+  renderMathNow(expEl);
 }
 
 let coinResults=[];
-
 function flipCoin(amount){
-  for(let i=0;i<amount;i++){ coinResults.push(Math.random()<0.5?'A':'G'); }
+  for(let i=0;i<amount;i++){coinResults.push(Math.random()<0.5?'A':'G');}
   updateCoin();
 }
-
 function updateCoin(){
   const total=coinResults.length;
   const heads=coinResults.filter(x=>x==='A').length;
@@ -863,27 +902,26 @@ function updateCoin(){
   document.getElementById('coinTotal').textContent=total;
   document.getElementById('headsTotal').textContent=heads;
   document.getElementById('tailsTotal').textContent=tails;
-  document.getElementById('headsRelative').textContent=total?`${heads}/${total} = ${(heads/total).toFixed(2)}`:'0/0 = 0';
-  document.getElementById('tailsRelative').textContent=total?`${tails}/${total} = ${(tails/total).toFixed(2)}`:'0/0 = 0';
+  const headsRelEl=document.getElementById('headsRelative');
+  const tailsRelEl=document.getElementById('tailsRelative');
+  headsRelEl.innerHTML=total?`\\( \\dfrac{${heads}}{${total}} = ${fmtDec(heads/total)} \\)`:`\\( \\dfrac{0}{0} = 0 \\)`;
+  tailsRelEl.innerHTML=total?`\\( \\dfrac{${tails}}{${total}} = ${fmtDec(tails/total)} \\)`:`\\( \\dfrac{0}{0} = 0 \\)`;
+  renderMathNow(headsRelEl);renderMathNow(tailsRelEl);
+
   const coin=document.getElementById('coinVisual');
   const caption=document.getElementById('coinCaption');
   if(total){
-    const lastResult=coinResults[total-1];
-    coin.textContent=lastResult;
-    caption.textContent=lastResult==='A'?'Sisi Angka (A) muncul':'Sisi Gambar (G) muncul';
-    coin.classList.remove('flipping');
-    void coin.offsetWidth;
-    coin.classList.add('flipping');
+    const last=coinResults[total-1];
+    coin.textContent=last;
+    caption.textContent=last==='A'?'Sisi Angka (A) muncul':'Sisi Gambar (G) muncul';
+    coin.classList.remove('flipping');void coin.offsetWidth;coin.classList.add('flipping');
   }else{
-    coin.textContent='K';
-    caption.textContent='Koin siap dilempar';
-    coin.classList.remove('flipping');
+    coin.textContent='K';caption.textContent='Koin siap dilempar';coin.classList.remove('flipping');
   }
   document.getElementById('coinHistory').textContent=
     total?coinResults.map((x,i)=>`${i+1}. ${x==='A'?'Angka':'Gambar'}`).join(' | '):'Belum ada percobaan.';
 }
-
-function resetCoin(){ coinResults=[]; updateCoin(); }
+function resetCoin(){coinResults=[];updateCoin();}
 
 function updateEventProbability(){
   const total=Number(document.getElementById('eventTotal').value);
@@ -897,13 +935,20 @@ function updateEventProbability(){
   const probability=valid/total;
   document.getElementById('eventNTotal').textContent=total;
   document.getElementById('eventNFavorable').textContent=valid;
-  document.getElementById('eventProbability').textContent=probability.toFixed(2).replace('.',',');
-  document.getElementById('eventFormula').textContent=`P(A) = ${valid}/${total} = ${probability.toFixed(2).replace('.',',')}`;
+  document.getElementById('eventProbability').textContent=fmtDec(probability);
+
+  const fEl=document.getElementById('eventFormula');
+  fEl.innerHTML=`\\( P(A) = \\dfrac{${valid}}{${total}} = ${fmtDec(probability)} \\)`;
+  renderMathNow(fEl);
+
   let visual='';
-  for(let i=0;i<total;i++){ visual+=`<div class="m-number-item ${i<valid?'selected':''}">${i<valid?'A':'-'}</div>`; }
+  for(let i=0;i<total;i++){visual+=`<div class="m-number-item ${i<valid?'selected':''}">${i<valid?'A':'-'}</div>`;}
   document.getElementById('eventBallVisual').innerHTML=visual;
-  document.getElementById('eventExplanation').textContent=
-    `Terdapat ${valid} bola yang termasuk kejadian A dari ${total} bola seluruhnya. Peluang kejadian A adalah ${valid}/${total} = ${probability.toFixed(2).replace('.',',')}.`;
+
+  const expEl=document.getElementById('eventExplanation');
+  expEl.innerHTML=`Terdapat <strong>${valid}</strong> bola yang termasuk kejadian A dari <strong>${total}</strong> bola seluruhnya.
+    Peluang kejadian A adalah \\( \\dfrac{${valid}}{${total}} = ${fmtDec(probability)} \\).`;
+  renderMathNow(expEl);
 }
 
 function updateComplement(){
@@ -918,27 +963,40 @@ function updateComplement(){
   const pAc=complement/total;
   document.getElementById('complementTotalValue').textContent=total;
   document.getElementById('complementFavorableValue').textContent=valid;
-  document.getElementById('probA').textContent=pA.toFixed(2).replace('.',',');
-  document.getElementById('probComplement').textContent=pAc.toFixed(2).replace('.',',');
-  document.getElementById('complementFormula').textContent=`P(Aᶜ) = 1 − ${pA.toFixed(2).replace('.',',')} = ${pAc.toFixed(2).replace('.',',')}`;
+  document.getElementById('probA').textContent=fmtDec(pA);
+  document.getElementById('probComplement').textContent=fmtDec(pAc);
+
+  const fEl=document.getElementById('complementFormula');
+  fEl.innerHTML=`\\( P(A^{c}) = 1 - ${fmtDec(pA)} = ${fmtDec(pAc)} \\)`;
+  renderMathNow(fEl);
+
   let visual='';
-  for(let i=0;i<total;i++){ visual+=`<div class="m-number-item ${i<valid?'selected':''}">${i<valid?'A':'Aᶜ'}</div>`; }
+  for(let i=0;i<total;i++){visual+=`<div class="m-number-item ${i<valid?'selected':''}">${i<valid?'A':'-'}</div>`;}
   document.getElementById('complementBallVisual').innerHTML=visual;
-  document.getElementById('complementExplanation').textContent=
-    `Dari ${total} bola, ${valid} bola termasuk kejadian A dan ${complement} bola termasuk komplemen A. Jadi P(A) = ${valid}/${total} dan P(Aᶜ) = ${complement}/${total}. Jumlah kedua peluang tersebut selalu sama dengan 1.`;
+
+  const expEl=document.getElementById('complementExplanation');
+  expEl.innerHTML=`Dari <strong>${total}</strong> bola, <strong>${valid}</strong> bola termasuk kejadian A dan
+    <strong>${complement}</strong> bola termasuk komplemen A.
+    Jadi \\( P(A) = \\dfrac{${valid}}{${total}} \\) dan \\( P(A^{c}) = \\dfrac{${complement}}{${total}} \\).
+    Jumlah kedua peluang tersebut selalu sama dengan 1.`;
+  renderMathNow(expEl);
 }
 
 function calculateExpectedFrequency(){
   const n=Number(document.getElementById('fhN').value);
   const p=Number(document.getElementById('fhP').value);
   const result=document.getElementById('expectedResult');
-  result.style.display = 'block';
+  result.style.display='block';
   if(!Number.isFinite(n)||!Number.isFinite(p)||n<=0||p<0||p>1){
-    result.textContent='Masukkan banyak percobaan lebih dari 0 dan peluang antara 0 sampai 1.';
+    result.innerHTML='Masukkan banyak percobaan lebih dari 0 dan peluang antara 0 sampai 1.';
     return;
   }
   const fh=n*p;
-  result.innerHTML=`Fh(A) = P(A) × n<br>= ${p} × ${n}<br><strong>= ${fh}</strong><br>Jadi, frekuensi harapan adalah ${fh}.`;
+  result.innerHTML=`
+    \\( F_h(A) = P(A) \\times n \\)
+    \\[ F_h(A) = ${p} \\times ${n} = ${fh} \\]
+    Jadi, frekuensi harapan adalah <strong>${fh}</strong>.`;
+  renderMathNow(result);
 }
 
 (function(){
@@ -947,9 +1005,9 @@ function calculateExpectedFrequency(){
   const fhResult=document.getElementById('expectedResult');
   if(!fhN||!fhP||!fhResult) return;
   [fhN,fhP].forEach(input=>{
-    input.addEventListener('focus',()=>{ if(input.value==='0') input.value=''; });
-    input.addEventListener('blur',()=>{ if(input.value.trim()==='') input.value='0'; });
-    input.addEventListener('input',()=>{ fhResult.style.display='none'; });
+    input.addEventListener('focus',()=>{if(input.value==='0')input.value='';});
+    input.addEventListener('blur',()=>{if(input.value.trim()==='')input.value='0';});
+    input.addEventListener('input',()=>{fhResult.style.display='none';});
   });
 })();
 
@@ -961,49 +1019,44 @@ if(document.getElementById('materiA')){
   updateComplement();
 }
 
-
 /* ============================================================
    MATERI B — KEJADIAN MAJEMUK
    ============================================================ */
-const mB$ = id => document.getElementById(id);
-
-function mBShowResult(id,html){ mB$(id).innerHTML = html; mB$(id).classList.add("show"); }
-
+const mB$=id=>document.getElementById(id);
+function mBShowResult(id,html){mB$(id).innerHTML=html;mB$(id).classList.add("show");}
 function mBReadInteger(id,min,max){
-  const raw = mB$(id).value.trim();
-  if(raw === "") return null;
-  const v = Number(raw);
-  return Number.isInteger(v) && v >= min && v <= max ? v : null;
+  const raw=mB$(id).value.trim();
+  if(raw==="") return null;
+  const v=Number(raw);
+  return Number.isInteger(v)&&v>=min&&v<=max?v:null;
 }
-
 function mBFraction(n,d){
-  if(d === 0) return "tidak terdefinisi";
-  if(n === 0) return "0";
-  if(n === d) return "1";
-  const gcd = (a,b) => b === 0 ? a : gcd(b,a%b);
-  const g = gcd(Math.abs(n),Math.abs(d));
+  if(d===0) return "tidak terdefinisi";
+  if(n===0) return "0";
+  if(n===d) return "1";
+  const gcd=(a,b)=>b===0?a:gcd(b,a%b);
+  const g=gcd(Math.abs(n),Math.abs(d));
   return `${n/g}/${d/g}`;
 }
-
-function mBDecimal(v){ return (v*100).toLocaleString("id-ID",{maximumFractionDigits:2}) + "%"; }
+function mBDecimal(v){return (v*100).toLocaleString("id-ID",{maximumFractionDigits:2})+"%";}
 
 document.querySelectorAll("#materiB .m-tab").forEach(tab=>{
   tab.addEventListener("click",()=>{
-    document.querySelectorAll("#materiB .m-tab").forEach(t=>{ t.classList.remove("active"); t.setAttribute("aria-selected","false"); });
-    document.querySelectorAll("#materiB .m-topic").forEach(t=>{ t.classList.remove("active"); });
+    document.querySelectorAll("#materiB .m-tab").forEach(t=>{t.classList.remove("active");t.setAttribute("aria-selected","false");});
+    document.querySelectorAll("#materiB .m-topic").forEach(t=>{t.classList.remove("active");});
     tab.classList.add("active");
     tab.setAttribute("aria-selected","true");
     mB$(tab.dataset.topic).classList.add("active");
   });
 });
 
-/* B1 — Saling Lepas */
-let mB1Step = -1;
-const mB1Explanations = [
+/* B1 */
+let mB1Step=-1;
+const mB1Explanations=[
 `<strong>Pengamatan 1 — Mengenali kejadian A dan B.</strong><p>Lingkaran A menggambarkan kejadian memperoleh hadiah buku. Lingkaran B menggambarkan kejadian memperoleh hadiah tumbler.</p>`,
-`<strong>Pengamatan 2 — Kedua lingkaran tidak beririsan.</strong><p>Lingkaran A dan B terpisah. Tidak ada anggota yang dimiliki kedua kejadian sekaligus.</p><div class="m-math">\\(A \\cap B = \\varnothing\\)</div>`,
+`<strong>Pengamatan 2 — Kedua lingkaran tidak beririsan.</strong><p>Lingkaran A dan B terpisah. Tidak ada anggota yang dimiliki kedua kejadian sekaligus.</p><div class="m-math">\\( A \\cap B = \\emptyset \\)</div>`,
 `<strong>Pengamatan 3 — Kedua kejadian tidak dapat terjadi bersamaan.</strong><p>Dalam contoh undian, satu kupon hanya dapat memenangkan satu hadiah.</p>`,
-`<strong>Pengamatan 4 — Hubungan dengan peluang.</strong><p>Karena irisan A dan B adalah himpunan kosong, peluang kedua kejadian terjadi bersamaan adalah nol.</p><div class="m-math">\\(P(A \\cap B) = 0\\)</div><div class="m-math">\\(P(A \\cup B) = P(A) + P(B)\\)</div>`
+`<strong>Pengamatan 4 — Hubungan dengan peluang.</strong><p>Karena irisan A dan B adalah himpunan kosong, peluang kedua kejadian terjadi bersamaan adalah nol.</p><div class="m-math">\\( P(A \\cap B) = 0 \\)</div><div class="m-math">\\( P(A \\cup B) = P(A) + P(B) \\)</div>`
 ];
 
 function mB1Reset(){
@@ -1012,47 +1065,47 @@ function mB1Reset(){
   mB$("mB1CircleA").setAttribute("r","68");
   mB$("mB1CircleB").setAttribute("r","68");
   mB$("mB1EmptyIntersection").setAttribute("opacity","0");
-  mB1Step = -1;
-  mB$("mB1DiagramText").innerHTML = 'Tekan “Amati diagram” untuk memulai Pengamatan 1.';
-  mB$("mB1Animate").textContent = "▶ Amati diagram";
+  mB1Step=-1;
+  mB$("mB1DiagramText").innerHTML='Tekan "Amati diagram" untuk memulai Pengamatan 1.';
+  mB$("mB1Animate").textContent="▶ Amati diagram";
 }
 
 mB$("mB1Animate").addEventListener("click",()=>{
-  mB1Step = (mB1Step+1) % mB1Explanations.length;
-  mB$("mB1CircleA").setAttribute("cx", mB1Step >= 1 ? "125" : "145");
-  mB$("mB1CircleB").setAttribute("cx", mB1Step >= 1 ? "375" : "355");
-  mB$("mB1CircleA").setAttribute("r", mB1Step >= 2 ? "73" : "68");
-  mB$("mB1CircleB").setAttribute("r", mB1Step >= 2 ? "73" : "68");
-  mB$("mB1EmptyIntersection").setAttribute("opacity", mB1Step >= 1 ? "1" : "0");
-  mB$("mB1DiagramText").innerHTML = mB1Explanations[mB1Step];
-  mB$("mB1Animate").textContent = mB1Step === 3 ? "↻ Ulangi penjelasan" : "Lanjutkan pengamatan";
+  mB1Step=(mB1Step+1)%mB1Explanations.length;
+  mB$("mB1CircleA").setAttribute("cx",mB1Step>=1?"125":"145");
+  mB$("mB1CircleB").setAttribute("cx",mB1Step>=1?"375":"355");
+  mB$("mB1CircleA").setAttribute("r",mB1Step>=2?"73":"68");
+  mB$("mB1CircleB").setAttribute("r",mB1Step>=2?"73":"68");
+  mB$("mB1EmptyIntersection").setAttribute("opacity",mB1Step>=1?"1":"0");
+  mB$("mB1DiagramText").innerHTML=mB1Explanations[mB1Step];
+  renderMathNow(mB$("mB1DiagramText"));
+  mB$("mB1Animate").textContent=mB1Step===3?"↻ Ulangi penjelasan":"Lanjutkan pengamatan";
 });
 
 mB$("mB1ResetDiagram").addEventListener("click",mB1Reset);
 
 mB$("mB1Calculate").addEventListener("click",()=>{
-  const total = mBReadInteger("mB1Total",1,100000000);
-  const a = mBReadInteger("mB1A",0,100000000);
-  const b = mBReadInteger("mB1B",0,100000000);
-  if([total,a,b].some(v=>v===null)){ mBShowResult("mB1Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>"); return; }
-  if(a+b > total){ mBShowResult("mB1Result","<strong>Angka belum sesuai.</strong><p>Jumlah kupon buku dan tumbler tidak boleh melebihi jumlah seluruh kupon.</p>"); return; }
-  const union = (a+b)/total;
+  const total=mBReadInteger("mB1Total",1,100000000);
+  const a=mBReadInteger("mB1A",0,100000000);
+  const b=mBReadInteger("mB1B",0,100000000);
+  if([total,a,b].some(v=>v===null)){mBShowResult("mB1Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>");renderMathNow(mB$("mB1Result"));return;}
+  if(a+b>total){mBShowResult("mB1Result","<strong>Angka belum sesuai.</strong><p>Jumlah kupon buku dan tumbler tidak boleh melebihi jumlah seluruh kupon.</p>");renderMathNow(mB$("mB1Result"));return;}
+  const union=(a+b)/total;
   mBShowResult("mB1Result",`
     <h3>Langkah penyelesaian</h3>
-    <p>n(S) = ${total}, n(A) = ${a}, dan n(B) = ${b}.</p>
-    <div class="m-math">P(A) = ${a}/${total} = ${mBDecimal(a/total)}</div>
-    <div class="m-math">P(B) = ${b}/${total} = ${mBDecimal(b/total)}</div>
-    <div class="m-math">P(A ∩ B) = 0</div>
-    <div class="m-math">P(A ∪ B) = ${a}/${total} + ${b}/${total} = ${mBFraction(a+b,total)}</div>
-    <p><strong>Jadi, peluang mendapatkan buku atau tumbler adalah ${mBFraction(a+b,total)} atau ${mBDecimal(union)}.</strong></p>
+    <p>\\( n(S)=${total},\\ n(A)=${a},\\ n(B)=${b} \\).</p>
+    <div class="m-math">\\( P(A) = \\dfrac{${a}}{${total}} = ${fmtDec(a/total)} \\)</div>
+    <div class="m-math">\\( P(B) = \\dfrac{${b}}{${total}} = ${fmtDec(b/total)} \\)</div>
+    <div class="m-math">\\( P(A \\cap B) = 0 \\)</div>
+    <div class="m-math">\\( P(A \\cup B) = \\dfrac{${a}}{${total}} + \\dfrac{${b}}{${total}} = \\dfrac{${a+b}}{${total}} = ${fmtDec(union)} \\)</div>
+    <p><strong>Jadi, peluang mendapatkan buku atau tumbler adalah \\( ${fmtFrac(a+b,total)} \\) atau ${(union*100).toFixed(2)}%.</strong></p>
   `);
-  document.getElementById("mBFinalConclusion").hidden = false;
+  document.getElementById("mBFinalConclusion").hidden=false;
   renderMathNow(mB$("mB1Result"));
 });
 
-/* B2 — Tidak Saling Lepas */
-let mB2Started = false;
-
+/* B2 */
+let mB2Started=false;
 function mB2Reset(){
   mB$("mB2CircleA").setAttribute("cx","145");
   mB$("mB2CircleB").setAttribute("cx","355");
@@ -1066,12 +1119,11 @@ function mB2Reset(){
   mB$("mB2CircleB").setAttribute("fill-opacity",".72");
   mB$("mB2CircleA").setAttribute("r","72");
   mB$("mB2CircleB").setAttribute("r","72");
-  mB$("mB2DiagramText").textContent = 'Tekan “Mulai animasi” untuk melihat kedua kejadian bergerak hingga beririsan.';
-  ["mB2ObserveA","mB2ObserveB","mB2ObserveI"].forEach(id=>{ mB$(id).disabled = true; });
-  mB$("mB2Start").disabled = false;
-  mB2Started = false;
+  mB$("mB2DiagramText").textContent='Tekan "Mulai animasi" untuk melihat kedua kejadian bergerak hingga beririsan.';
+  ["mB2ObserveA","mB2ObserveB","mB2ObserveI"].forEach(id=>{mB$(id).disabled=true;});
+  mB$("mB2Start").disabled=false;
+  mB2Started=false;
 }
-
 mB$("mB2Start").addEventListener("click",()=>{
   mB$("mB2CircleA").setAttribute("cx","190");
   mB$("mB2CircleB").setAttribute("cx","310");
@@ -1080,569 +1132,510 @@ mB$("mB2Start").addEventListener("click",()=>{
   mB$("mB2Intersection").setAttribute("opacity","1");
   mB$("mB2LabelA").setAttribute("x","165");
   mB$("mB2LabelB").setAttribute("x","335");
-  mB$("mB2DiagramText").innerHTML = "<strong>Kedua kejadian mulai beririsan.</strong><p>Daerah irisan menunjukkan anggota yang termasuk A dan B sekaligus.</p>";
-  ["mB2ObserveA","mB2ObserveB","mB2ObserveI"].forEach(id=>{ mB$(id).disabled = false; });
-  mB$("mB2Start").disabled = true;
-  mB2Started = true;
+  mB$("mB2DiagramText").innerHTML="<strong>Kedua kejadian mulai beririsan.</strong><p>Daerah irisan menunjukkan anggota yang termasuk A dan B sekaligus.</p>";
+  renderMathNow(mB$("mB2DiagramText"));
+  ["mB2ObserveA","mB2ObserveB","mB2ObserveI"].forEach(id=>{mB$(id).disabled=false;});
+  mB$("mB2Start").disabled=true;
+  mB2Started=true;
 });
-
 mB$("mB2Reset").addEventListener("click",mB2Reset);
-
 mB$("mB2ObserveA").addEventListener("click",()=>{
   if(!mB2Started) return;
   mB$("mB2CircleA").setAttribute("r","78");
   mB$("mB2CircleB").setAttribute("r","72");
   mB$("mB2CircleA").setAttribute("fill-opacity","1");
   mB$("mB2CircleB").setAttribute("fill-opacity",".22");
-  mB$("mB2DiagramText").innerHTML = "<strong>Mengamati kejadian A.</strong><p>Seluruh bagian A ditampilkan lebih tebal.</p>";
+  mB$("mB2DiagramText").innerHTML="<strong>Mengamati kejadian A.</strong><p>Seluruh bagian A ditampilkan lebih tebal.</p>";
+  renderMathNow(mB$("mB2DiagramText"));
 });
-
 mB$("mB2ObserveB").addEventListener("click",()=>{
   if(!mB2Started) return;
   mB$("mB2CircleA").setAttribute("r","72");
   mB$("mB2CircleB").setAttribute("r","78");
   mB$("mB2CircleA").setAttribute("fill-opacity",".22");
   mB$("mB2CircleB").setAttribute("fill-opacity","1");
-  mB$("mB2DiagramText").innerHTML = "<strong>Mengamati kejadian B.</strong><p>Seluruh bagian B ditampilkan lebih tebal.</p>";
+  mB$("mB2DiagramText").innerHTML="<strong>Mengamati kejadian B.</strong><p>Seluruh bagian B ditampilkan lebih tebal.</p>";
+  renderMathNow(mB$("mB2DiagramText"));
 });
-
 mB$("mB2ObserveI").addEventListener("click",()=>{
   if(!mB2Started) return;
   mB$("mB2CircleA").setAttribute("r","72");
   mB$("mB2CircleB").setAttribute("r","72");
   mB$("mB2CircleA").setAttribute("fill-opacity",".18");
   mB$("mB2CircleB").setAttribute("fill-opacity",".18");
-  mB$("mB2DiagramText").innerHTML = "<strong>Mengamati irisan A ∩ B.</strong><div class='m-math'>\\(P(A \\cup B) = P(A) + P(B) - P(A \\cap B)\\)</div>";
+  mB$("mB2DiagramText").innerHTML="<strong>Mengamati irisan A ∩ B.</strong><div class='m-math'>\\(P(A \\cup B) = P(A) + P(B) - P(A \\cap B)\\)</div>";
   renderMathNow(mB$("mB2DiagramText"));
 });
-
 mB$("mB2Calculate").addEventListener("click",()=>{
-  const total = mBReadInteger("mB2Total",1,100000000);
-  const a = mBReadInteger("mB2A",0,100000000);
-  const b = mBReadInteger("mB2B",0,100000000);
-  const i = mBReadInteger("mB2I",0,100000000);
-  if([total,a,b,i].some(v=>v===null)){ mBShowResult("mB2Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>"); return; }
-  if(a > total || b > total || i > Math.min(a,b) || a+b-i > total){ mBShowResult("mB2Result","<strong>Data belum masuk akal.</strong><p>Periksa jumlah anggota klub dan irisan.</p>"); return; }
-  const union = a+b-i;
-  const pUnion = union/total;
+  const total=mBReadInteger("mB2Total",1,100000000);
+  const a=mBReadInteger("mB2A",0,100000000);
+  const b=mBReadInteger("mB2B",0,100000000);
+  const i=mBReadInteger("mB2I",0,100000000);
+  if([total,a,b,i].some(v=>v===null)){mBShowResult("mB2Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>");renderMathNow(mB$("mB2Result"));return;}
+  if(a>total||b>total||i>Math.min(a,b)||a+b-i>total){mBShowResult("mB2Result","<strong>Data belum masuk akal.</strong><p>Periksa jumlah anggota klub dan irisan.</p>");renderMathNow(mB$("mB2Result"));return;}
+  const union=a+b-i;
+  const pUnion=union/total;
   mBShowResult("mB2Result",`
     <h3>Langkah penyelesaian</h3>
-    <div class="m-math">P(A) = ${a}/${total} = ${mBDecimal(a/total)}</div>
-    <div class="m-math">P(B) = ${b}/${total} = ${mBDecimal(b/total)}</div>
-    <div class="m-math">P(A ∩ B) = ${i}/${total} = ${mBDecimal(i/total)}</div>
-    <div class="m-math">P(A ∪ B) = (${a} + ${b} − ${i})/${total} = ${union}/${total}</div>
-    <p><strong>Jadi, peluangnya ${mBFraction(union,total)} atau ${mBDecimal(pUnion)}.</strong></p>
+    <div class="m-math">\\( P(A) = \\dfrac{${a}}{${total}} = ${fmtDec(a/total)} \\)</div>
+    <div class="m-math">\\( P(B) = \\dfrac{${b}}{${total}} = ${fmtDec(b/total)} \\)</div>
+    <div class="m-math">\\( P(A \\cap B) = \\dfrac{${i}}{${total}} = ${fmtDec(i/total)} \\)</div>
+    <div class="m-math">\\( P(A \\cup B) = \\dfrac{${a}}{${total}} + \\dfrac{${b}}{${total}} - \\dfrac{${i}}{${total}} = \\dfrac{${union}}{${total}} = ${fmtDec(pUnion)} \\)</div>
+    <p><strong>Jadi, peluangnya \\( ${fmtFrac(union,total)} \\) atau ${(pUnion*100).toFixed(2)}%.</strong></p>
   `);
-  document.getElementById("mBFinalConclusion").hidden = false;
+  document.getElementById("mBFinalConclusion").hidden=false;
   renderMathNow(mB$("mB2Result"));
 });
 
-/* B3 — Saling Bebas */
-const mBIndCoin = mB$("mBIndCoin");
-const mBIndDie = mB$("mBIndDie");
-let mBIndTrials = 0;
-let mBIndHeads = 0;
-let mBIndSix = 0;
-let mBIndBoth = 0;
-let mBIndBusy = false;
-let mBIndHistory = [];
+/* B3 */
+const mBIndCoin=mB$("mBIndCoin");
+const mBIndDie=mB$("mBIndDie");
+let mBIndTrials=0,mBIndHeads=0,mBIndSix=0,mBIndBoth=0,mBIndBusy=false,mBIndHistory=[];
 
 function mBCreateDieFaces(cube){
-  cube.innerHTML = "";
-  const sides = [["front",1],["back",6],["right",3],["left",4],["top",2],["bottom",5]];
+  cube.innerHTML="";
+  const sides=[["front",1],["back",6],["right",3],["left",4],["top",2],["bottom",5]];
   sides.forEach(([side,n])=>{
-    const face = document.createElement("div");
-    face.className = "m-face " + side;
-    face.dataset.n = n;
+    const face=document.createElement("div");
+    face.className="m-face "+side;
+    face.dataset.n=n;
     for(let i=0;i<n;i++){
-      const pip = document.createElement("span");
-      pip.className = "m-pip";
+      const pip=document.createElement("span");
+      pip.className="m-pip";
       face.appendChild(pip);
     }
     cube.appendChild(face);
   });
 }
-
 function mBSetDieFace(cube,n){
-  const rotations = {1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
-  const [x,y] = rotations[n];
+  const rotations={1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
+  const [x,y]=rotations[n];
   cube.classList.remove("rolling");
-  cube.style.transform = `scale(.76) rotateX(${x}deg) rotateY(${y}deg)`;
+  cube.style.transform=`scale(.76) rotateX(${x}deg) rotateY(${y}deg)`;
 }
-
 function mBRollDie(cube,n,duration=800){
   return new Promise(resolve=>{
-    const rotations = {1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
-    const [x,y] = rotations[n];
+    const rotations={1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
+    const [x,y]=rotations[n];
     cube.classList.remove("rolling");
     void cube.offsetWidth;
     cube.style.setProperty("--end-x",`${x}deg`);
     cube.style.setProperty("--end-y",`${y}deg`);
     cube.classList.add("rolling");
-    setTimeout(()=>{ cube.classList.remove("rolling"); mBSetDieFace(cube,n); resolve(); },duration);
+    setTimeout(()=>{cube.classList.remove("rolling");mBSetDieFace(cube,n);resolve();},duration);
   });
 }
-
-if(mBIndDie){ mBCreateDieFaces(mBIndDie); mBSetDieFace(mBIndDie,1); }
+if(mBIndDie){mBCreateDieFaces(mBIndDie);mBSetDieFace(mBIndDie,1);}
 
 function mBUpdateIndependent(){
-  mB$("mBIndTotal").textContent = mBIndTrials;
-  mB$("mBIndCoinCount").textContent = mBIndHeads;
-  mB$("mBIndDieCount").textContent = mBIndSix;
-  mB$("mBIndBothCount").textContent = mBIndBoth;
-  const frequency = mBIndTrials ? mBIndBoth/mBIndTrials*100 : 0;
-  mB$("mBIndFrequency").textContent = "Frekuensi relatif kejadian bersama: " + frequency.toLocaleString("id-ID",{maximumFractionDigits:2}) + "%";
-  mB$("mBIndHistory").innerHTML = mBIndHistory.length
+  mB$("mBIndTotal").textContent=mBIndTrials;
+  mB$("mBIndCoinCount").textContent=mBIndHeads;
+  mB$("mBIndDieCount").textContent=mBIndSix;
+  mB$("mBIndBothCount").textContent=mBIndBoth;
+  const freq=mBIndTrials?mBIndBoth/mBIndTrials:0;
+  const freqEl=mB$("mBIndFrequency");
+  freqEl.innerHTML=mBIndTrials
+    ? `Frekuensi relatif kejadian bersama: \\( \\dfrac{${mBIndBoth}}{${mBIndTrials}} = ${(freq*100).toFixed(2)}\\% \\)`
+    : `Frekuensi relatif kejadian bersama: \\( \\dfrac{0}{0} = 0\\% \\)`;
+  renderMathNow(freqEl);
+  mB$("mBIndHistory").innerHTML=mBIndHistory.length
     ? mBIndHistory.map((x,i)=>`<span class="m-independent-chip ${x.both?"both":""}">${i+1}. ${x.coin==="G"?"Gambar":"Angka"}, dadu ${x.die}${x.both?" ✓":""}</span>`).join("")
     : "Belum ada percobaan.";
 }
 
 function mBIndependentTrial(times){
   if(mBIndBusy) return;
-  mBIndBusy = true;
-  ["mBIndOnce","mBIndTen","mBIndReset"].forEach(id=>{ mB$(id).disabled = true; });
-  let done = 0;
+  mBIndBusy=true;
+  ["mBIndOnce","mBIndTen","mBIndReset"].forEach(id=>{mB$(id).disabled=true;});
+  let done=0;
   function next(){
-    const coin = Math.random() < .5 ? "A" : "G";
-    const die = 1 + Math.floor(Math.random()*6);
-    const both = coin === "G" && die === 6;
+    const coin=Math.random()<.5?"A":"G";
+    const die=1+Math.floor(Math.random()*6);
+    const both=coin==="G"&&die===6;
     mBIndCoin.classList.remove("flipping");
     void mBIndCoin.offsetWidth;
     mBIndCoin.classList.add("flipping");
     mBRollDie(mBIndDie,die,times===1?800:300).then(()=>{
       mBIndCoin.classList.remove("flipping");
-      mBIndCoin.style.transform = coin === "G" ? "rotateY(180deg)" : "rotateY(0deg)";
+      mBIndCoin.style.transform=coin==="G"?"rotateY(180deg)":"rotateY(0deg)";
       mBIndTrials++;
-      if(coin === "G") mBIndHeads++;
-      if(die === 6) mBIndSix++;
+      if(coin==="G") mBIndHeads++;
+      if(die===6) mBIndSix++;
       if(both) mBIndBoth++;
       mBIndHistory.push({coin,die,both});
       mBUpdateIndependent();
-      mB$("mBIndResult").textContent = `Percobaan ${mBIndTrials}: Koin ${coin==="G"?"Gambar":"Angka"}, dadu ${die}.` + (both ? " Kedua kejadian terjadi!" : "");
+      mB$("mBIndResult").textContent=`Percobaan ${mBIndTrials}: Koin ${coin==="G"?"Gambar":"Angka"}, dadu ${die}.`+(both?" Kedua kejadian terjadi!":"");
       done++;
-      if(done < times){ setTimeout(next,120); }
-      else{ mBIndBusy = false; ["mBIndOnce","mBIndTen","mBIndReset"].forEach(id=>{ mB$(id).disabled = false; }); }
+      if(done<times){setTimeout(next,120);}
+      else{mBIndBusy=false;["mBIndOnce","mBIndTen","mBIndReset"].forEach(id=>{mB$(id).disabled=false;});}
     });
   }
   next();
 }
-
-mB$("mBIndOnce").addEventListener("click",()=>{ mBIndependentTrial(1); });
-mB$("mBIndTen").addEventListener("click",()=>{ mBIndependentTrial(10); });
+mB$("mBIndOnce").addEventListener("click",()=>{mBIndependentTrial(1);});
+mB$("mBIndTen").addEventListener("click",()=>{mBIndependentTrial(10);});
 mB$("mBIndReset").addEventListener("click",()=>{
   if(mBIndBusy) return;
-  mBIndTrials = 0; mBIndHeads = 0; mBIndSix = 0; mBIndBoth = 0; mBIndHistory = [];
-  mB$("mBIndResult").textContent = "Koin dan dadu siap dilempar.";
-  mBIndCoin.style.transform = "rotateY(0deg)";
+  mBIndTrials=0;mBIndHeads=0;mBIndSix=0;mBIndBoth=0;mBIndHistory=[];
+  mB$("mBIndResult").textContent="Koin dan dadu siap dilempar.";
+  mBIndCoin.style.transform="rotateY(0deg)";
   mBSetDieFace(mBIndDie,1);
   mBUpdateIndependent();
 });
 
 mB$("mB3Calculate").addEventListener("click",()=>{
-  const rawA = mB$("mB3A").value.trim();
-  const rawB = mB$("mB3B").value.trim();
-  const a = Number(rawA);
-  const b = Number(rawB);
-  if(rawA === "" || rawB === "" || !Number.isFinite(a) || !Number.isFinite(b) || a < 0 || a > 100 || b < 0 || b > 100){
+  const rawA=mB$("mB3A").value.trim();
+  const rawB=mB$("mB3B").value.trim();
+  const a=Number(rawA), b=Number(rawB);
+  if(rawA===""||rawB===""||!Number.isFinite(a)||!Number.isFinite(b)||a<0||a>100||b<0||b>100){
     mBShowResult("mB3Result","<strong>Periksa kembali angka.</strong><p>Masukkan peluang dalam persen dari 0 sampai 100.</p>");
-    return;
+    renderMathNow(mB$("mB3Result"));return;
   }
-  const pa = a/100;
-  const pb = b/100;
-  const both = pa*pb;
+  const pa=a/100, pb=b/100, both=pa*pb;
   mBShowResult("mB3Result",`
     <h3>Langkah Penyelesaian</h3>
-    <div class="m-math">P(A) = ${a}% = ${pa}</div>
-    <div class="m-math">P(B) = ${b}% = ${pb}</div>
-    <div class="m-math">P(A ∩ B) = P(A) × P(B) = ${pa} × ${pb} = ${both}</div>
-    <p><strong>Jadi, peluang kedua kejadian terjadi secara bersamaan adalah ${mBDecimal(both)}.</strong></p>
+    <div class="m-math">\\( P(A) = ${a}\\% = ${pa} \\)</div>
+    <div class="m-math">\\( P(B) = ${b}\\% = ${pb} \\)</div>
+    <div class="m-math">\\( P(A \\cap B) = P(A) \\times P(B) = ${pa} \\times ${pb} = ${both.toFixed(4)} \\)</div>
+    <p><strong>Jadi, peluang kedua kejadian terjadi secara bersamaan adalah ${(both*100).toFixed(2)}%.</strong></p>
   `);
-  document.getElementById("mBFinalConclusion").hidden = false;
+  document.getElementById("mBFinalConclusion").hidden=false;
   renderMathNow(mB$("mB3Result"));
 });
 
-/* B4 — Peluang Bersyarat: Kalkulator */
+/* B4 */
 mB$("mB4ProbabilityCalculate").addEventListener("click",()=>{
-  const rawA = mB$("mB4PA").value.trim();
-  const rawB = mB$("mB4PB").value.trim();
-  const rawAB = mB$("mB4PAB").value.trim();
-  const pa = Number(rawA);
-  const pb = Number(rawB);
-  const pab = Number(rawAB);
-  if(rawA === "" || rawB === "" || rawAB === "" || !Number.isFinite(pa) || !Number.isFinite(pb) || !Number.isFinite(pab)){
+  const rawA=mB$("mB4PA").value.trim();
+  const rawB=mB$("mB4PB").value.trim();
+  const rawAB=mB$("mB4PAB").value.trim();
+  const pa=Number(rawA), pb=Number(rawB), pab=Number(rawAB);
+  if(rawA===""||rawB===""||rawAB===""||!Number.isFinite(pa)||!Number.isFinite(pb)||!Number.isFinite(pab)){
     mBShowResult("mB4ProbabilityResult","<strong>Periksa kembali data.</strong><p>Lengkapi semua nilai peluang terlebih dahulu.</p>");
-    return;
+    renderMathNow(mB$("mB4ProbabilityResult"));return;
   }
-  if(pa < 0 || pa > 1 || pb < 0 || pb > 1 || pab < 0 || pab > 1){
+  if(pa<0||pa>1||pb<0||pb>1||pab<0||pab>1){
     mBShowResult("mB4ProbabilityResult","<strong>Nilai tidak valid.</strong><p>Setiap peluang harus berada antara 0 dan 1.</p>");
-    return;
+    renderMathNow(mB$("mB4ProbabilityResult"));return;
   }
-  if(pab > pa || pab > pb || pa+pb-pab > 1){
+  if(pab>pa||pab>pb||pa+pb-pab>1){
     mBShowResult("mB4ProbabilityResult","<strong>Data peluang tidak memenuhi aturan.</strong><p>Periksa kembali nilai P(A), P(B), dan P(A ∩ B).</p>");
-    return;
+    renderMathNow(mB$("mB4ProbabilityResult"));return;
   }
-  const resultA = pb > 0 ? pab/pb : null;
-  const resultB = pa > 0 ? pab/pa : null;
+  const resultA=pb>0?pab/pb:null;
+  const resultB=pa>0?pab/pa:null;
+  const htmlA=resultA!==null
+    ? `<div class="m-math">\\( P(A \\mid B) = \\dfrac{${pab}}{${pb}} = ${resultA.toFixed(4)} \\approx ${(resultA*100).toFixed(2)}\\% \\)</div>`
+    : `<p>P(A | B) tidak terdefinisi karena P(B) = 0.</p>`;
+  const htmlB=resultB!==null
+    ? `<div class="m-math">\\( P(B \\mid A) = \\dfrac{${pab}}{${pa}} = ${resultB.toFixed(4)} \\approx ${(resultB*100).toFixed(2)}\\% \\)</div>`
+    : `<p>P(B | A) tidak terdefinisi karena P(A) = 0.</p>`;
   mBShowResult("mB4ProbabilityResult",`
     <h3>Hasil Perhitungan</h3>
     <p><strong>Peluang A dengan syarat B:</strong></p>
-    <div class="m-math">P(A | B) = P(A ∩ B) / P(B)</div>
-    ${resultA !== null ? `<div class="m-math">P(A | B) = ${pab} / ${pb} = ${resultA.toLocaleString("id-ID",{maximumFractionDigits:4})}</div><p><strong>${mBDecimal(resultA)}</strong></p>` : `<p>P(A | B) tidak terdefinisi karena P(B) = 0.</p>`}
+    <div class="m-math">\\( P(A \\mid B) = \\dfrac{P(A \\cap B)}{P(B)} \\)</div>
+    ${htmlA}
     <hr>
     <p><strong>Peluang B dengan syarat A:</strong></p>
-    <div class="m-math">P(B | A) = P(A ∩ B) / P(A)</div>
-    ${resultB !== null ? `<div class="m-math">P(B | A) = ${pab} / ${pa} = ${resultB.toLocaleString("id-ID",{maximumFractionDigits:4})}</div><p><strong>${mBDecimal(resultB)}</strong></p>` : `<p>P(B | A) tidak terdefinisi karena P(A) = 0.</p>`}
+    <div class="m-math">\\( P(B \\mid A) = \\dfrac{P(A \\cap B)}{P(A)} \\)</div>
+    ${htmlB}
   `);
-  document.getElementById("mBFinalConclusion").hidden = false;
+  document.getElementById("mBFinalConclusion").hidden=false;
   renderMathNow(mB$("mB4ProbabilityResult"));
 });
-
 mB$("mB4ProbabilityReset").addEventListener("click",()=>{
-  ["mB4PA","mB4PB","mB4PAB"].forEach(id=>{ mB$(id).value = ""; });
+  ["mB4PA","mB4PB","mB4PAB"].forEach(id=>{mB$(id).value="";});
   mB$("mB4ProbabilityResult").classList.remove("show");
-  mB$("mB4ProbabilityResult").innerHTML = "";
+  mB$("mB4ProbabilityResult").innerHTML="";
 });
 
-/* B4 — Soal Penerapan */
 mB$("mB4Calculate").addEventListener("click",()=>{
-  const total = mBReadInteger("mB4Total",1,100000000);
-  const a = mBReadInteger("mB4A",0,100000000);
-  const b = mBReadInteger("mB4B",0,100000000);
-  const intersection = mBReadInteger("mB4Intersection",0,100000000);
-
+  const total=mBReadInteger("mB4Total",1,100000000);
+  const a=mBReadInteger("mB4A",0,100000000);
+  const b=mBReadInteger("mB4B",0,100000000);
+  const intersection=mBReadInteger("mB4Intersection",0,100000000);
   if([total,a,b,intersection].some(v=>v===null)){
     mBShowResult("mB4Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>");
-    return;
+    renderMathNow(mB$("mB4Result"));return;
   }
-  if(a > total || b > total || intersection > Math.min(a,b) || a+b-intersection > total){
+  if(a>total||b>total||intersection>Math.min(a,b)||a+b-intersection>total){
     mBShowResult("mB4Result","<strong>Data belum sesuai.</strong><p>Jumlah anggota masing-masing ekstrakurikuler tidak boleh melebihi jumlah seluruh siswa. Jumlah yang mengikuti keduanya tidak boleh melebihi jumlah A maupun B.</p>");
-    return;
+    renderMathNow(mB$("mB4Result"));return;
   }
-  if(a === 0 || b === 0){
+  if(a===0||b===0){
     mBShowResult("mB4Result",`<strong>Salah satu peluang bersyarat tidak terdefinisi.</strong>
       <p>${a===0?"P(A) = 0 sehingga P(B | A) tidak terdefinisi.":""}
       ${b===0?"P(B) = 0 sehingga P(A | B) tidak terdefinisi.":""}</p>`);
-    return;
+    renderMathNow(mB$("mB4Result"));return;
   }
-
-  const pA = a/total;
-  const pB = b/total;
-  const pI = intersection/total;
-  const conditionalA = intersection/b;
-  const conditionalB = intersection/a;
-
+  const pA=a/total, pB=b/total, pI=intersection/total;
+  const condA=intersection/b, condB=intersection/a;
   mBShowResult("mB4Result",`
     <h3>Langkah Penyelesaian</h3>
     <p><strong>Diketahui:</strong></p>
-    <div class="m-math">n(S) = ${total}</div>
-    <div class="m-math">n(A) = ${a}</div>
-    <div class="m-math">n(B) = ${b}</div>
-    <div class="m-math">n(A ∩ B) = ${intersection}</div>
+    <div class="m-math">\\( n(S) = ${total},\\quad n(A) = ${a},\\quad n(B) = ${b},\\quad n(A \\cap B) = ${intersection} \\)</div>
     <hr>
     <h3>A. Peluang A dengan syarat B terjadi</h3>
-    <p>Ditanyakan P(A | B).</p>
-    <div class="m-math">P(B) = ${b}/${total} = ${mBDecimal(pB)}</div>
-    <div class="m-math">P(A ∩ B) = ${intersection}/${total} = ${mBDecimal(pI)}</div>
-    <div class="m-math">P(A | B) = P(A ∩ B) / P(B)</div>
-    <div class="m-math">P(A | B) = (${intersection}/${total}) / (${b}/${total})</div>
-    <div class="m-math">P(A | B) = ${intersection}/${b} = ${mBFraction(intersection,b)}</div>
-    <p><strong>Jadi, peluang mengikuti sains jika diketahui mengikuti matematika adalah ${mBFraction(intersection,b)} atau ${mBDecimal(conditionalA)}.</strong></p>
+    <div class="m-math">\\( P(B) = \\dfrac{${b}}{${total}},\\quad P(A \\cap B) = \\dfrac{${intersection}}{${total}} \\)</div>
+    <div class="m-math">\\( P(A \\mid B) = \\dfrac{P(A \\cap B)}{P(B)} = \\dfrac{\\dfrac{${intersection}}{${total}}}{\\dfrac{${b}}{${total}}} = \\dfrac{${intersection}}{${b}} = ${fmtFrac(intersection,b)} \\)</div>
+    <p><strong>Jadi, peluang mengikuti sains jika diketahui mengikuti matematika adalah \\( ${fmtFrac(intersection,b)} \\) atau ${(condA*100).toFixed(2)}%.</strong></p>
     <hr>
     <h3>B. Peluang B dengan syarat A terjadi</h3>
-    <p>Ditanyakan P(B | A).</p>
-    <div class="m-math">P(A) = ${a}/${total} = ${mBDecimal(pA)}</div>
-    <div class="m-math">P(B | A) = P(A ∩ B) / P(A)</div>
-    <div class="m-math">P(B | A) = (${intersection}/${total}) / (${a}/${total})</div>
-    <div class="m-math">P(B | A) = ${intersection}/${a} = ${mBFraction(intersection,a)}</div>
-    <p><strong>Jadi, peluang mengikuti matematika jika diketahui mengikuti sains adalah ${mBFraction(intersection,a)} atau ${mBDecimal(conditionalB)}.</strong></p>
+    <div class="m-math">\\( P(A) = \\dfrac{${a}}{${total}},\\quad P(A \\cap B) = \\dfrac{${intersection}}{${total}} \\)</div>
+    <div class="m-math">\\( P(B \\mid A) = \\dfrac{P(A \\cap B)}{P(A)} = \\dfrac{\\dfrac{${intersection}}{${total}}}{\\dfrac{${a}}{${total}}} = \\dfrac{${intersection}}{${a}} = ${fmtFrac(intersection,a)} \\)</div>
+    <p><strong>Jadi, peluang mengikuti matematika jika diketahui mengikuti sains adalah \\( ${fmtFrac(intersection,a)} \\) atau ${(condB*100).toFixed(2)}%.</strong></p>
   `);
-  document.getElementById("mBFinalConclusion").hidden = false;
+  document.getElementById("mBFinalConclusion").hidden=false;
   renderMathNow(mB$("mB4Result"));
 });
-
 
 /* ============================================================
    MATERI C — LAB PELUANG
    ============================================================ */
-const mCMissions = {
-  1: {dice:1, description:"Kejadian yang diteliti adalah munculnya angka 3.", event:([a])=>a===3},
-  2: {dice:1, description:"Kejadian yang diteliti adalah munculnya angka genap.", event:([a])=>a%2===0},
-  3: {dice:1, description:"Kejadian yang diteliti adalah munculnya angka lebih dari 4.", event:([a])=>a>4},
-  4: {dice:2, description:"Kejadian yang diteliti adalah jumlah dua angka sama dengan 5.", event:([a,b])=>a+b===5},
-  5: {dice:2, description:"Kejadian yang diteliti adalah jumlah dua angka lebih dari 7.", event:([a,b])=>a+b>7},
-  6: {dice:2, description:"Kejadian yang diteliti adalah jumlah dua angka kurang dari 8.", event:([a,b])=>a+b<8},
-  7: {dice:2, description:"Kejadian yang diteliti adalah kedua dadu menunjukkan angka sama.", event:([a,b])=>a===b},
-  8: {dice:2, description:"Kejadian yang diteliti adalah jumlah dua angka genap.", event:([a,b])=>(a+b)%2===0},
-  9: {dice:2, description:"Kejadian yang diteliti adalah dadu pertama lebih besar daripada dadu kedua.", event:([a,b])=>a>b}
+const mCMissions={
+  1:{dice:1,description:"Kejadian yang diteliti adalah munculnya angka 3.",event:([a])=>a===3},
+  2:{dice:1,description:"Kejadian yang diteliti adalah munculnya angka genap.",event:([a])=>a%2===0},
+  3:{dice:1,description:"Kejadian yang diteliti adalah munculnya angka lebih dari 4.",event:([a])=>a>4},
+  4:{dice:2,description:"Kejadian yang diteliti adalah jumlah dua angka sama dengan 5.",event:([a,b])=>a+b===5},
+  5:{dice:2,description:"Kejadian yang diteliti adalah jumlah dua angka lebih dari 7.",event:([a,b])=>a+b>7},
+  6:{dice:2,description:"Kejadian yang diteliti adalah jumlah dua angka kurang dari 8.",event:([a,b])=>a+b<8},
+  7:{dice:2,description:"Kejadian yang diteliti adalah kedua dadu menunjukkan angka sama.",event:([a,b])=>a===b},
+  8:{dice:2,description:"Kejadian yang diteliti adalah jumlah dua angka genap.",event:([a,b])=>(a+b)%2===0},
+  9:{dice:2,description:"Kejadian yang diteliti adalah dadu pertama lebih besar daripada dadu kedua.",event:([a,b])=>a>b}
 };
 
-const mCMissionSelect = document.getElementById("mCMission");
-const mCDiceGrid = document.getElementById("mCDiceGrid");
-const mCObservationBody = document.getElementById("mCObservationBody");
-const mCSampleCount = document.getElementById("mCSampleCount");
-const mCObservedCount = document.getElementById("mCObservedCount");
-const mCRemainingCount = document.getElementById("mCRemainingCount");
-const mCAnswerArea = document.getElementById("mCAnswerArea");
-const mCNAInput = document.getElementById("mCNA");
-const mCPAInput = document.getElementById("mCPA");
-const mCFeedback = document.getElementById("mCFeedback");
-const mCPreviousButton = document.getElementById("mCPreviousMission");
-const mCNextButton = document.getElementById("mCNextMission");
+const mCMissionSelect=document.getElementById("mCMission");
+const mCDiceGrid=document.getElementById("mCDiceGrid");
+const mCObservationBody=document.getElementById("mCObservationBody");
+const mCSampleCount=document.getElementById("mCSampleCount");
+const mCObservedCount=document.getElementById("mCObservedCount");
+const mCRemainingCount=document.getElementById("mCRemainingCount");
+const mCAnswerArea=document.getElementById("mCAnswerArea");
+const mCNAInput=document.getElementById("mCNA");
+const mCPAInput=document.getElementById("mCPA");
+const mCFeedback=document.getElementById("mCFeedback");
+const mCPreviousButton=document.getElementById("mCPreviousMission");
+const mCNextButton=document.getElementById("mCNextMission");
 
-let mCMissionId = 1;
-let mCOutcomes = [];
-let mCObserved = new Set();
-let mCRollingKeys = new Set();
-let mCDisplayedResults = new Map();
+let mCMissionId=1;
+let mCOutcomes=[];
+let mCObserved=new Set();
+let mCRollingKeys=new Set();
+let mCDisplayedResults=new Map();
 
-function mCKeyOf(outcome){ return outcome.join("-"); }
-function mCLabelOf(outcome){ return outcome.length===1 ? String(outcome[0]) : `(${outcome[0]}, ${outcome[1]})`; }
+function mCKeyOf(outcome){return outcome.join("-");}
+function mCLabelOf(outcome){return outcome.length===1?String(outcome[0]):`(${outcome[0]}, ${outcome[1]})`;}
 
 function mCMakeOutcomes(){
-  mCOutcomes = [];
-  const n = mCMissions[mCMissionId].dice;
-  if(n===1){ for(let a=1;a<=6;a++) mCOutcomes.push([a]); }
-  else{ for(let a=1;a<=6;a++) for(let b=1;b<=6;b++) mCOutcomes.push([a,b]); }
+  mCOutcomes=[];
+  const n=mCMissions[mCMissionId].dice;
+  if(n===1){for(let a=1;a<=6;a++) mCOutcomes.push([a]);}
+  else{for(let a=1;a<=6;a++) for(let b=1;b<=6;b++) mCOutcomes.push([a,b]);}
   mCDisplayedResults.clear();
-  mCOutcomes.forEach(o=>{ mCDisplayedResults.set(mCKeyOf(o), o.map(()=>1)); });
+  mCOutcomes.forEach(o=>{mCDisplayedResults.set(mCKeyOf(o),o.map(()=>1));});
 }
-
-function mCMakeFace(faceName, number){
-  const face = document.createElement("div");
-  face.className = `m-face ${faceName}`;
-  face.dataset.number = number;
+function mCMakeFace(faceName,number){
+  const face=document.createElement("div");
+  face.className=`m-face ${faceName}`;
+  face.dataset.number=number;
   for(let i=0;i<number;i++){
-    const pip = document.createElement("span");
-    pip.className = "m-pip";
+    const pip=document.createElement("span");
+    pip.className="m-pip";
     face.appendChild(pip);
   }
   return face;
 }
-
-const mCFaceDefinitions = [["front",1],["back",6],["right",3],["left",4],["top",5],["bottom",2]];
-
-function mCMakeDie(number, uniqueId){
-  const stage = document.createElement("div");
-  stage.className = "m-die-stage";
-  const cube = document.createElement("div");
-  cube.className = "m-die-cube";
-  cube.id = uniqueId;
-  mCFaceDefinitions.forEach(([faceName, defaultNumber])=>{
-    const faceNumber = faceName === "front" ? number : defaultNumber;
-    cube.appendChild(mCMakeFace(faceName, faceNumber));
+const mCFaceDefinitions=[["front",1],["back",6],["right",3],["left",4],["top",5],["bottom",2]];
+function mCMakeDie(number,uniqueId){
+  const stage=document.createElement("div");
+  stage.className="m-die-stage";
+  const cube=document.createElement("div");
+  cube.className="m-die-cube";
+  cube.id=uniqueId;
+  mCFaceDefinitions.forEach(([faceName,defaultNumber])=>{
+    const faceNumber=faceName==="front"?number:defaultNumber;
+    cube.appendChild(mCMakeFace(faceName,faceNumber));
   });
-  cube.style.transform = "rotateX(0deg) rotateY(0deg)";
+  cube.style.transform="rotateX(0deg) rotateY(0deg)";
   stage.appendChild(cube);
   return stage;
 }
-
 function mCCreateCard(outcome){
-  const key = mCKeyOf(outcome);
-  const isObserved = mCObserved.has(key);
-  const isRolling = mCRollingKeys.has(key);
-  const savedFaces = mCDisplayedResults.get(key) || outcome.map(()=>1);
-  const card = document.createElement("div");
-  card.className = "m-dice-card";
-  const pair = document.createElement("div");
-  pair.className = "m-dice-pair";
-  pair.appendChild(mCMakeDie(savedFaces[0], `mCDie-${key}-a`));
-  if(outcome.length===2){ pair.appendChild(mCMakeDie(savedFaces[1], `mCDie-${key}-b`)); }
-  const status = document.createElement("div");
-  status.className = "m-card-status";
-  if(isRolling){ status.textContent = "Dadu sedang dikocok..."; }
-  else if(isObserved){ status.textContent = `Hasil: ${savedFaces.join(" dan ")}`; }
-  else{ status.textContent = "Belum dikocok"; }
-  const button = document.createElement("button");
-  button.className = isObserved ? "m-secondary" : "m-primary";
-  button.textContent = isObserved ? "Kocok Lagi" : "Kocok";
-  button.disabled = mCRollingKeys.size > 0;
-  button.addEventListener("click", ()=>{ mCRollCard(outcome); });
-  card.appendChild(pair);
-  card.appendChild(status);
-  card.appendChild(button);
+  const key=mCKeyOf(outcome);
+  const isObserved=mCObserved.has(key);
+  const isRolling=mCRollingKeys.has(key);
+  const savedFaces=mCDisplayedResults.get(key)||outcome.map(()=>1);
+  const card=document.createElement("div");
+  card.className="m-dice-card";
+  const pair=document.createElement("div");
+  pair.className="m-dice-pair";
+  pair.appendChild(mCMakeDie(savedFaces[0],`mCDie-${key}-a`));
+  if(outcome.length===2){pair.appendChild(mCMakeDie(savedFaces[1],`mCDie-${key}-b`));}
+  const status=document.createElement("div");
+  status.className="m-card-status";
+  if(isRolling){status.textContent="Dadu sedang dikocok...";}
+  else if(isObserved){status.textContent=`Hasil: ${savedFaces.join(" dan ")}`;}
+  else{status.textContent="Belum dikocok";}
+  const button=document.createElement("button");
+  button.className=isObserved?"m-secondary":"m-primary";
+  button.textContent=isObserved?"Kocok Lagi":"Kocok";
+  button.disabled=mCRollingKeys.size>0;
+  button.addEventListener("click",()=>{mCRollCard(outcome);});
+  card.appendChild(pair);card.appendChild(status);card.appendChild(button);
   return card;
 }
-
 function mCRenderGrid(){
-  mCDiceGrid.innerHTML = "";
-  mCOutcomes.forEach(o=>{ mCDiceGrid.appendChild(mCCreateCard(o)); });
+  mCDiceGrid.innerHTML="";
+  mCOutcomes.forEach(o=>{mCDiceGrid.appendChild(mCCreateCard(o));});
 }
-
 function mCRenderTable(){
-  mCObservationBody.innerHTML = "";
-  const mission = mCMissions[mCMissionId];
+  mCObservationBody.innerHTML="";
+  const mission=mCMissions[mCMissionId];
   mCOutcomes.forEach(outcome=>{
-    const key = mCKeyOf(outcome);
+    const key=mCKeyOf(outcome);
     if(!mCObserved.has(key)) return;
-    const isEvent = mission.event(outcome);
-    const row = document.createElement("tr");
+    const isEvent=mission.event(outcome);
+    const row=document.createElement("tr");
     if(isEvent) row.classList.add("m-event-row");
-    const numberCell = document.createElement("td");
-    numberCell.textContent = mCObservationBody.children.length + 1;
-    const resultCell = document.createElement("td");
-    resultCell.textContent = mCLabelOf(outcome);
-    const eventCell = document.createElement("td");
-    eventCell.textContent = isEvent ? "Termasuk kejadian" : "Bukan kejadian";
-    const statusCell = document.createElement("td");
-    statusCell.textContent = "Sudah diamati";
-    row.append(numberCell, resultCell, eventCell, statusCell);
+    const numberCell=document.createElement("td");
+    numberCell.textContent=mCObservationBody.children.length+1;
+    const resultCell=document.createElement("td");
+    resultCell.textContent=mCLabelOf(outcome);
+    const eventCell=document.createElement("td");
+    eventCell.textContent=isEvent?"Termasuk kejadian":"Bukan kejadian";
+    const statusCell=document.createElement("td");
+    statusCell.textContent="Sudah diamati";
+    row.append(numberCell,resultCell,eventCell,statusCell);
     mCObservationBody.appendChild(row);
   });
-  if(mCObserved.size === 0){
-    mCObservationBody.innerHTML = `<tr><td colspan="4">Belum ada hasil pengamatan.</td></tr>`;
+  if(mCObserved.size===0){
+    mCObservationBody.innerHTML=`<tr><td colspan="4">Belum ada hasil pengamatan.</td></tr>`;
   }
   mCUpdateStatistics();
 }
-
 function mCUpdateStatistics(){
-  mCSampleCount.textContent = mCOutcomes.length;
-  mCObservedCount.textContent = mCObserved.size;
-  mCRemainingCount.textContent = mCOutcomes.length - mCObserved.size;
-  const allObserved = mCObserved.size === mCOutcomes.length;
-  mCAnswerArea.style.display = allObserved ? "block" : "none";
-  mCPreviousButton.disabled = !allObserved || mCMissionId === 1;
-  mCNextButton.disabled = !allObserved || mCMissionId === 9;
+  mCSampleCount.textContent=mCOutcomes.length;
+  mCObservedCount.textContent=mCObserved.size;
+  mCRemainingCount.textContent=mCOutcomes.length-mCObserved.size;
+  const allObserved=mCObserved.size===mCOutcomes.length;
+  mCAnswerArea.style.display=allObserved?"block":"none";
+  mCPreviousButton.disabled=!allObserved||mCMissionId===1;
+  mCNextButton.disabled=!allObserved||mCMissionId===9;
 }
-
-function mCRenderAll(){ mCRenderGrid(); mCRenderTable(); }
-
+function mCRenderAll(){mCRenderGrid();mCRenderTable();}
 function mCRollCard(outcome){
-  if(mCRollingKeys.size > 0) return;
-  const key = mCKeyOf(outcome);
+  if(mCRollingKeys.size>0) return;
+  const key=mCKeyOf(outcome);
   mCRollingKeys.add(key);
   mCRenderGrid();
-  const cubeA = document.getElementById(`mCDie-${key}-a`);
-  const cubeB = outcome.length === 2 ? document.getElementById(`mCDie-${key}-b`) : null;
-  const cubes = [cubeA, cubeB].filter(Boolean);
-  const animationTimer = setInterval(()=>{
+  const cubeA=document.getElementById(`mCDie-${key}-a`);
+  const cubeB=outcome.length===2?document.getElementById(`mCDie-${key}-b`):null;
+  const cubes=[cubeA,cubeB].filter(Boolean);
+  const animationTimer=setInterval(()=>{
     cubes.forEach(cube=>{
-      cube.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
+      cube.style.transform=`rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
     });
-  }, 90);
+  },90);
   setTimeout(()=>{
     clearInterval(animationTimer);
-    mCDisplayedResults.set(key, [...outcome]);
+    mCDisplayedResults.set(key,[...outcome]);
     mCObserved.add(key);
     mCRollingKeys.delete(key);
     mCRenderAll();
-  }, 1500);
+  },1500);
 }
-
 function mCRollNext(){
-  if(mCRollingKeys.size > 0) return;
-  const nextOutcome = mCOutcomes.find(o => !mCObserved.has(mCKeyOf(o)));
-  if(nextOutcome){ mCRollCard(nextOutcome); }
-  else{ alert("Semua kemungkinan hasil sudah diamati."); }
+  if(mCRollingKeys.size>0) return;
+  const nextOutcome=mCOutcomes.find(o=>!mCObserved.has(mCKeyOf(o)));
+  if(nextOutcome){mCRollCard(nextOutcome);}
+  else{alert("Semua kemungkinan hasil sudah diamati.");}
 }
-
 function mCResetMission(){
-  if(mCRollingKeys.size > 0) return;
+  if(mCRollingKeys.size>0) return;
   mCObserved.clear();
-  mCNAInput.value = "";
-  mCPAInput.value = "";
-  mCFeedback.textContent = "";
+  mCNAInput.value="";
+  mCPAInput.value="";
+  mCFeedback.textContent="";
   mCDisplayedResults.clear();
-  mCOutcomes.forEach(o=>{ mCDisplayedResults.set(mCKeyOf(o), o.map(()=>1)); });
+  mCOutcomes.forEach(o=>{mCDisplayedResults.set(mCKeyOf(o),o.map(()=>1));});
   mCRenderAll();
 }
-
 function mCSetupMission(){
-  mCMissionId = Number(mCMissionSelect.value);
+  mCMissionId=Number(mCMissionSelect.value);
   mCObserved.clear();
   mCRollingKeys.clear();
-  const mission = mCMissions[mCMissionId];
-  document.getElementById("mCMissionDescription").textContent = mission.description;
-  document.getElementById("mCDiceDescription").textContent = mission.dice === 1 ? "Pada misi ini terdapat 6 kemungkinan hasil dari satu dadu." : "Pada misi ini terdapat 36 kemungkinan hasil dari dua dadu.";
-  mCNAInput.value = "";
-  mCPAInput.value = "";
-  mCFeedback.textContent = "";
+  const mission=mCMissions[mCMissionId];
+  document.getElementById("mCMissionDescription").textContent=mission.description;
+  document.getElementById("mCDiceDescription").textContent=mission.dice===1?"Pada misi ini terdapat 6 kemungkinan hasil dari satu dadu.":"Pada misi ini terdapat 36 kemungkinan hasil dari dua dadu.";
+  mCNAInput.value="";
+  mCPAInput.value="";
+  mCFeedback.textContent="";
   mCMakeOutcomes();
   mCRenderAll();
 }
-
 function mCNavigateMission(nextId){
-  if(mCRollingKeys.size > 0) return;
-  if(nextId < 1 || nextId > 9) return;
-  if(mCObserved.size !== mCOutcomes.length) return;
-  mCMissionSelect.value = String(nextId);
+  if(mCRollingKeys.size>0) return;
+  if(nextId<1||nextId>9) return;
+  if(mCObserved.size!==mCOutcomes.length) return;
+  mCMissionSelect.value=String(nextId);
   mCSetupMission();
-  window.scrollTo({top:0, behavior:"smooth"});
+  window.scrollTo({top:0,behavior:"smooth"});
 }
-
 function mCCheckAnswers(){
-  const nText = mCNAInput.value.trim();
-  const pText = mCPAInput.value.trim();
-  if(nText === "" || pText === ""){
-    mCFeedback.textContent = "Silakan lengkapi kedua jawaban terlebih dahulu.";
-    mCFeedback.style.color = "#b45309";
+  const nText=mCNAInput.value.trim();
+  const pText=mCPAInput.value.trim();
+  if(nText===""||pText===""){
+    mCFeedback.textContent="Silakan lengkapi kedua jawaban terlebih dahulu.";
+    mCFeedback.style.color="#b45309";
     return;
   }
-  const nAnswer = Number(nText);
-  const normalized = pText.replace(",", ".");
+  const nAnswer=Number(nText);
+  const normalized=pText.replace(",",".");
   let pAnswer;
   if(normalized.includes("/")){
-    const parts = normalized.split("/");
-    if(parts.length !== 2 || parts.some(p=>p.trim()==="") || !Number.isFinite(Number(parts[0])) || !Number.isFinite(Number(parts[1])) || Number(parts[1]) === 0){
-      mCFeedback.textContent = "Format pecahan belum tepat.";
-      mCFeedback.style.color = "#b45309";
+    const parts=normalized.split("/");
+    if(parts.length!==2||parts.some(p=>p.trim()==="")||!Number.isFinite(Number(parts[0]))||!Number.isFinite(Number(parts[1]))||Number(parts[1])===0){
+      mCFeedback.textContent="Format pecahan belum tepat.";
+      mCFeedback.style.color="#b45309";
       return;
     }
-    pAnswer = Number(parts[0]) / Number(parts[1]);
+    pAnswer=Number(parts[0])/Number(parts[1]);
   }else{
-    pAnswer = Number(normalized);
-    if(pAnswer > 1 && pAnswer <= 100){ pAnswer = pAnswer / 100; }
+    pAnswer=Number(normalized);
+    if(pAnswer>1&&pAnswer<=100){pAnswer=pAnswer/100;}
   }
-  const mission = mCMissions[mCMissionId];
-  const correctN = mCOutcomes.filter(o=>mission.event(o)).length;
-  const correctP = correctN / mCOutcomes.length;
-  const countCorrect = Number.isInteger(nAnswer) && nAnswer === correctN;
-  const probabilityCorrect = Number.isFinite(pAnswer) && Math.abs(pAnswer - correctP) < 0.0001;
-  if(countCorrect && probabilityCorrect){
-    mCFeedback.textContent = "Benar! Jawabanmu tepat.";
-    mCFeedback.style.color = "#23866b";
+  const mission=mCMissions[mCMissionId];
+  const correctN=mCOutcomes.filter(o=>mission.event(o)).length;
+  const correctP=correctN/mCOutimes?0:0;
+  const correctProb=correctN/mCOutcomes.length;
+  const countCorrect=Number.isInteger(nAnswer)&&nAnswer===correctN;
+  const probabilityCorrect=Number.isFinite(pAnswer)&&Math.abs(pAnswer-correctProb)<0.0001;
+  if(countCorrect&&probabilityCorrect){
+    mCFeedback.textContent="Benar! Jawabanmu tepat.";
+    mCFeedback.style.color="#23866b";
   }else{
-    mCFeedback.textContent = "Jawaban belum tepat. Periksa kembali banyak anggota kejadian dan peluang teoretisnya.";
-    mCFeedback.style.color = "#b3425a";
+    mCFeedback.textContent="Jawaban belum tepat. Periksa kembali banyak anggota kejadian dan peluang teoretisnya.";
+    mCFeedback.style.color="#b3425a";
   }
 }
 
-document.getElementById("mCRollNext").addEventListener("click", mCRollNext);
-document.getElementById("mCResetButton").addEventListener("click", mCResetMission);
-document.getElementById("mCCheckButton").addEventListener("click", mCCheckAnswers);
-mCPreviousButton.addEventListener("click", ()=>{ mCNavigateMission(mCMissionId - 1); });
-mCNextButton.addEventListener("click", ()=>{ mCNavigateMission(mCMissionId + 1); });
-mCMissionSelect.addEventListener("change", ()=>{ if(mCRollingKeys.size === 0){ mCSetupMission(); } });
+document.getElementById("mCRollNext").addEventListener("click",mCRollNext);
+document.getElementById("mCResetButton").addEventListener("click",mCResetMission);
+document.getElementById("mCCheckButton").addEventListener("click",mCCheckAnswers);
+mCPreviousButton.addEventListener("click",()=>{mCNavigateMission(mCMissionId-1);});
+mCNextButton.addEventListener("click",()=>{mCNavigateMission(mCMissionId+1);});
+mCMissionSelect.addEventListener("change",()=>{if(mCRollingKeys.size===0){mCSetupMission();}});
 
 if(document.getElementById("materiC")){
   mCSetupMission();
 }
 
-/* ============================================================
-   KATEX — fungsi render manual untuk konten dinamis
-   ============================================================ */
-function renderMathNow(el){
-  if(!el || typeof renderMathInElement !== "function") return;
-  renderMathInElement(el, {
-    delimiters: [
-      {left: "\\(", right: "\\)", display: false},
-      {left: "\\[", right: "\\]", display: true}
-    ],
-    throwOnError: false
+/* Re-render KaTeX untuk elemen dinamis yang sudah terisi */
+window.addEventListener('load',()=>{
+  ['headsRelative','tailsRelative','eventFormula','complementFormula',
+   'eventExplanation','complementExplanation','mBIndFrequency'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) renderMathNow(el);
   });
-}
-
-/* Render semua rumus di halaman setelah KaTeX siap */
-document.addEventListener("DOMContentLoaded", function(){
-  if(typeof renderMathInElement === "function"){
-    renderMathInElement(document.body, {
-      delimiters: [
-        {left: "\\(", right: "\\)", display: false},
-        {left: "\\[", right: "\\]", display: true}
-      ],
-      throwOnError: false,
-      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
-    });
-  }
 });
 </script>
 
