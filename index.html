@@ -6,6 +6,11 @@
 <title>MATHIC — Mathematic Interaction Class</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+<!-- ===== KaTeX ===== -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--purple:#8056d9;--dark:#35256c;--muted:#8984a5}
@@ -239,7 +244,7 @@ h1{font-size:45px}
 <div class="pill">✦ MATHIC · MATHEMATIC INTERACTION CLASS</div>
 <h1>Belajar Math <span>Tanpa Drama!</span></h1>
 <p class="description">MATHIC bikin matematika jadi lebih seru, interaktif, dan dekat dengan kehidupan sehari-hari.</p>
-<div class="math">P(A) = ?</div>
+<div class="math">\( P(A) = ? \)</div>
 <svg class="left-art" viewBox="0 0 390 250">
 <ellipse cx="190" cy="220" rx="172" ry="24" fill="#e8dcff"/>
 <ellipse cx="200" cy="194" rx="126" ry="75" fill="#eee5ff"/>
@@ -282,7 +287,7 @@ h1{font-size:45px}
 
 <section class="right">
 <p class="quote">Peluang hari ini,<br>kesempatan masa depan ♡</p>
-<div class="formula">P(A)</div>
+<div class="formula">\( P(A) \)</div>
 <svg class="right-art" viewBox="0 0 370 320">
 <ellipse cx="185" cy="287" rx="162" ry="23" fill="#e9dcff"/>
 <path d="M78 234L278 218L322 238L123 258Z" fill="#7b4dbd"/>
@@ -303,7 +308,7 @@ h1{font-size:45px}
 <path d="M94 81L253 53L309 74L149 103Z" fill="#9870e0"/>
 <path d="M94 81L149 103L149 129L94 107Z" fill="#7c55c4"/>
 <path d="M149 103L309 74L309 99L149 129Z" fill="#6f48b7"/>
-<text x="258" y="49" font-size="24" fill="#ffcf65" font-weight="900">π</text>
+<text x="258" y="49" font-size="24" fill="#ffcf65" font-weight="900">\( \pi \)</text>
 </svg>
 </section>
 </main>
@@ -364,6 +369,30 @@ let student=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
 '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
 }[c]));
+
+/* ===== RENDER KATEX ===== */
+function renderKaTeX(el){
+  if(!el || typeof renderMathInElement==='undefined') return;
+  renderMathInElement(el,{
+    delimiters:[
+      {left:'\\(',right:'\\)',display:false},
+      {left:'\\[',right:'\\]',display:true},
+      {left:'$$',right:'$$',display:true},
+      {left:'$',right:'$',display:false}
+    ],
+    throwOnError:false
+  });
+}
+// panggil setelah DOM siap / setiap kali konten baru dirender
+const katexObserver=new MutationObserver(()=>{
+  // cukup render pada elemen utama yang berubah
+  if(document.getElementById('content')) renderKaTeX(document.getElementById('content'));
+  if(document.getElementById('landing')) renderKaTeX(document.getElementById('landing'));
+});
+document.addEventListener('DOMContentLoaded',()=>{
+  renderKaTeX(document.body);
+  katexObserver.observe(document.body,{childList:true,subtree:true});
+});
 
 function say(t,ok=false){$('message').textContent=t;$('message').classList.toggle('ok',ok);}
 
@@ -718,12 +747,12 @@ section.innerHTML=`
 
 const latihanData={
 pg:[
-{q:'Banyak anggota ruang sampel pada pelemparan sebuah dadu dan dua keping uang logam adalah ....',o:['10','12','24','36','48'],a:2,e:'Satu dadu = 6 kemungkinan. Dua koin = 2 × 2 = 4 kemungkinan. n(S) = 6 × 4 = 24.'},
-{q:'Banyak anggota kejadian muncul dua sisi gambar pada pelemparan tiga keping uang logam adalah ....',o:['2','3','4','5','6'],a:1,e:'Ruang sampel tiga koin: 8 hasil. Muncul tepat dua gambar: GGA, GAG, AGG → 3 hasil. Jadi n(A) = 3.'},
-{q:'Di kantong terdapat 21 kelereng kuning, 27 kelereng merah, dan 42 kelereng hijau. Peluang terambil kelereng hijau adalah ....',o:['5/99','7/18','3/10','11/30','7/15'],a:4,e:'n(S) = 21+27+42 = 90. n(A) = 42. P = 42/90 = 7/15.'},
-{q:'Dua dadu dilempar 48 kali. Frekuensi harapan muncul mata dadu berjumlah kurang dari 5 adalah ....',o:['8 kali','10 kali','12 kali','16 kali','18 kali'],a:0,e:'n(S)=36. Jumlah < 5: (1,1),(1,2),(2,1),(1,3),(2,2),(3,1) → 6. P=6/36=1/6. Fh=1/6×48=8 kali.'},
-{q:'Kotak berisi 6 bola kuning dan 9 bola merah. Diambil dua bola sekaligus. Peluang terambil dua bola berwarna sama adalah ....',o:['16/21','17/21','105/52','17/35','37/70'],a:3,e:'n(S)=C(15,2)=105. Dua kuning=C(6,2)=15. Dua merah=C(9,2)=36. n(A)=51. P=51/105=17/35.'},
-{q:'Dua kartu diambil satu per satu tanpa pengembalian dari 52 kartu bridge. Peluang keduanya berwarna merah adalah ....',o:['3/52','6/25','25/102','1/4','50/102'],a:2,e:'P(merah 1)=26/52=1/2. P(merah 2|merah 1)=25/51. P=1/2×25/51=25/102.'}
+{q:'Banyak anggota ruang sampel pada pelemparan sebuah dadu dan dua keping uang logam adalah ....',o:['10','12','24','36','48'],a:2,e:'Satu dadu = \( 6 \) kemungkinan. Dua koin = \( 2 \times 2 = 4 \) kemungkinan. \( n(S) = 6 \times 4 = 24 \).'},
+{q:'Banyak anggota kejadian muncul dua sisi gambar pada pelemparan tiga keping uang logam adalah ....',o:['2','3','4','5','6'],a:1,e:'Ruang sampel tiga koin: \( 8 \) hasil. Muncul tepat dua gambar: GGA, GAG, AGG \( \rightarrow 3 \) hasil. Jadi \( n(A) = 3 \).'},
+{q:'Di kantong terdapat 21 kelereng kuning, 27 kelereng merah, dan 42 kelereng hijau. Peluang terambil kelereng hijau adalah ....',o:['5/99','7/18','3/10','11/30','7/15'],a:4,e:'\( n(S) = 21+27+42 = 90 \). \( n(A) = 42 \). \( P = \frac{42}{90} = \frac{7}{15} \).'},
+{q:'Dua dadu dilempar 48 kali. Frekuensi harapan muncul mata dadu berjumlah kurang dari 5 adalah ....',o:['8 kali','10 kali','12 kali','16 kali','18 kali'],a:0,e:'\( n(S)=36 \). Jumlah \( < 5 \): (1,1),(1,2),(2,1),(1,3),(2,2),(3,1) \( \rightarrow 6 \). \( P = \frac{6}{36} = \frac{1}{6} \). \( Fh = \frac{1}{6} \times 48 = 8 \) kali.'},
+{q:'Kotak berisi 6 bola kuning dan 9 bola merah. Diambil dua bola sekaligus. Peluang terambil dua bola berwarna sama adalah ....',o:['16/21','17/21','105/52','17/35','37/70'],a:3,e:'\( n(S)=C(15,2)=105 \). Dua kuning \(=C(6,2)=15\). Dua merah \(=C(9,2)=36\). \( n(A)=51 \). \( P=\frac{51}{105}=\frac{17}{35} \).'},
+{q:'Dua kartu diambil satu per satu tanpa pengembalian dari 52 kartu bridge. Peluang keduanya berwarna merah adalah ....',o:['3/52','6/25','25/102','1/4','50/102'],a:2,e:'\( P(\text{merah 1})=\frac{26}{52}=\frac{1}{2} \). \( P(\text{merah 2}|\text{merah 1})=\frac{25}{51} \). \( P=\frac{1}{2}\times\frac{25}{51}=\frac{25}{102} \).'}
 ]
 };
 
@@ -750,6 +779,7 @@ ${x.o.map((v,j)=>`
 <span>${String.fromCharCode(65+j)}. ${v}</span>
 </label>`).join('')}
 </div>`).join('');
+renderKaTeX(section);
 };
 
 window.cekLatihanLengkap=()=>{
@@ -775,30 +805,31 @@ result.innerHTML=`<strong>Skor latihan: ${benar}/${latihanData.pg.length}</stron
 result.classList.add('show');
 result.scrollIntoView({behavior:'smooth',block:'start'});
 $('latihanCheck').disabled=true;
+renderKaTeX(result);
 };
 /* ================= KUIS ================= */
 
 const kuisData={
 match:[
-{konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',pasangan:[{term:'Muncul dua sisi angka',answer:'1'},{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}],pembahasan:'n(S) = 2 × 2 = 4, yaitu AA, AG, GA, GG. Muncul dua sisi angka = 1 (AA). Muncul satu angka satu gambar = 2 (AG, GA). Muncul paling sedikit satu gambar = 3 (AG, GA, GG).'},
-{konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Muncul mata dadu angka 5',answer:'1/6'},{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},{term:'Muncul mata dadu paling banyak 6',answer:'1'}],pembahasan:'n(S) = 6. Muncul angka 5 = 1 hasil, P = 1/6. Kurang dari 4 = {1,2,3} → 3 hasil, P = 3/6 = 1/2. Paling banyak 6 = {1,2,3,4,5,6} → 6 hasil, P = 6/6 = 1.'},
-{konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',pasangan:[{term:'Jumlah kedua mata dadu 7',answer:'1/6'},{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},{term:'Jumlah kedua mata dadu 2',answer:'1/36'}],pembahasan:'n(S) = 36. Jumlah 7: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) → 6 hasil, P = 6/36 = 1/6. Faktor 6 sekaligus prima = {2,3}, pasangan (1,6),(2,5),(3,4) → 3 hasil, P = 3/36 = 1/12. Jumlah 2: (1,1) → 1 hasil, P = 1/36.'},
-{konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Merah kemudian kuning',answer:'2/11'},{term:'Kuning kemudian biru',answer:'2/33'},{term:'Biru kemudian merah',answer:'1/11'}],pembahasan:'n(S) = 12. Merah lalu kuning: 6/12 × 4/11 = 24/132 = 2/11. Kuning lalu biru: 4/12 × 2/11 = 8/132 = 2/33. Biru lalu merah: 2/12 × 6/11 = 12/132 = 1/11.'},
-{konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Kedua bola berwarna merah',answer:'5/33'},{term:'Kedua bola berwarna biru',answer:'1/11'},{term:'Kedua bola berwarna putih',answer:'1/22'}],pembahasan:'n(S) = C(12,2) = 66. Dua merah: C(5,2) = 10, P = 10/66 = 5/33. Dua biru: C(4,2) = 6, P = 6/66 = 1/11. Dua putih: C(3,2) = 3, P = 3/66 = 1/22.'}
+{konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',pasangan:[{term:'Muncul dua sisi angka',answer:'1'},{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}],pembahasan:'\( n(S) = 2 \times 2 = 4 \), yaitu AA, AG, GA, GG. Muncul dua sisi angka = 1 (AA). Muncul satu angka satu gambar = 2 (AG, GA). Muncul paling sedikit satu gambar = 3 (AG, GA, GG).'},
+{konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Muncul mata dadu angka 5',answer:'1/6'},{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},{term:'Muncul mata dadu paling banyak 6',answer:'1'}],pembahasan:'\( n(S) = 6 \). Muncul angka 5 = 1 hasil, \( P = \frac{1}{6} \). Kurang dari 4 = {1,2,3} \( \rightarrow 3 \) hasil, \( P = \frac{3}{6} = \frac{1}{2} \). Paling banyak 6 = {1,2,3,4,5,6} \( \rightarrow 6 \) hasil, \( P = \frac{6}{6} = 1 \).'},
+{konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',pasangan:[{term:'Jumlah kedua mata dadu 7',answer:'1/6'},{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},{term:'Jumlah kedua mata dadu 2',answer:'1/36'}],pembahasan:'\( n(S) = 36 \). Jumlah 7: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) \( \rightarrow 6 \) hasil, \( P = \frac{6}{36} = \frac{1}{6} \). Faktor 6 sekaligus prima = {2,3}, pasangan (1,6),(2,5),(3,4) \( \rightarrow 3 \) hasil, \( P = \frac{3}{36} = \frac{1}{12} \). Jumlah 2: (1,1) \( \rightarrow 1 \) hasil, \( P = \frac{1}{36} \).'},
+{konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Merah kemudian kuning',answer:'2/11'},{term:'Kuning kemudian biru',answer:'2/33'},{term:'Biru kemudian merah',answer:'1/11'}],pembahasan:'\( n(S) = 12 \). Merah lalu kuning: \( \frac{6}{12} \times \frac{4}{11} = \frac{24}{132} = \frac{2}{11} \). Kuning lalu biru: \( \frac{4}{12} \times \frac{2}{11} = \frac{8}{132} = \frac{2}{33} \). Biru lalu merah: \( \frac{2}{12} \times \frac{6}{11} = \frac{12}{132} = \frac{1}{11} \).'},
+{konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Kedua bola berwarna merah',answer:'5/33'},{term:'Kedua bola berwarna biru',answer:'1/11'},{term:'Kedua bola berwarna putih',answer:'1/22'}],pembahasan:'\( n(S) = C(12,2) = 66 \). Dua merah: \( C(5,2) = 10, P = \frac{10}{66} = \frac{5}{33} \). Dua biru: \( C(4,2) = 6, P = \frac{6}{66} = \frac{1}{11} \). Dua putih: \( C(3,2) = 3, P = \frac{3}{66} = \frac{1}{22} \).'}
 ],
 drag:[
-{q:'Sebuah dadu bersisi enam dilempar sebanyak satu kali. Peluang munculnya mata dadu berupa bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2',pembahasan:'n(S) = 6. Bilangan genap: 2, 4, 6 → n(A) = 3. P = 3/6 = 1/2.'},
-{q:'Dalam sebuah kotak terdapat 5 bola merah, 3 bola biru, dan 2 bola hijau. Jika satu bola diambil secara acak, peluang terambilnya bola biru adalah ....',choices:['1/5','3/10','1/2','2/5'],answer:'3/10',pembahasan:'n(S) = 5 + 3 + 2 = 10. Bola biru = 3. P = 3/10.'},
-{q:'Dalam sebuah kotak terdapat 6 bola merah dan 4 bola putih. Dua bola diambil satu per satu secara acak dengan pengembalian. Peluang terambil bola merah pada pengambilan pertama dan bola putih pada pengambilan kedua adalah ....',choices:['1/5','6/25','2/5','3/5'],answer:'6/25',pembahasan:'Dengan pengembalian, peluang tetap. P(merah) = 6/10, P(putih) = 4/10. P = 6/10 × 4/10 = 24/100 = 6/25.'},
-{q:'Dalam sebuah kotak terdapat 5 bola merah dan 3 bola biru. Dua bola diambil secara berurutan tanpa pengembalian. Peluang kedua bola yang terambil berwarna merah adalah ....',choices:['5/14','5/16','3/8','1/2'],answer:'5/14',pembahasan:'P(merah 1) = 5/8. Setelah diambil, sisa 4 merah dari 7 bola. P(merah 2|merah 1) = 4/7. P = 5/8 × 4/7 = 20/56 = 5/14.'},
-{q:'Dalam sebuah kotak terdapat 8 baterai dalam kondisi baik dan 4 baterai rusak. Dua baterai diambil secara berurutan tanpa pengembalian. Peluang kedua baterai yang terambil dalam kondisi baik adalah ....',choices:['7/22','14/33','1/2','8/11'],answer:'14/33',pembahasan:'P(baik 1) = 8/12. Setelah diambil, sisa 7 baik dari 11. P(baik 2|baik 1) = 7/11. P = 8/12 × 7/11 = 56/132 = 14/33.'}
+{q:'Sebuah dadu bersisi enam dilempar sebanyak satu kali. Peluang munculnya mata dadu berupa bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2',pembahasan:'\( n(S) = 6 \). Bilangan genap: 2, 4, 6 \( \rightarrow n(A) = 3 \). \( P = \frac{3}{6} = \frac{1}{2} \).'},
+{q:'Dalam sebuah kotak terdapat 5 bola merah, 3 bola biru, dan 2 bola hijau. Jika satu bola diambil secara acak, peluang terambilnya bola biru adalah ....',choices:['1/5','3/10','1/2','2/5'],answer:'3/10',pembahasan:'\( n(S) = 5 + 3 + 2 = 10 \). Bola biru = 3. \( P = \frac{3}{10} \).'},
+{q:'Dalam sebuah kotak terdapat 6 bola merah dan 4 bola putih. Dua bola diambil satu per satu secara acak dengan pengembalian. Peluang terambil bola merah pada pengambilan pertama dan bola putih pada pengambilan kedua adalah ....',choices:['1/5','6/25','2/5','3/5'],answer:'6/25',pembahasan:'Dengan pengembalian, peluang tetap. \( P(\text{merah}) = \frac{6}{10} \), \( P(\text{putih}) = \frac{4}{10} \). \( P = \frac{6}{10} \times \frac{4}{10} = \frac{24}{100} = \frac{6}{25} \).'},
+{q:'Dalam sebuah kotak terdapat 5 bola merah dan 3 bola biru. Dua bola diambil secara berurutan tanpa pengembalian. Peluang kedua bola yang terambil berwarna merah adalah ....',choices:['5/14','5/16','3/8','1/2'],answer:'5/14',pembahasan:'\( P(\text{merah 1}) = \frac{5}{8} \). Setelah diambil, sisa 4 merah dari 7 bola. \( P(\text{merah 2}|\text{merah 1}) = \frac{4}{7} \). \( P = \frac{5}{8} \times \frac{4}{7} = \frac{20}{56} = \frac{5}{14} \).'},
+{q:'Dalam sebuah kotak terdapat 8 baterai dalam kondisi baik dan 4 baterai rusak. Dua baterai diambil secara berurutan tanpa pengembalian. Peluang kedua baterai yang terambil dalam kondisi baik adalah ....',choices:['7/22','14/33','1/2','8/11'],answer:'14/33',pembahasan:'\( P(\text{baik 1}) = \frac{8}{12} \). Setelah diambil, sisa 7 baik dari 11. \( P(\text{baik 2}|\text{baik 1}) = \frac{7}{11} \). \( P = \frac{8}{12} \times \frac{7}{11} = \frac{56}{132} = \frac{14}{33} \).'}
 ],
 uraian:[
-{q:'Dua dadu dilempar bersama-sama sebanyak 126 kali. Frekuensi harapan muncul dua mata dadu berjumlah kurang dari 6 adalah ... kali.',a:'n(S)=36. Jumlah < 6: (1,1),(1,2),(2,1),(1,3),(2,2),(3,1),(1,4),(2,3),(3,2),(4,1) → 10. P=10/36=5/18. Fh=5/18×126=35 kali.'},
-{q:'Sebuah kotak berisi 25 kelereng merah, 40 kelereng putih, dan 35 kelereng hijau. Kemudian, diambil sebuah kelereng dari kotak tersebut. Peluang terambil bukan kelereng hijau adalah ....',a:'n(S)=25+40+35=100. Hijau=35. Bukan hijau=100-35=65. P=65/100=13/20.'},
-{q:'Dari 5 siswa laki-laki dan 6 siswa perempuan akan dibentuk sebuah tim yang terdiri atas 3 siswa. Peluang terbentuk tim yang terdiri atas 1 siswa laki-laki dan 2 siswa perempuan adalah ....',a:'n(S)=C(11,3)=165. C(5,1)=5, C(6,2)=15. n(A)=5×15=75. P=75/165=5/11.'},
-{q:'Kardus I berisi 5 bolpoin merah dan 7 bolpoin biru. Kardus II berisi 4 bolpoin merah dan 10 bolpoin biru. Dari kedua kardus tersebut akan diambil masing-masing 1 bolpoin secara acak. Peluang terambil bolpoin merah dari kardus 1 dan bolpoin biru dari kardus II adalah ....',a:'P(M1)=5/12. P(B2)=10/14. P=5/12×10/14=50/168=25/84.'},
-{q:'Sebuah kotak berisi 20 bola biru, 12 bola kuning, dan 8 bola hitam. Fadil mengambil sebuah bola dari kotak tersebut dan tidak dikembalikan. Kemudian, Dahlan dan Gani juga ikut mengambil bola secara bergantian dan juga tidak dikembalikan. Peluang bola yang terambil secara berurutan warna biru, kuning, dan hitam adalah ....',a:'P(B)=20/40. P(K|B)=12/39. P(H|B∩K)=8/38. P=20/40×12/39×8/38=8/247.'}
+{q:'Dua dadu dilempar bersama-sama sebanyak 126 kali. Frekuensi harapan muncul dua mata dadu berjumlah kurang dari 6 adalah ... kali.',a:'\( n(S)=36 \). Jumlah \( < 6 \): (1,1),(1,2),(2,1),(1,3),(2,2),(3,1),(1,4),(2,3),(3,2),(4,1) \( \rightarrow 10 \). \( P=\frac{10}{36}=\frac{5}{18} \). \( Fh=\frac{5}{18}\times 126=35 \) kali.'},
+{q:'Sebuah kotak berisi 25 kelereng merah, 40 kelereng putih, dan 35 kelereng hijau. Kemudian, diambil sebuah kelereng dari kotak tersebut. Peluang terambil bukan kelereng hijau adalah ....',a:'\( n(S)=25+40+35=100 \). Hijau=35. Bukan hijau=100-35=65. \( P=\frac{65}{100}=\frac{13}{20} \).'},
+{q:'Dari 5 siswa laki-laki dan 6 siswa perempuan akan dibentuk sebuah tim yang terdiri atas 3 siswa. Peluang terbentuk tim yang terdiri atas 1 siswa laki-laki dan 2 siswa perempuan adalah ....',a:'\( n(S)=C(11,3)=165 \). \( C(5,1)=5, C(6,2)=15 \). \( n(A)=5\times 15=75 \). \( P=\frac{75}{165}=\frac{5}{11} \).'},
+{q:'Kardus I berisi 5 bolpoin merah dan 7 bolpoin biru. Kardus II berisi 4 bolpoin merah dan 10 bolpoin biru. Dari kedua kardus tersebut akan diambil masing-masing 1 bolpoin secara acak. Peluang terambil bolpoin merah dari kardus 1 dan bolpoin biru dari kardus II adalah ....',a:'\( P(M_1)=\frac{5}{12} \). \( P(B_2)=\frac{10}{14} \). \( P=\frac{5}{12}\times\frac{10}{14}=\frac{50}{168}=\frac{25}{84} \).'},
+{q:'Sebuah kotak berisi 20 bola biru, 12 bola kuning, dan 8 bola hitam. Fadil mengambil sebuah bola dari kotak tersebut dan tidak dikembalikan. Kemudian, Dahlan dan Gani juga ikut mengambil bola secara bergantian dan juga tidak dikembalikan. Peluang bola yang terambil secara berurutan warna biru, kuning, dan hitam adalah ....',a:'\( P(B)=\frac{20}{40} \). \( P(K|B)=\frac{12}{39} \). \( P(H|B\cap K)=\frac{8}{38} \). \( P=\frac{20}{40}\times\frac{12}{39}\times\frac{8}{38}=\frac{8}{247} \).'}
 ]
 };
 
@@ -1046,6 +1077,7 @@ ${prevDoc && prevDoc.selesaiKuis
     : `<button class="practice-btn" onclick="mulaiKuis()">Mulai Kuis</button>`}
 </div>
 </div>`;
+renderKaTeX(section);
 };
 
 window.reviewKuisTerakhir=async()=>{
@@ -1107,8 +1139,10 @@ html+=`<div class="riwayat-item" style="${isTertinggi?'border:2px solid #23866b;
 }
 html+='<button class="practice-btn" onclick="studentTab(\'kuis\')">← Kembali ke Kuis</button></div>';
 section.innerHTML=html;
+renderKaTeX(section);
 }catch(e){
 section.innerHTML=`<div class="practice-area"><h3>📜 Riwayat Nilai Kuis</h3><div class="empty">Gagal memuat: ${esc(errText(e))}</div><button class="practice-btn" onclick="studentTab('kuis')">← Kembali ke Kuis</button></div>`;
+renderKaTeX(section);
 }
 };
 
@@ -1254,6 +1288,7 @@ ${bodyHTML}
 </div>
 <p class="muted" style="margin-top:12px;font-size:12px">Jawaban tersimpan otomatis. Waktu total 45 menit untuk seluruh kuis.</p>
 </div>`;
+renderKaTeX(section);
 
 if(s.jenis==='match'){
 document.querySelectorAll('.match-select').forEach(sel=>{
@@ -1573,6 +1608,7 @@ html+='</div>';
 
 html+='<button class="practice-btn" onclick="studentTab(\'kuis\')">Kembali ke Kuis</button></div>';
 section.innerHTML=html;
+renderKaTeX(section);
 };
 
 
@@ -1667,6 +1703,7 @@ let ringkasan=`<div class="summary-box">
 
 if(!progres.length){
 el.innerHTML=ringkasan+'<div class="empty">Belum ada murid yang mengerjakan kuis.</div>';
+renderKaTeX(el);
 return;
 }
 
@@ -1712,6 +1749,7 @@ el.innerHTML=ringkasan+`
 <tbody>${rows}</tbody>
 </table>
 </div>`;
+renderKaTeX(el);
 
 el.querySelectorAll('.btn-feedback').forEach(btn=>{
 btn.addEventListener('click',(e)=>{e.stopPropagation();bukaFormFeedback(btn.dataset.nama,btn.dataset.kode,classId,progres);});
@@ -1811,6 +1849,7 @@ ${riwayatHTML}
 </div>
 </div>`;
 document.body.appendChild(modal);
+renderKaTeX(modal);
 
 modal.querySelectorAll('.tab-btn').forEach(btn=>{
 btn.addEventListener('click',()=>{
@@ -1859,6 +1898,7 @@ return `<div style="margin-bottom:14px;padding:10px;background:white;border-radi
 </div>
 </div>`;
 document.body.appendChild(modal);
+renderKaTeX(modal);
 
 modal.querySelector('#closeNilaiRiwayat').addEventListener('click',()=>modal.remove());
 modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
@@ -1963,6 +2003,7 @@ modal.innerHTML=`
 <p class="message" id="fbMsg"></p>
 </div>`;
 document.body.appendChild(modal);
+renderKaTeX(modal);
 
 modal.querySelector('#fbClose').addEventListener('click',()=>modal.remove());
 modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
@@ -2025,6 +2066,12 @@ ok++;
 alert(`Feedback terkirim ke ${ok} murid.`);
 };
 
+// render KaTeX awal setelah auto-render termuat
+window.addEventListener('load',()=>{
+  if(typeof renderMathInElement!=='undefined'){
+    renderKaTeX(document.body);
+  }
+});
 </script>
 </body>
 </html>
