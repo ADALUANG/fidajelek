@@ -340,6 +340,7 @@ h1{font-size:45px}
 </header>
 <main class="content" id="content"></main>
 </div>
+
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -366,33 +367,41 @@ let mode='login';
 let profile=null;
 let student=null;
 
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
-'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[c]));
-
-/* ===== RENDER KATEX ===== */
+/* ===== Escaping & KaTeX helper ===== */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function renderKaTeX(el){
   if(!el || typeof renderMathInElement==='undefined') return;
   renderMathInElement(el,{
     delimiters:[
       {left:'\\(',right:'\\)',display:false},
       {left:'\\[',right:'\\]',display:true},
-      {left:'$$',right:'$$',display:true},
-      {left:'$',right:'$',display:false}
+      {left:'$$',right:'$$',display:true}
     ],
-    throwOnError:false
+    throwOnError:false,
+    ignoredTags:["script","noscript","style","textarea","pre","code"]
   });
 }
-// panggil setelah DOM siap / setiap kali konten baru dirender
+/* Observer global — setiap konten dinamis otomatis di-render KaTeX */
 const katexObserver=new MutationObserver(()=>{
-  // cukup render pada elemen utama yang berubah
-  if(document.getElementById('content')) renderKaTeX(document.getElementById('content'));
-  if(document.getElementById('landing')) renderKaTeX(document.getElementById('landing'));
+  renderKaTeX(document.getElementById('content'));
+  renderKaTeX(document.getElementById('landing'));
 });
 document.addEventListener('DOMContentLoaded',()=>{
   renderKaTeX(document.body);
   katexObserver.observe(document.body,{childList:true,subtree:true});
 });
+window.addEventListener('load',()=>renderKaTeX(document.body));
+
+/* helper pecahan untuk kuis */
+function fmtFrac(n,d){
+  if(d===0) return '\\text{tidak terdefinisi}';
+  if(n===0) return '0';
+  const gcd=(a,b)=>b===0?a:gcd(b,a%b);
+  const g=gcd(Math.abs(n),Math.abs(d));
+  const sn=n/g, sd=d/g;
+  return sd===1 ? `${sn}` : `\\dfrac{${sn}}{${sd}}`;
+}
+function fmtDec(v){ return Number(v).toFixed(2).replace('.',','); }
 
 function say(t,ok=false){$('message').textContent=t;$('message').classList.toggle('ok',ok);}
 
@@ -518,6 +527,7 @@ if(auth.currentUser)await signOut(auth);
 profile=null;student=null;
 $('app').classList.remove('show');
 $('landing').style.display='block';
+renderKaTeX($('landing'));
 };
 
 function item(title,body){
@@ -747,12 +757,12 @@ section.innerHTML=`
 
 const latihanData={
 pg:[
-{q:'Banyak anggota ruang sampel pada pelemparan sebuah dadu dan dua keping uang logam adalah ....',o:['10','12','24','36','48'],a:2,e:'Satu dadu = \( 6 \) kemungkinan. Dua koin = \( 2 \times 2 = 4 \) kemungkinan. \( n(S) = 6 \times 4 = 24 \).'},
-{q:'Banyak anggota kejadian muncul dua sisi gambar pada pelemparan tiga keping uang logam adalah ....',o:['2','3','4','5','6'],a:1,e:'Ruang sampel tiga koin: \( 8 \) hasil. Muncul tepat dua gambar: GGA, GAG, AGG \( \rightarrow 3 \) hasil. Jadi \( n(A) = 3 \).'},
-{q:'Di kantong terdapat 21 kelereng kuning, 27 kelereng merah, dan 42 kelereng hijau. Peluang terambil kelereng hijau adalah ....',o:['5/99','7/18','3/10','11/30','7/15'],a:4,e:'\( n(S) = 21+27+42 = 90 \). \( n(A) = 42 \). \( P = \frac{42}{90} = \frac{7}{15} \).'},
-{q:'Dua dadu dilempar 48 kali. Frekuensi harapan muncul mata dadu berjumlah kurang dari 5 adalah ....',o:['8 kali','10 kali','12 kali','16 kali','18 kali'],a:0,e:'\( n(S)=36 \). Jumlah \( < 5 \): (1,1),(1,2),(2,1),(1,3),(2,2),(3,1) \( \rightarrow 6 \). \( P = \frac{6}{36} = \frac{1}{6} \). \( Fh = \frac{1}{6} \times 48 = 8 \) kali.'},
-{q:'Kotak berisi 6 bola kuning dan 9 bola merah. Diambil dua bola sekaligus. Peluang terambil dua bola berwarna sama adalah ....',o:['16/21','17/21','105/52','17/35','37/70'],a:3,e:'\( n(S)=C(15,2)=105 \). Dua kuning \(=C(6,2)=15\). Dua merah \(=C(9,2)=36\). \( n(A)=51 \). \( P=\frac{51}{105}=\frac{17}{35} \).'},
-{q:'Dua kartu diambil satu per satu tanpa pengembalian dari 52 kartu bridge. Peluang keduanya berwarna merah adalah ....',o:['3/52','6/25','25/102','1/4','50/102'],a:2,e:'\( P(\text{merah 1})=\frac{26}{52}=\frac{1}{2} \). \( P(\text{merah 2}|\text{merah 1})=\frac{25}{51} \). \( P=\frac{1}{2}\times\frac{25}{51}=\frac{25}{102} \).'}
+{q:'Banyak anggota ruang sampel pada pelemparan sebuah dadu dan dua keping uang logam adalah ....',o:['10','12','24','36','48'],a:2,e:'Satu dadu = \\( 6 \\) kemungkinan. Dua koin = \\( 2 \\times 2 = 4 \\) kemungkinan. \\( n(S) = 6 \\times 4 = 24 \\).'},
+{q:'Banyak anggota kejadian muncul dua sisi gambar pada pelemparan tiga keping uang logam adalah ....',o:['2','3','4','5','6'],a:1,e:'Ruang sampel tiga koin: \\( 8 \\) hasil. Muncul tepat dua gambar: GGA, GAG, AGG \\( \\rightarrow 3 \\) hasil. Jadi \\( n(A) = 3 \\).'},
+{q:'Di kantong terdapat 21 kelereng kuning, 27 kelereng merah, dan 42 kelereng hijau. Peluang terambil kelereng hijau adalah ....',o:['5/99','7/18','3/10','11/30','7/15'],a:4,e:'\\( n(S) = 21+27+42 = 90 \\). \\( n(A) = 42 \\). \\( P = \\dfrac{42}{90} = \\dfrac{7}{15} \\).'},
+{q:'Dua dadu dilempar 48 kali. Frekuensi harapan muncul mata dadu berjumlah kurang dari 5 adalah ....',o:['8 kali','10 kali','12 kali','16 kali','18 kali'],a:0,e:'\\( n(S)=36 \\). Jumlah \\( < 5 \\): (1,1),(1,2),(2,1),(1,3),(2,2),(3,1) \\( \\rightarrow 6 \\). \\( P = \\dfrac{6}{36} = \\dfrac{1}{6} \\). \\( F_h = \\dfrac{1}{6} \\times 48 = 8 \\) kali.'},
+{q:'Kotak berisi 6 bola kuning dan 9 bola merah. Diambil dua bola sekaligus. Peluang terambil dua bola berwarna sama adalah ....',o:['16/21','17/21','105/52','17/35','37/70'],a:3,e:'\\( n(S)=C(15,2)=105 \\). Dua kuning \\(=C(6,2)=15\\). Dua merah \\(=C(9,2)=36\\). \\( n(A)=51 \\). \\( P=\\dfrac{51}{105}=\\dfrac{17}{35} \\).'},
+{q:'Dua kartu diambil satu per satu tanpa pengembalian dari 52 kartu bridge. Peluang keduanya berwarna merah adalah ....',o:['3/52','6/25','25/102','1/4','50/102'],a:2,e:'\\( P(\\text{merah 1})=\\dfrac{26}{52}=\\dfrac{1}{2} \\). \\( P(\\text{merah 2}|\\text{merah 1})=\\dfrac{25}{51} \\). \\( P=\\dfrac{1}{2}\\times\\dfrac{25}{51}=\\dfrac{25}{102} \\).'}
 ]
 };
 
@@ -807,29 +817,30 @@ result.scrollIntoView({behavior:'smooth',block:'start'});
 $('latihanCheck').disabled=true;
 renderKaTeX(result);
 };
+
 /* ================= KUIS ================= */
 
 const kuisData={
 match:[
-{konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',pasangan:[{term:'Muncul dua sisi angka',answer:'1'},{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}],pembahasan:'\( n(S) = 2 \times 2 = 4 \), yaitu AA, AG, GA, GG. Muncul dua sisi angka = 1 (AA). Muncul satu angka satu gambar = 2 (AG, GA). Muncul paling sedikit satu gambar = 3 (AG, GA, GG).'},
-{konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Muncul mata dadu angka 5',answer:'1/6'},{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},{term:'Muncul mata dadu paling banyak 6',answer:'1'}],pembahasan:'\( n(S) = 6 \). Muncul angka 5 = 1 hasil, \( P = \frac{1}{6} \). Kurang dari 4 = {1,2,3} \( \rightarrow 3 \) hasil, \( P = \frac{3}{6} = \frac{1}{2} \). Paling banyak 6 = {1,2,3,4,5,6} \( \rightarrow 6 \) hasil, \( P = \frac{6}{6} = 1 \).'},
-{konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',pasangan:[{term:'Jumlah kedua mata dadu 7',answer:'1/6'},{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},{term:'Jumlah kedua mata dadu 2',answer:'1/36'}],pembahasan:'\( n(S) = 36 \). Jumlah 7: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) \( \rightarrow 6 \) hasil, \( P = \frac{6}{36} = \frac{1}{6} \). Faktor 6 sekaligus prima = {2,3}, pasangan (1,6),(2,5),(3,4) \( \rightarrow 3 \) hasil, \( P = \frac{3}{36} = \frac{1}{12} \). Jumlah 2: (1,1) \( \rightarrow 1 \) hasil, \( P = \frac{1}{36} \).'},
-{konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Merah kemudian kuning',answer:'2/11'},{term:'Kuning kemudian biru',answer:'2/33'},{term:'Biru kemudian merah',answer:'1/11'}],pembahasan:'\( n(S) = 12 \). Merah lalu kuning: \( \frac{6}{12} \times \frac{4}{11} = \frac{24}{132} = \frac{2}{11} \). Kuning lalu biru: \( \frac{4}{12} \times \frac{2}{11} = \frac{8}{132} = \frac{2}{33} \). Biru lalu merah: \( \frac{2}{12} \times \frac{6}{11} = \frac{12}{132} = \frac{1}{11} \).'},
-{konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Kedua bola berwarna merah',answer:'5/33'},{term:'Kedua bola berwarna biru',answer:'1/11'},{term:'Kedua bola berwarna putih',answer:'1/22'}],pembahasan:'\( n(S) = C(12,2) = 66 \). Dua merah: \( C(5,2) = 10, P = \frac{10}{66} = \frac{5}{33} \). Dua biru: \( C(4,2) = 6, P = \frac{6}{66} = \frac{1}{11} \). Dua putih: \( C(3,2) = 3, P = \frac{3}{66} = \frac{1}{22} \).'}
+{konteks:'Dua keping uang logam dilempar secara bersamaan. Jodohkan kejadian berikut dengan banyak anggota kejadian yang sesuai.',pasangan:[{term:'Muncul dua sisi angka',answer:'1'},{term:'Muncul satu sisi angka dan satu sisi gambar',answer:'2'},{term:'Muncul paling sedikit satu sisi gambar',answer:'3'}],pembahasan:'\\( n(S) = 2 \\times 2 = 4 \\), yaitu AA, AG, GA, GG. Muncul dua sisi angka = 1 (AA). Muncul satu angka satu gambar = 2 (AG, GA). Muncul paling sedikit satu gambar = 3 (AG, GA, GG).'},
+{konteks:'Sebuah dadu dilempar satu kali. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Muncul mata dadu angka 5',answer:'1/6'},{term:'Muncul mata dadu kurang dari 4',answer:'1/2'},{term:'Muncul mata dadu paling banyak 6',answer:'1'}],pembahasan:'\\( n(S) = 6 \\). Muncul angka 5 = 1 hasil, \\( P = \\dfrac{1}{6} \\). Kurang dari 4 = {1,2,3} \\( \\rightarrow 3 \\) hasil, \\( P = \\dfrac{3}{6} = \\dfrac{1}{2} \\). Paling banyak 6 = {1,2,3,4,5,6} \\( \\rightarrow 6 \\) hasil, \\( P = \\dfrac{6}{6} = 1 \\).'},
+{konteks:'Dua buah dadu dilempar secara bersamaan. Jodohkan kejadian berikut dengan peluang yang tepat.',pasangan:[{term:'Jumlah kedua mata dadu 7',answer:'1/6'},{term:'Jumlah munculnya mata dadu yang merupakan faktor dari bilangan 6 sekaligus bilangan prima',answer:'1/12'},{term:'Jumlah kedua mata dadu 2',answer:'1/36'}],pembahasan:'\\( n(S) = 36 \\). Jumlah 7: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) \\( \\rightarrow 6 \\) hasil, \\( P = \\dfrac{6}{36} = \\dfrac{1}{6} \\). Faktor 6 sekaligus prima = {2,3}, pasangan (1,6),(2,5),(3,4) \\( \\rightarrow 3 \\) hasil, \\( P = \\dfrac{3}{36} = \\dfrac{1}{12} \\). Jumlah 2: (1,1) \\( \\rightarrow 1 \\) hasil, \\( P = \\dfrac{1}{36} \\).'},
+{konteks:'Sebuah kantong berisi 6 manik-manik merah, 4 manik-manik kuning, dan 2 manik-manik biru. Dua manik-manik diambil satu per satu tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Merah kemudian kuning',answer:'2/11'},{term:'Kuning kemudian biru',answer:'2/33'},{term:'Biru kemudian merah',answer:'1/11'}],pembahasan:'\\( n(S) = 12 \\). Merah lalu kuning: \\( \\dfrac{6}{12} \\times \\dfrac{4}{11} = \\dfrac{24}{132} = \\dfrac{2}{11} \\). Kuning lalu biru: \\( \\dfrac{4}{12} \\times \\dfrac{2}{11} = \\dfrac{8}{132} = \\dfrac{2}{33} \\). Biru lalu merah: \\( \\dfrac{2}{12} \\times \\dfrac{6}{11} = \\dfrac{12}{132} = \\dfrac{1}{11} \\).'},
+{konteks:'Dalam sebuah kotak terdapat 5 bola merah, 4 bola biru, dan 3 bola putih. Dua bola diambil sekaligus secara acak tanpa pengembalian. Jodohkan kejadian berikut dengan peluangnya.',pasangan:[{term:'Kedua bola berwarna merah',answer:'5/33'},{term:'Kedua bola berwarna biru',answer:'1/11'},{term:'Kedua bola berwarna putih',answer:'1/22'}],pembahasan:'\\( n(S) = C(12,2) = 66 \\). Dua merah: \\( C(5,2) = 10, P = \\dfrac{10}{66} = \\dfrac{5}{33} \\). Dua biru: \\( C(4,2) = 6, P = \\dfrac{6}{66} = \\dfrac{1}{11} \\). Dua putih: \\( C(3,2) = 3, P = \\dfrac{3}{66} = \\dfrac{1}{22} \\).'}
 ],
 drag:[
-{q:'Sebuah dadu bersisi enam dilempar sebanyak satu kali. Peluang munculnya mata dadu berupa bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2',pembahasan:'\( n(S) = 6 \). Bilangan genap: 2, 4, 6 \( \rightarrow n(A) = 3 \). \( P = \frac{3}{6} = \frac{1}{2} \).'},
-{q:'Dalam sebuah kotak terdapat 5 bola merah, 3 bola biru, dan 2 bola hijau. Jika satu bola diambil secara acak, peluang terambilnya bola biru adalah ....',choices:['1/5','3/10','1/2','2/5'],answer:'3/10',pembahasan:'\( n(S) = 5 + 3 + 2 = 10 \). Bola biru = 3. \( P = \frac{3}{10} \).'},
-{q:'Dalam sebuah kotak terdapat 6 bola merah dan 4 bola putih. Dua bola diambil satu per satu secara acak dengan pengembalian. Peluang terambil bola merah pada pengambilan pertama dan bola putih pada pengambilan kedua adalah ....',choices:['1/5','6/25','2/5','3/5'],answer:'6/25',pembahasan:'Dengan pengembalian, peluang tetap. \( P(\text{merah}) = \frac{6}{10} \), \( P(\text{putih}) = \frac{4}{10} \). \( P = \frac{6}{10} \times \frac{4}{10} = \frac{24}{100} = \frac{6}{25} \).'},
-{q:'Dalam sebuah kotak terdapat 5 bola merah dan 3 bola biru. Dua bola diambil secara berurutan tanpa pengembalian. Peluang kedua bola yang terambil berwarna merah adalah ....',choices:['5/14','5/16','3/8','1/2'],answer:'5/14',pembahasan:'\( P(\text{merah 1}) = \frac{5}{8} \). Setelah diambil, sisa 4 merah dari 7 bola. \( P(\text{merah 2}|\text{merah 1}) = \frac{4}{7} \). \( P = \frac{5}{8} \times \frac{4}{7} = \frac{20}{56} = \frac{5}{14} \).'},
-{q:'Dalam sebuah kotak terdapat 8 baterai dalam kondisi baik dan 4 baterai rusak. Dua baterai diambil secara berurutan tanpa pengembalian. Peluang kedua baterai yang terambil dalam kondisi baik adalah ....',choices:['7/22','14/33','1/2','8/11'],answer:'14/33',pembahasan:'\( P(\text{baik 1}) = \frac{8}{12} \). Setelah diambil, sisa 7 baik dari 11. \( P(\text{baik 2}|\text{baik 1}) = \frac{7}{11} \). \( P = \frac{8}{12} \times \frac{7}{11} = \frac{56}{132} = \frac{14}{33} \).'}
+{q:'Sebuah dadu bersisi enam dilempar sebanyak satu kali. Peluang munculnya mata dadu berupa bilangan genap adalah ....',choices:['1/6','1/3','1/2','2/3'],answer:'1/2',pembahasan:'\\( n(S) = 6 \\). Bilangan genap: 2, 4, 6 \\( \\rightarrow n(A) = 3 \\). \\( P = \\dfrac{3}{6} = \\dfrac{1}{2} \\).'},
+{q:'Dalam sebuah kotak terdapat 5 bola merah, 3 bola biru, dan 2 bola hijau. Jika satu bola diambil secara acak, peluang terambilnya bola biru adalah ....',choices:['1/5','3/10','1/2','2/5'],answer:'3/10',pembahasan:'\\( n(S) = 5 + 3 + 2 = 10 \\). Bola biru = 3. \\( P = \\dfrac{3}{10} \\).'},
+{q:'Dalam sebuah kotak terdapat 6 bola merah dan 4 bola putih. Dua bola diambil satu per satu secara acak dengan pengembalian. Peluang terambil bola merah pada pengambilan pertama dan bola putih pada pengambilan kedua adalah ....',choices:['1/5','6/25','2/5','3/5'],answer:'6/25',pembahasan:'Dengan pengembalian, peluang tetap. \\( P(\\text{merah}) = \\dfrac{6}{10} \\), \\( P(\\text{putih}) = \\dfrac{4}{10} \\). \\( P = \\dfrac{6}{10} \\times \\dfrac{4}{10} = \\dfrac{24}{100} = \\dfrac{6}{25} \\).'},
+{q:'Dalam sebuah kotak terdapat 5 bola merah dan 3 bola biru. Dua bola diambil secara berurutan tanpa pengembalian. Peluang kedua bola yang terambil berwarna merah adalah ....',choices:['5/14','5/16','3/8','1/2'],answer:'5/14',pembahasan:'\\( P(\\text{merah 1}) = \\dfrac{5}{8} \\). Setelah diambil, sisa 4 merah dari 7 bola. \\( P(\\text{merah 2}|\\text{merah 1}) = \\dfrac{4}{7} \\). \\( P = \\dfrac{5}{8} \\times \\dfrac{4}{7} = \\dfrac{20}{56} = \\dfrac{5}{14} \\).'},
+{q:'Dalam sebuah kotak terdapat 8 baterai dalam kondisi baik dan 4 baterai rusak. Dua baterai diambil secara berurutan tanpa pengembalian. Peluang kedua baterai yang terambil dalam kondisi baik adalah ....',choices:['7/22','14/33','1/2','8/11'],answer:'14/33',pembahasan:'\\( P(\\text{baik 1}) = \\dfrac{8}{12} \\). Setelah diambil, sisa 7 baik dari 11. \\( P(\\text{baik 2}|\\text{baik 1}) = \\dfrac{7}{11} \\). \\( P = \\dfrac{8}{12} \\times \\dfrac{7}{11} = \\dfrac{56}{132} = \\dfrac{14}{33} \\).'}
 ],
 uraian:[
-{q:'Dua dadu dilempar bersama-sama sebanyak 126 kali. Frekuensi harapan muncul dua mata dadu berjumlah kurang dari 6 adalah ... kali.',a:'\( n(S)=36 \). Jumlah \( < 6 \): (1,1),(1,2),(2,1),(1,3),(2,2),(3,1),(1,4),(2,3),(3,2),(4,1) \( \rightarrow 10 \). \( P=\frac{10}{36}=\frac{5}{18} \). \( Fh=\frac{5}{18}\times 126=35 \) kali.'},
-{q:'Sebuah kotak berisi 25 kelereng merah, 40 kelereng putih, dan 35 kelereng hijau. Kemudian, diambil sebuah kelereng dari kotak tersebut. Peluang terambil bukan kelereng hijau adalah ....',a:'\( n(S)=25+40+35=100 \). Hijau=35. Bukan hijau=100-35=65. \( P=\frac{65}{100}=\frac{13}{20} \).'},
-{q:'Dari 5 siswa laki-laki dan 6 siswa perempuan akan dibentuk sebuah tim yang terdiri atas 3 siswa. Peluang terbentuk tim yang terdiri atas 1 siswa laki-laki dan 2 siswa perempuan adalah ....',a:'\( n(S)=C(11,3)=165 \). \( C(5,1)=5, C(6,2)=15 \). \( n(A)=5\times 15=75 \). \( P=\frac{75}{165}=\frac{5}{11} \).'},
-{q:'Kardus I berisi 5 bolpoin merah dan 7 bolpoin biru. Kardus II berisi 4 bolpoin merah dan 10 bolpoin biru. Dari kedua kardus tersebut akan diambil masing-masing 1 bolpoin secara acak. Peluang terambil bolpoin merah dari kardus 1 dan bolpoin biru dari kardus II adalah ....',a:'\( P(M_1)=\frac{5}{12} \). \( P(B_2)=\frac{10}{14} \). \( P=\frac{5}{12}\times\frac{10}{14}=\frac{50}{168}=\frac{25}{84} \).'},
-{q:'Sebuah kotak berisi 20 bola biru, 12 bola kuning, dan 8 bola hitam. Fadil mengambil sebuah bola dari kotak tersebut dan tidak dikembalikan. Kemudian, Dahlan dan Gani juga ikut mengambil bola secara bergantian dan juga tidak dikembalikan. Peluang bola yang terambil secara berurutan warna biru, kuning, dan hitam adalah ....',a:'\( P(B)=\frac{20}{40} \). \( P(K|B)=\frac{12}{39} \). \( P(H|B\cap K)=\frac{8}{38} \). \( P=\frac{20}{40}\times\frac{12}{39}\times\frac{8}{38}=\frac{8}{247} \).'}
+{q:'Dua dadu dilempar bersama-sama sebanyak 126 kali. Frekuensi harapan muncul dua mata dadu berjumlah kurang dari 6 adalah ... kali.',a:'\\( n(S)=36 \\). Jumlah \\( < 6 \\): (1,1),(1,2),(2,1),(1,3),(2,2),(3,1),(1,4),(2,3),(3,2),(4,1) \\( \\rightarrow 10 \\). \\( P=\\dfrac{10}{36}=\\dfrac{5}{18} \\). \\( F_h=\\dfrac{5}{18}\\times 126=35 \\) kali.'},
+{q:'Sebuah kotak berisi 25 kelereng merah, 40 kelereng putih, dan 35 kelereng hijau. Kemudian, diambil sebuah kelereng dari kotak tersebut. Peluang terambil bukan kelereng hijau adalah ....',a:'\\( n(S)=25+40+35=100 \\). Hijau=35. Bukan hijau=100-35=65. \\( P=\\dfrac{65}{100}=\\dfrac{13}{20} \\).'},
+{q:'Dari 5 siswa laki-laki dan 6 siswa perempuan akan dibentuk sebuah tim yang terdiri atas 3 siswa. Peluang terbentuk tim yang terdiri atas 1 siswa laki-laki dan 2 siswa perempuan adalah ....',a:'\\( n(S)=C(11,3)=165 \\). \\( C(5,1)=5, C(6,2)=15 \\). \\( n(A)=5\\times 15=75 \\). \\( P=\\dfrac{75}{165}=\\dfrac{5}{11} \\).'},
+{q:'Kardus I berisi 5 bolpoin merah dan 7 bolpoin biru. Kardus II berisi 4 bolpoin merah dan 10 bolpoin biru. Dari kedua kardus tersebut akan diambil masing-masing 1 bolpoin secara acak. Peluang terambil bolpoin merah dari kardus 1 dan bolpoin biru dari kardus II adalah ....',a:'\\( P(M_1)=\\dfrac{5}{12} \\). \\( P(B_2)=\\dfrac{10}{14} \\). \\( P=\\dfrac{5}{12}\\times\\dfrac{10}{14}=\\dfrac{50}{168}=\\dfrac{25}{84} \\).'},
+{q:'Sebuah kotak berisi 20 bola biru, 12 bola kuning, dan 8 bola hitam. Fadil mengambil sebuah bola dari kotak tersebut dan tidak dikembalikan. Kemudian, Dahlan dan Gani juga ikut mengambil bola secara bergantian dan juga tidak dikembalikan. Peluang bola yang terambil secara berurutan warna biru, kuning, dan hitam adalah ....',a:'\\( P(B)=\\dfrac{20}{40} \\). \\( P(K|B)=\\dfrac{12}{39} \\). \\( P(H|B\\cap K)=\\dfrac{8}{38} \\). \\( P=\\dfrac{20}{40}\\times\\dfrac{12}{39}\\times\\dfrac{8}{38}=\\dfrac{8}{247} \\).'}
 ]
 };
 
@@ -876,10 +887,7 @@ const skorDrag=(benarDrag/totalKotak)*BOBOT.drag;
 return {benarMatch,benarDrag,totalPasang,totalKotak,skorMatch,skorDrag};
 }
 
-function mulaiTimer(){
-mulaiTimerDenganSisa(KUIS_DURASI_MENIT*60);
-}
-
+function mulaiTimer(){mulaiTimerDenganSisa(KUIS_DURASI_MENIT*60);}
 function mulaiTimerDenganSisa(detik){
 hentikanTimer();
 kuisWaktuSisa=detik;
@@ -894,14 +902,7 @@ kumpulkanKuis(true);
 }
 },1000);
 }
-
-function hentikanTimer(){
-if(kuisTimer){
-clearInterval(kuisTimer);
-kuisTimer=null;
-}
-}
-
+function hentikanTimer(){if(kuisTimer){clearInterval(kuisTimer);kuisTimer=null;}}
 function updateTimerDisplay(){
 const el=document.getElementById('kuisTimer');
 if(!el) return;
@@ -912,13 +913,7 @@ el.classList.remove('warning','danger');
 if(kuisWaktuSisa<=60) el.classList.add('danger');
 else if(kuisWaktuSisa<=300) el.classList.add('warning');
 }
-
-function hentikanMonitor(){
-if(monitorUnsubscribe){
-monitorUnsubscribe();
-monitorUnsubscribe=null;
-}
-}
+function hentikanMonitor(){if(monitorUnsubscribe){monitorUnsubscribe();monitorUnsubscribe=null;}}
 
 async function simpanProgresLive(isMulai=false){
 if(!kuisState || !student) return;
@@ -932,31 +927,18 @@ if(cd.exists()) ownerUid=cd.data().ownerUid;
 const s=hitungSkorSementara();
 const total=kuisState.soal.length;
 const data={
-studentNama:student.nama,
-studentKode:student.kode,
-classId:student.id,
-classOwnerUid:ownerUid,
-jawabanKuis:kuisState.jawaban,
-currentIndex:kuisState.index,
-totalSoal:total,
-selesaiKuis:false,
-skorMatch:s.skorMatch,skorDrag:s.skorDrag,
-benarMatch:s.benarMatch,benarDrag:s.benarDrag,
+studentNama:student.nama,studentKode:student.kode,classId:student.id,classOwnerUid:ownerUid,
+jawabanKuis:kuisState.jawaban,currentIndex:kuisState.index,totalSoal:total,selesaiKuis:false,
+skorMatch:s.skorMatch,skorDrag:s.skorDrag,benarMatch:s.benarMatch,benarDrag:s.benarDrag,
 updatedAt:serverTimestamp()
 };
-if(isMulai){
-data.startedAt=serverTimestamp();
-data.kuisDurasiMenit=KUIS_DURASI_MENIT;
-}
+if(isMulai){data.startedAt=serverTimestamp();data.kuisDurasiMenit=KUIS_DURASI_MENIT;}
 await setDoc(doc(db,'progres_soal',docId),data,{merge:true});
-}catch(e){
-console.error('Gagal simpan live:',e);
-}
+}catch(e){console.error('Gagal simpan live:',e);}
 }
 
 window.renderKuisMenu=async()=>{
 const section=$('studentSection');
-
 let prevDoc=null;
 try{
 const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
@@ -966,7 +948,6 @@ if(d.exists()) prevDoc=d.data();
 
 let statusHTML='';
 let nilaiTertinggiHTML='';
-
 let feedbackData=null;
 try{
 const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
@@ -975,34 +956,23 @@ if(fbs.size) feedbackData=fbs.docs[0].data();
 
 if(prevDoc && prevDoc.selesaiKuis){
 const total=Math.round(prevDoc.skorTotal||0);
-const predikat=getPredikat(total);
 const totalPasang=kuisData.match.reduce((s,m)=>s+m.pasangan.length,0);
 const totalKotak=kuisData.drag.length;
 const benarMatch=prevDoc.benarMatch||0;
 const benarDrag=prevDoc.benarDrag||0;
 const uraianDinilai=prevDoc.uraianDinilai===true || (prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0);
 
-// HITUNG NILAI TERTINGGI DARI GABUNGAN (progres_soal + riwayat_soal yang uraiannya sudah dinilai)
-let nilaiTertinggi=null;
-let percobaanTertinggi=0;
+let nilaiTertinggi=null, percobaanTertinggi=0;
 try{
 const kandidat=[];
 if(prevDoc && (prevDoc.uraianDinilai===true || (prevDoc.skorUraian!==undefined && prevDoc.skorUraian!==null && prevDoc.skorUraian>0))){
 kandidat.push(prevDoc.skorTotal||0);
 }
-const rs=await getDocs(query(
-collection(db,'riwayat_soal'),
-where('studentNama','==',student.nama),
-where('studentKode','==',student.kode)
-));
+const rs=await getDocs(query(collection(db,'riwayat_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
 const riwayat=rs.docs.map(d=>d.data());
 const sudahDinilai=riwayat.filter(r=>r.uraianDinilai===true || (r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0));
 sudahDinilai.forEach(r=>kandidat.push(r.skorTotal!=null ? r.skorTotal : (r.skor||0)));
-
-if(kandidat.length){
-nilaiTertinggi=Math.max(...kandidat);
-percobaanTertinggi=kandidat.length;
-}
+if(kandidat.length){nilaiTertinggi=Math.max(...kandidat);percobaanTertinggi=kandidat.length;}
 }catch(e){}
 
 nilaiTertinggiHTML=`<div class="kuis-summary" style="background:#e8f4ff;border-left-color:#3976d3">
@@ -1097,17 +1067,11 @@ await reviewKuis();
 window.reviewRiwayatMurid=async()=>{
 const section=$('studentSection');
 section.innerHTML='<div class="practice-area"><h3>📜 Riwayat Nilai Kuis</h3><div class="empty">Memuat riwayat...</div></div>';
-
-// helper: nilai efektif & status dinilai
 const nilaiRiwayat = r => (r.skorTotal!=null ? r.skorTotal : (r.skor||0));
 const sudahDinilai = r => r.uraianDinilai===true || (r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
 
 try{
-const rs=await getDocs(query(
-collection(db,'riwayat_soal'),
-where('studentNama','==',student.nama),
-where('studentKode','==',student.kode)
-));
+const rs=await getDocs(query(collection(db,'riwayat_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
 let riwayat=rs.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
 const ta=a.at?.toDate?a.at.toDate().getTime():0;
 const tb=b.at?.toDate?b.at.toDate().getTime():0;
@@ -1156,13 +1120,7 @@ return soal;
 
 window.mulaiKuis=()=>{
 const soal=buildKuisSoal();
-kuisState={
-soal,
-index:0,
-jawaban:{uraian:{},match:{},drag:{}},
-matchOptionsShuffled:{},
-dragChoicesShuffled:{}
-};
+kuisState={soal,index:0,jawaban:{uraian:{},match:{},drag:{}},matchOptionsShuffled:{},dragChoicesShuffled:{}};
 soal.filter(s=>s.jenis==='match').forEach(s=>{
 const jawabanSoal=s.pasangan.map(p=>p.answer);
 kuisState.matchOptionsShuffled[s.idx]=shuffle(jawabanSoal);
@@ -1182,13 +1140,7 @@ const d=await getDoc(doc(db,'progres_soal',docId));
 if(!d.exists()){mulaiKuis();return;}
 const data=d.data();
 const soal=buildKuisSoal();
-kuisState={
-soal,
-index:data.currentIndex||0,
-jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}},
-matchOptionsShuffled:{},
-dragChoicesShuffled:{}
-};
+kuisState={soal,index:data.currentIndex||0,jawaban:data.jawabanKuis||{uraian:{},match:{},drag:{}},matchOptionsShuffled:{},dragChoicesShuffled:{}};
 soal.filter(s=>s.jenis==='match').forEach(s=>{
 const jawabanSoal=s.pasangan.map(p=>p.answer);
 kuisState.matchOptionsShuffled[s.idx]=shuffle(jawabanSoal);
@@ -1221,13 +1173,9 @@ selects.forEach(sel=>{
 const currentVal=sel.value;
 sel.querySelectorAll('option').forEach(opt=>{
 if(!opt.value) return;
-if(opt.value===currentVal){
-opt.disabled=false;
-}else if(chosenValues.has(opt.value)){
-opt.disabled=true;
-}else{
-opt.disabled=false;
-}
+if(opt.value===currentVal){opt.disabled=false;}
+else if(chosenValues.has(opt.value)){opt.disabled=true;}
+else{opt.disabled=false;}
 });
 });
 }
@@ -1301,39 +1249,30 @@ updateMatchOptions(s.idx);
 });
 updateMatchOptions(s.idx);
 }else if(s.jenis==='uraian'){
-$('kuisInput').addEventListener('input',(e)=>{
-kuisState.jawaban.uraian[s.idx]=e.target.value;
-});
+$('kuisInput').addEventListener('input',(e)=>{kuisState.jawaban.uraian[s.idx]=e.target.value;});
 }else if(s.jenis==='drag'){
 setupTouchDrag();
 }
-
 updateTimerDisplay();
 }
 
-/* ===== DRAG & DROP MURNI ===== */
-
 let draggedItem=null;
-
 window.mulaiDragKuis=(event,el)=>{
 draggedItem=el;
 el.classList.add('dragging');
 event.dataTransfer.setData('text/plain',el.dataset.val);
 event.dataTransfer.effectAllowed='move';
 };
-
 window.jatuhkanDragKuis=(event,zone)=>{
 event.preventDefault();
 zone.classList.remove('dragover');
 if(!draggedItem) return;
 const s=kuisState.soal[kuisState.index];
-const val=draggedItem.dataset.val;
-kuisState.jawaban.drag[s.idx]=val;
+kuisState.jawaban.drag[s.idx]=draggedItem.dataset.val;
 draggedItem.classList.remove('dragging');
 draggedItem=null;
 renderKuisSoal();
 };
-
 window.kosongkanDropKuis=()=>{
 const s=kuisState.soal[kuisState.index];
 kuisState.jawaban.drag[s.idx]='';
@@ -1344,14 +1283,10 @@ function setupTouchDrag(){
 const items=document.querySelectorAll('.kuis-drag-item');
 const zone=document.getElementById('kuisDropZone');
 if(!zone) return;
-
-let touchItem=null;
-let touchGhost=null;
-
+let touchItem=null, touchGhost=null;
 items.forEach(item=>{
-item.addEventListener('touchstart',(e)=>{
-touchItem=item;
-item.classList.add('dragging');
+item.addEventListener('touchstart',()=>{
+touchItem=item;item.classList.add('dragging');
 const rect=item.getBoundingClientRect();
 touchGhost=item.cloneNode(true);
 touchGhost.style.position='fixed';
@@ -1364,7 +1299,6 @@ touchGhost.style.zIndex='9999';
 touchGhost.style.transform='scale(1.1)';
 document.body.appendChild(touchGhost);
 },{passive:true});
-
 item.addEventListener('touchmove',(e)=>{
 if(!touchItem) return;
 e.preventDefault();
@@ -1373,27 +1307,20 @@ if(touchGhost){
 touchGhost.style.left=(touch.clientX-touchGhost.offsetWidth/2)+'px';
 touchGhost.style.top=(touch.clientY-touchGhost.offsetHeight/2)+'px';
 }
-const zoneRect=zone.getBoundingClientRect();
-if(touch.clientX>=zoneRect.left && touch.clientX<=zoneRect.right &&
-touch.clientY>=zoneRect.top && touch.clientY<=zoneRect.bottom){
-zone.classList.add('dragover');
-}else{
-zone.classList.remove('dragover');
-}
+const r=zone.getBoundingClientRect();
+if(touch.clientX>=r.left&&touch.clientX<=r.right&&touch.clientY>=r.top&&touch.clientY<=r.bottom){zone.classList.add('dragover');}
+else{zone.classList.remove('dragover');}
 },{passive:false});
-
 item.addEventListener('touchend',(e)=>{
 if(!touchItem) return;
 const touch=e.changedTouches[0];
-const zoneRect=zone.getBoundingClientRect();
-if(touch.clientX>=zoneRect.left && touch.clientX<=zoneRect.right &&
-touch.clientY>=zoneRect.top && touch.clientY<=zoneRect.bottom){
+const r=zone.getBoundingClientRect();
+if(touch.clientX>=r.left&&touch.clientX<=r.right&&touch.clientY>=r.top&&touch.clientY<=r.bottom){
 const s=kuisState.soal[kuisState.index];
 kuisState.jawaban.drag[s.idx]=touchItem.dataset.val;
 }
 if(touchGhost){touchGhost.remove();touchGhost=null;}
-touchItem.classList.remove('dragging');
-touchItem=null;
+touchItem.classList.remove('dragging');touchItem=null;
 zone.classList.remove('dragover');
 renderKuisSoal();
 });
@@ -1401,25 +1328,17 @@ renderKuisSoal();
 }
 
 window.kuisPrev=()=>{
-if(kuisState.index>0){
-kuisState.index--;
-renderKuisSoal();
-simpanProgresLive();
-}
+if(kuisState.index>0){kuisState.index--;renderKuisSoal();simpanProgresLive();}
 };
 
 window.kuisNext=async()=>{
 const s=kuisState.soal[kuisState.index];
 let ok=true;
-if(s.jenis==='uraian'){
-const v=(kuisState.jawaban.uraian[s.idx]||'').trim();
-if(!v){ok=false;}
-}else if(s.jenis==='match'){
+if(s.jenis==='uraian'){if(!(kuisState.jawaban.uraian[s.idx]||'').trim()) ok=false;}
+else if(s.jenis==='match'){
 const jm=kuisState.jawaban.match[s.idx]||{};
 if(s.pasangan.some((p,pi)=>!jm[pi])) ok=false;
-}else if(s.jenis==='drag'){
-if(!kuisState.jawaban.drag[s.idx]) ok=false;
-}
+}else if(s.jenis==='drag'){if(!kuisState.jawaban.drag[s.idx]) ok=false;}
 if(!ok){alert('Lengkapi jawaban soal ini dulu ya.');return;}
 
 if(kuisState.index===kuisState.soal.length-1){
@@ -1446,9 +1365,7 @@ hentikanTimer();
 const s=hitungSkorSementara();
 const skorUraian=0;
 const skorTotal=s.skorMatch+s.skorDrag+skorUraian;
-
 let simpanSukses=false;
-
 try{
 const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
 let ownerUid=student.data.ownerUid;
@@ -1456,17 +1373,11 @@ if(!ownerUid){
 const cd=await getDoc(doc(db,'classes',student.id));
 if(cd.exists()) ownerUid=cd.data().ownerUid;
 }
-
 const oldDoc=await getDoc(doc(db,'progres_soal',docId));
 const oldData=oldDoc.exists()?oldDoc.data():null;
 
-let finalSkorMatch=s.skorMatch;
-let finalSkorDrag=s.skorDrag;
-let finalSkorUraian=skorUraian;
-let finalSkorTotal=skorTotal;
-let finalBenarMatch=s.benarMatch;
-let finalBenarDrag=s.benarDrag;
-let finalJawaban=kuisState.jawaban;
+let finalSkorMatch=s.skorMatch,finalSkorDrag=s.skorDrag,finalSkorUraian=skorUraian,finalSkorTotal=skorTotal;
+let finalBenarMatch=s.benarMatch,finalBenarDrag=s.benarDrag,finalJawaban=kuisState.jawaban;
 
 if(oldData && oldData.selesaiKuis && (oldData.skorTotal||0) > skorTotal){
 finalSkorMatch=oldData.skorMatch||0;
@@ -1479,64 +1390,38 @@ finalJawaban=oldData.jawabanKuis||kuisState.jawaban;
 }
 
 await setDoc(doc(db,'progres_soal',docId),{
-studentNama:student.nama,
-studentKode:student.kode,
-classId:student.id,
-classOwnerUid:ownerUid,
-jawabanKuis:finalJawaban,
-currentIndex:kuisState.soal.length,
-totalSoal:kuisState.soal.length,
+studentNama:student.nama,studentKode:student.kode,classId:student.id,classOwnerUid:ownerUid,
+jawabanKuis:finalJawaban,currentIndex:kuisState.soal.length,totalSoal:kuisState.soal.length,
 skorMatch:finalSkorMatch,skorDrag:finalSkorDrag,skorUraian:finalSkorUraian,skorTotal:finalSkorTotal,
 benarMatch:finalBenarMatch,benarDrag:finalBenarDrag,
-selesaiKuis:true,
-startedAt:null,
-updatedAt:serverTimestamp()
+selesaiKuis:true,startedAt:null,updatedAt:serverTimestamp()
 },{merge:true});
 
 simpanSukses=true;
 
-// Simpan riwayat — WAJIB simpan jawaban agar guru bisa nilai uraian per percobaan
 try{
 await addDoc(collection(db,'riwayat_soal'),{
-studentNama:student.nama,
-studentKode:student.kode,
-classId:student.id,
-classOwnerUid:ownerUid,
-jenis:'kuis',
-skor:skorTotal,
-skorMatch:s.skorMatch,skorDrag:s.skorDrag,skorUraian,
+studentNama:student.nama,studentKode:student.kode,classId:student.id,classOwnerUid:ownerUid,
+jenis:'kuis',skor:skorTotal,skorMatch:s.skorMatch,skorDrag:s.skorDrag,skorUraian,
 benarMatch:s.benarMatch,benarDrag:s.benarDrag,
-jawaban:kuisState.jawaban, // PENTING: simpan jawaban untuk nilai uraian nanti
-uraianDinilai:false,       // penanda: uraian belum dinilai guru
-at:serverTimestamp()
+jawaban:kuisState.jawaban,uraianDinilai:false,at:serverTimestamp()
 });
-}catch(errRiwayat){
-console.warn('Riwayat gagal disimpan:',errRiwayat);
-}
+}catch(errRiwayat){console.warn('Riwayat gagal disimpan:',errRiwayat);}
 
 }catch(e){
 console.error('Gagal simpan progres:',e);
 alert('Gagal menyimpan progres: '+errText(e));
 return;
 }
-
-if(!simpanSukses){
-alert('Gagal menyimpan progres. Coba lagi.');
-return;
-}
-
-if(otomatis){
-alert('⏰ Waktu habis! Kuis otomatis dikumpulkan. Skor bisa dilihat di menu Kuis.');
-}else{
-alert('✅ Kuis berhasil dikumpulkan! Skor bisa dilihat di menu Kuis.');
-}
+if(!simpanSukses){alert('Gagal menyimpan progres. Coba lagi.');return;}
+if(otomatis){alert('⏰ Waktu habis! Kuis otomatis dikumpulkan. Skor bisa dilihat di menu Kuis.');}
+else{alert('✅ Kuis berhasil dikumpulkan! Skor bisa dilihat di menu Kuis.');}
 kuisState=null;
 renderStudent();
 }
 
 window.reviewKuis=async()=>{
 const section=$('studentSection');
-
 let feedbackSudah=false;
 try{
 const fbs=await getDocs(query(collection(db,'feedback_soal'),where('studentNama','==',student.nama),where('studentKode','==',student.kode)));
@@ -1549,17 +1434,11 @@ const docId=`${student.kode}_${student.nama.replace(/\s+/g,'_')}`;
 const d=await getDoc(doc(db,'progres_soal',docId));
 if(d.exists()) progressData=d.data();
 }catch(e){}
-
-if(progressData && progressData.skorUraianPerSoal){
-kuisState.skorUraianPerSoal=progressData.skorUraianPerSoal;
-}
+if(progressData && progressData.skorUraianPerSoal){kuisState.skorUraianPerSoal=progressData.skorUraianPerSoal;}
 
 let html='<div class="practice-area"><h3>📝 Review Jawaban Kuis</h3>';
-if(feedbackSudah){
-html+='<div class="feedback-panel" style="margin-bottom:14px"><strong>✅ Guru sudah memberi feedback.</strong> Pembahasan lengkap ditampilkan di bawah.</div>';
-}else{
-html+='<p class="muted">Pembahasan lengkap akan muncul setelah guru memberi feedback.</p>';
-}
+if(feedbackSudah){html+='<div class="feedback-panel" style="margin-bottom:14px"><strong>✅ Guru sudah memberi feedback.</strong> Pembahasan lengkap ditampilkan di bawah.</div>';}
+else{html+='<p class="muted">Pembahasan lengkap akan muncul setelah guru memberi feedback.</p>';}
 
 html+='<div class="detail-section"><h4>🔗 Menjodohkan</h4>';
 kuisData.match.forEach((m,mi)=>{
@@ -1570,9 +1449,7 @@ const ok=ans===p.answer;
 const cls=!ans?'empty':(ok?'correct':'wrong');
 html+=`<div class="detail-item ${cls}"><strong>${esc(p.term)}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(p.answer)})`):''}</div>`;
 });
-if(feedbackSudah){
-html+=`<div class="detail-item empty" style="margin-top:8px"><strong>📖 Pembahasan:</strong> ${esc(m.pembahasan)}</div>`;
-}
+if(feedbackSudah){html+=`<div class="detail-item empty" style="margin-top:8px"><strong>📖 Pembahasan:</strong> ${m.pembahasan}</div>`;}
 html+='</div>';
 });
 html+='</div>';
@@ -1583,9 +1460,7 @@ const ans=kuisState.jawaban.drag[i]||'';
 const ok=ans===d.answer;
 const cls=!ans?'empty':(ok?'correct':'wrong');
 html+=`<div class="detail-item ${cls}"><strong>Soal ${i+1}:</strong> ${esc(d.q)}<br>Jawabanmu: ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(d.answer)})`):''}`;
-if(feedbackSudah){
-html+=`<br><strong style="color:#23866b">📖 Pembahasan:</strong> ${esc(d.pembahasan)}`;
-}
+if(feedbackSudah){html+=`<br><strong style="color:#23866b">📖 Pembahasan:</strong> ${d.pembahasan}`;}
 html+='</div>';
 });
 html+='</div>';
@@ -1597,7 +1472,7 @@ const sudahDinilai=kuisState.skorUraianPerSoal && kuisState.skorUraianPerSoal[i]
 const skorSoal=kuisState.skorUraianPerSoal && kuisState.skorUraianPerSoal[i]!==undefined ? kuisState.skorUraianPerSoal[i] : null;
 
 if(feedbackSudah && sudahDinilai){
-html+=`<div class="detail-item correct"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#23866b">Skor guru: ${skorSoal}/12</em><br><strong style="color:#23866b">📖 Pembahasan:</strong> ${esc(u.a)}</div>`;
+html+=`<div class="detail-item correct"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><em style="color:#23866b">Skor guru: ${skorSoal}/12</em><br><strong style="color:#23866b">📖 Pembahasan:</strong> ${u.a}</div>`;
 }else if(feedbackSudah && !sudahDinilai){
 html+=`<div class="detail-item empty" style="border-left:4px solid #e7ad35"><strong>Soal ${i+1}:</strong> ${esc(u.q)}<br><em>Jawabanmu:</em> ${esc(ans||'(kosong)')}<br><span style="background:#fff3d7;color:#946b08;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700">⏳ Belum dinilai guru</span></div>`;
 }else{
@@ -1611,9 +1486,7 @@ section.innerHTML=html;
 renderKaTeX(section);
 };
 
-
-/* ================= MONITORING GURU (REAL-TIME) ================= */
-
+/* ================= MONITORING GURU ================= */
 const TEMPLATE_FB={
 pujian:'Kerja bagus, [nama]! Kamu sudah memahami materi peluang dengan baik. Pertahankan! 🎉',
 motivasi:'Semangat, [nama]! Sedikit lagi. Perhatikan soal yang salah, baca pembahasannya, lalu coba lagi. 💪',
@@ -1632,10 +1505,7 @@ $('content').innerHTML=`
 </section>`;
 try{
 const s=await getDocs(query(collection(db,'classes'),where('ownerUid','==',profile.uid)));
-if(!s.size){
-$('kelasSelectWrap').innerHTML='<div class="empty">Kamu belum punya kelas.</div>';
-return;
-}
+if(!s.size){$('kelasSelectWrap').innerHTML='<div class="empty">Kamu belum punya kelas.</div>';return;}
 const kelas=s.docs.map(d=>({id:d.id,...d.data()}));
 $('kelasSelectWrap').innerHTML=`
 <label style="display:block;font-weight:800;font-size:13px;margin-bottom:8px">Pilih kelas:</label>
@@ -1644,9 +1514,7 @@ ${kelas.map(k=>`<option value="${k.id}">${esc(k.nama)} (${esc(k.kode)})</option>
 </select>`;
 $('pilihKelasMonitor').addEventListener('change',()=>{loadMonitorKelas($('pilihKelasMonitor').value);});
 await loadMonitorKelas(kelas[0].id);
-}catch(e){
-$('monitorContent').innerHTML=`<div class="empty">${esc(errText(e))}</div>`;
-}
+}catch(e){$('monitorContent').innerHTML=`<div class="empty">${esc(errText(e))}</div>`;}
 }
 window.renderMonitoringGuru=renderMonitoringGuru;
 
@@ -1654,41 +1522,28 @@ async function loadMonitorKelas(classId){
 const el=$('monitorContent');
 hentikanMonitor();
 el.innerHTML='<div class="empty">Memuat progres murid...</div>';
-
 try{
 const qProgres=query(collection(db,'progres_soal'),where('classId','==',classId));
 const qFeedback=query(collection(db,'feedback_soal'),where('classId','==',classId));
-
-let progresData=[];
-let feedbackData=[];
+let progresData=[], feedbackData=[];
 
 const unsubProgres=onSnapshot(qProgres,(snap)=>{
 progresData=snap.docs.map(d=>({id:d.id,...d.data()}));
 renderMonitor(el,progresData,feedbackData,classId);
-},(err)=>{
-el.innerHTML=`<div class="empty">${esc(errText(err))}</div>`;
-});
+},(err)=>{el.innerHTML=`<div class="empty">${esc(errText(err))}</div>`;});
 
 const unsubFeedback=onSnapshot(qFeedback,(snap)=>{
 feedbackData=snap.docs.map(d=>({id:d.id,...d.data()}));
 renderMonitor(el,progresData,feedbackData,classId);
 },(err)=>{console.error('Feedback listener error:',err);});
 
-monitorUnsubscribe=()=>{
-unsubProgres();
-unsubFeedback();
-};
-
-}catch(e){
-el.innerHTML=`<div class="empty">${esc(errText(e))}</div>`;
-}
+monitorUnsubscribe=()=>{unsubProgres();unsubFeedback();};
+}catch(e){el.innerHTML=`<div class="empty">${esc(errText(e))}</div>`;}
 }
 
 function renderMonitor(el,progres,feedbackList,classId){
 const feedbackMap={};
-feedbackList.forEach(x=>{
-feedbackMap[`${x.studentKode}_${x.studentNama}`]=x;
-});
+feedbackList.forEach(x=>{feedbackMap[`${x.studentKode}_${x.studentNama}`]=x;});
 const total=progres.length;
 const selesai=progres.filter(p=>p.selesaiKuis).length;
 const sedang=progres.filter(p=>!p.selesaiKuis && p.currentIndex!==undefined).length;
@@ -1717,11 +1572,7 @@ const statusText=p.selesaiKuis?'✅ Selesai':'⏳ Belum';
 const skorClass=skor<60?'low':'';
 const ci=p.currentIndex!==undefined?p.currentIndex:0;
 const ts=p.totalSoal||15;
-const progresText=p.selesaiKuis
-  ? '✅ Selesai semua'
-  : (p.currentIndex!==undefined
-    ? `📖 Soal ${Math.min(ci+1,ts)} dari ${ts}`
-    : '—');
+const progresText=p.selesaiKuis?'✅ Selesai semua':(p.currentIndex!==undefined?`📖 Soal ${Math.min(ci+1,ts)} dari ${ts}`:'—');
 return `<tr>
 <td><input type="checkbox" class="cb-murid" data-nama="${esc(nama)}" data-kode="${esc(kode)}"></td>
 <td style="cursor:pointer" class="nama-murid" data-nama="${esc(nama)}" data-kode="${esc(kode)}"><strong>${esc(nama)}</strong><br><span style="font-size:11px;color:#8984a5">${esc(kode)}</span></td>
@@ -1754,7 +1605,6 @@ renderKaTeX(el);
 el.querySelectorAll('.btn-feedback').forEach(btn=>{
 btn.addEventListener('click',(e)=>{e.stopPropagation();bukaFormFeedback(btn.dataset.nama,btn.dataset.kode,classId,progres);});
 });
-
 el.querySelectorAll('.nama-murid').forEach(td=>{
 td.addEventListener('click',()=>{
 const p=progres.find(x=>x.studentNama===td.dataset.nama && x.studentKode===td.dataset.kode);
@@ -1766,7 +1616,6 @@ if(p) bukaDetailKuis(p);
 async function bukaDetailKuis(p){
 const nama=p.studentNama||'-';
 const kode=p.studentKode||'-';
-
 let riwayat=[];
 try{
 const rs=await getDocs(query(collection(db,'riwayat_soal'),where('studentNama','==',nama),where('studentKode','==',kode)));
@@ -1803,7 +1652,6 @@ const cls=!ans?'empty':(ok?'correct':'wrong');
 return `<div class="detail-item ${cls}"><strong>Drag ${i+1}:</strong> ${esc(ans||'(kosong)')} ${ans?(ok?'✓':`✗ (benar: ${esc(d.answer)})`):''}</div>`;
 }).join('');
 
-// Riwayat dengan tombol Nilai Uraian per percobaan
 const riwayatHTML=riwayat.length
 ? riwayat.map((r,i)=>{
 const uraianDinilai=r.uraianDinilai===true || (r.skorUraian!==undefined && r.skorUraian!==null && r.skorUraian>0);
@@ -1860,12 +1708,10 @@ c.style.display=c.dataset.tabContent===btn.dataset.tab?'block':'none';
 });
 });
 });
-
 modal.querySelector('#closeDetail').addEventListener('click',()=>modal.remove());
 modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
 }
 
-/* ===== FUNGSI: Nilai Uraian per Percobaan (dari Riwayat) ===== */
 window.bukaNilaiUraianRiwayat=async(riwayatId,nama,kode)=>{
 try{
 const rd=await getDoc(doc(db,'riwayat_soal',riwayatId));
@@ -1919,14 +1765,10 @@ const skorUraian=total;
 const skorTotal=skorMatch+skorDrag+skorUraian;
 try{
 modal.querySelector('#simpanNilaiRiwayat').disabled=true;
-// PERBAIKAN: tulis juga field 'skor' & 'uraianDinilai' agar riwayat murid ikut ter-update
 await updateDoc(doc(db,'riwayat_soal',riwayatId),{
 skorUraian,skorUraianPerSoal:perSoal,skorTotal,
-skor:skorTotal,
-uraianDinilai:true,
-updatedAt:serverTimestamp()
+skor:skorTotal,uraianDinilai:true,updatedAt:serverTimestamp()
 });
-// Update progres_soal kalau ini percobaan terakhir
 try{
 const docId=`${r.studentKode}_${r.studentNama.replace(/\s+/g,'_')}`;
 const pDoc=await getDoc(doc(db,'progres_soal',docId));
@@ -1935,43 +1777,25 @@ const pData=pDoc.data();
 if(pData.updatedAt && r.at && Math.abs(pData.updatedAt.toDate().getTime()-r.at.toDate().getTime()) < 5000){
 await updateDoc(doc(db,'progres_soal',docId),{
 skorUraian,skorUraianPerSoal:perSoal,skorTotal,
-uraianDinilai:true,
-updatedAt:serverTimestamp()
+uraianDinilai:true,updatedAt:serverTimestamp()
 });
 }
 }
 }catch(e2){console.warn('Gagal update progres_soal:',e2);}
-
-// Tutup modal nilai
 modal.remove();
-
-// Tutup modal detail lama, lalu buka ulang dengan data terbaru
-const detailModal = document.querySelector('.modal.show');
+const detailModal=document.querySelector('.modal.show');
 if(detailModal) detailModal.remove();
-
-// Refresh data progres
-const docId = `${r.studentKode}_${r.studentNama.replace(/\s+/g,'_')}`;
-const pDoc = await getDoc(doc(db,'progres_soal',docId));
-if(pDoc.exists()){
-const pData = {id:docId, ...pDoc.data()};
-bukaDetailKuis(pData);
-}
-
+const docId=`${r.studentKode}_${r.studentNama.replace(/\s+/g,'_')}`;
+const pDoc=await getDoc(doc(db,'progres_soal',docId));
+if(pDoc.exists()){const pData={id:docId,...pDoc.data()};bukaDetailKuis(pData);}
 alert('✅ Nilai uraian tersimpan! Skor percobaan ini: '+Math.round(skorTotal)+'/100.');
-
-// Update tabel monitoring di belakang (jika ada)
-if(document.getElementById('pilihKelasMonitor')){
-loadMonitorKelas(document.getElementById('pilihKelasMonitor').value);
-}
-
+if(document.getElementById('pilihKelasMonitor')){loadMonitorKelas(document.getElementById('pilihKelasMonitor').value);}
 }catch(e){
 modal.querySelector('#msgNilaiRiwayat').textContent=errText(e);
 modal.querySelector('#simpanNilaiRiwayat').disabled=false;
 }
 });
-}catch(e){
-alert(errText(e));
-}
+}catch(e){alert(errText(e));}
 };
 
 async function bukaFormFeedback(nama,kode,classId,progresList){
@@ -2007,13 +1831,11 @@ renderKaTeX(modal);
 
 modal.querySelector('#fbClose').addEventListener('click',()=>modal.remove());
 modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
-
 modal.querySelectorAll('.template-btns button').forEach(b=>{
 b.addEventListener('click',()=>{
 modal.querySelector('#fbText').value=TEMPLATE_FB[b.dataset.tpl].replace('[nama]',nama);
 });
 });
-
 modal.querySelector('#fbSave').addEventListener('click',async()=>{
 const text=modal.querySelector('#fbText').value.trim();
 if(!text){modal.querySelector('#fbMsg').textContent='Feedback tidak boleh kosong.';return;}
@@ -2023,12 +1845,8 @@ if(oldId){
 await updateDoc(doc(db,'feedback_soal',oldId),{feedback:text,createdAt:serverTimestamp()});
 }else{
 await addDoc(collection(db,'feedback_soal'),{
-studentNama:nama,
-studentKode:kode,
-classId,
-classOwnerUid:profile.uid,
-feedback:text,
-createdAt:serverTimestamp()
+studentNama:nama,studentKode:kode,classId,
+classOwnerUid:profile.uid,feedback:text,createdAt:serverTimestamp()
 });
 }
 modal.remove();
@@ -2065,13 +1883,6 @@ ok++;
 }
 alert(`Feedback terkirim ke ${ok} murid.`);
 };
-
-// render KaTeX awal setelah auto-render termuat
-window.addEventListener('load',()=>{
-  if(typeof renderMathInElement!=='undefined'){
-    renderKaTeX(document.body);
-  }
-});
 </script>
 </body>
 </html>
