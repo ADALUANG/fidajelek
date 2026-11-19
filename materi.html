@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Materi — MATHIC</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<!-- ===== KATEX TAMBAHAN ===== -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<!-- ===== AKHIR KATEX TAMBAHAN ===== -->
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -597,7 +600,7 @@ button{cursor:pointer}
 </section>
 </section>
 
-<!-- ===== B4: PELUANG BERSYARAT ===== -->
+<!-- ===== B4: PELUANG BERSYARAT (LENGKAP) ===== -->
 <section class="m-topic" id="mB4" role="tabpanel">
 <section class="m-panel">
 <span class="m-badge">Materi 4</span>
@@ -808,19 +811,8 @@ button{cursor:pointer}
 
 <script>
 /* ============================================================
-   HELPER FORMAT — dipakai semua materi
+   KATEX TAMBAHAN — helper render
    ============================================================ */
-function fmtFrac(n,d){
-  if(d===0) return '\\text{tidak terdefinisi}';
-  if(n===0) return '0';
-  const gcd=(a,b)=>b===0?a:gcd(b,a%b);
-  const g=gcd(Math.abs(n),Math.abs(d));
-  const sn=n/g, sd=d/g;
-  return sd===1 ? `${sn}` : `\\dfrac{${sn}}{${sd}}`;
-}
-function fmtDec(v){ return Number(v).toFixed(2).replace('.',','); }
-function fmtPct(v){ return (v*100).toLocaleString('id-ID',{maximumFractionDigits:2})+'\\%'; }
-
 function renderMathNow(el){
   if(!el || typeof renderMathInElement!=='function') return;
   renderMathInElement(el,{
@@ -833,7 +825,15 @@ function renderMathNow(el){
     ignoredTags:["script","noscript","style","textarea","pre","code"]
   });
 }
-
+function fmtDec(v){ return Number(v).toFixed(2).replace('.',','); }
+function fmtFrac(n,d){
+  if(d===0) return '\\text{tidak terdefinisi}';
+  if(n===0) return '0';
+  const gcd=(a,b)=>b===0?a:gcd(b,a%b);
+  const g=gcd(Math.abs(n),Math.abs(d));
+  const sn=n/g, sd=d/g;
+  return sd===1 ? `${sn}` : `\\dfrac{${sn}}{${sd}}`;
+}
 /* Render awal setelah KaTeX siap */
 document.addEventListener('DOMContentLoaded',function(){
   if(typeof renderMathInElement==='function'){
@@ -847,18 +847,29 @@ document.addEventListener('DOMContentLoaded',function(){
     });
   }
 });
+window.addEventListener('load',()=>{
+  ['headsRelative','tailsRelative','eventFormula','complementFormula',
+   'eventExplanation','complementExplanation','mBIndFrequency'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) renderMathNow(el);
+  });
+});
+/* ============================================================
+   AKHIR KATEX TAMBAHAN
+   ============================================================ */
 
 /* ============================================================
-   ROUTING
+   ROUTING — pilih materi berdasarkan ?tab= di URL
    ============================================================ */
 (function(){
-  const params=new URLSearchParams(location.search);
-  const tab=params.get('tab')||'materiA';
-  const valid=['materiA','materiB','materiC'];
-  const id=valid.includes(tab)?tab:'materiA';
-  const el=document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const tab = params.get('tab') || 'materiA';
+  const valid = ['materiA','materiB','materiC'];
+  const id = valid.includes(tab) ? tab : 'materiA';
+  const el = document.getElementById(id);
   if(el) el.classList.add('aktif');
 })();
+
 
 /* ============================================================
    MATERI A — KONSEP DASAR PELUANG
@@ -868,7 +879,7 @@ function createSampleTable(){
   if(!body) return;
   for(let i=1;i<=6;i++){
     let row=`<tr><th>${i}</th>`;
-    for(let j=1;j<=6;j++){row+=`<td>(${i},${j})</td>`;}
+    for(let j=1;j<=6;j++){ row+=`<td>(${i},${j})</td>`; }
     row+='</tr>';
     body.innerHTML+=row;
   }
@@ -891,10 +902,12 @@ function updateTree(){
 }
 
 let coinResults=[];
+
 function flipCoin(amount){
-  for(let i=0;i<amount;i++){coinResults.push(Math.random()<0.5?'A':'G');}
+  for(let i=0;i<amount;i++){ coinResults.push(Math.random()<0.5?'A':'G'); }
   updateCoin();
 }
+
 function updateCoin(){
   const total=coinResults.length;
   const heads=coinResults.filter(x=>x==='A').length;
@@ -902,26 +915,32 @@ function updateCoin(){
   document.getElementById('coinTotal').textContent=total;
   document.getElementById('headsTotal').textContent=heads;
   document.getElementById('tailsTotal').textContent=tails;
+
   const headsRelEl=document.getElementById('headsRelative');
   const tailsRelEl=document.getElementById('tailsRelative');
   headsRelEl.innerHTML=total?`\\( \\dfrac{${heads}}{${total}} = ${fmtDec(heads/total)} \\)`:`\\( \\dfrac{0}{0} = 0 \\)`;
   tailsRelEl.innerHTML=total?`\\( \\dfrac{${tails}}{${total}} = ${fmtDec(tails/total)} \\)`:`\\( \\dfrac{0}{0} = 0 \\)`;
-  renderMathNow(headsRelEl);renderMathNow(tailsRelEl);
+  renderMathNow(headsRelEl); renderMathNow(tailsRelEl);
 
   const coin=document.getElementById('coinVisual');
   const caption=document.getElementById('coinCaption');
   if(total){
-    const last=coinResults[total-1];
-    coin.textContent=last;
-    caption.textContent=last==='A'?'Sisi Angka (A) muncul':'Sisi Gambar (G) muncul';
-    coin.classList.remove('flipping');void coin.offsetWidth;coin.classList.add('flipping');
+    const lastResult=coinResults[total-1];
+    coin.textContent=lastResult;
+    caption.textContent=lastResult==='A'?'Sisi Angka (A) muncul':'Sisi Gambar (G) muncul';
+    coin.classList.remove('flipping');
+    void coin.offsetWidth;
+    coin.classList.add('flipping');
   }else{
-    coin.textContent='K';caption.textContent='Koin siap dilempar';coin.classList.remove('flipping');
+    coin.textContent='K';
+    caption.textContent='Koin siap dilempar';
+    coin.classList.remove('flipping');
   }
   document.getElementById('coinHistory').textContent=
     total?coinResults.map((x,i)=>`${i+1}. ${x==='A'?'Angka':'Gambar'}`).join(' | '):'Belum ada percobaan.';
 }
-function resetCoin(){coinResults=[];updateCoin();}
+
+function resetCoin(){ coinResults=[]; updateCoin(); }
 
 function updateEventProbability(){
   const total=Number(document.getElementById('eventTotal').value);
@@ -942,7 +961,7 @@ function updateEventProbability(){
   renderMathNow(fEl);
 
   let visual='';
-  for(let i=0;i<total;i++){visual+=`<div class="m-number-item ${i<valid?'selected':''}">${i<valid?'A':'-'}</div>`;}
+  for(let i=0;i<total;i++){ visual+=`<div class="m-number-item ${i<valid?'selected':''}">${i<valid?'A':'-'}</div>`; }
   document.getElementById('eventBallVisual').innerHTML=visual;
 
   const expEl=document.getElementById('eventExplanation');
@@ -971,12 +990,11 @@ function updateComplement(){
   renderMathNow(fEl);
 
   let visual='';
-  for(let i=0;i<total;i++){visual+=`<div class="m-number-item ${i<valid?'selected':''}">${i<valid?'A':'-'}</div>`;}
+  for(let i=0;i<total;i++){ visual+=`<div class="m-number-item ${i<valid?'selected':''}">${i<valid?'A':'-'}</div>`; }
   document.getElementById('complementBallVisual').innerHTML=visual;
 
   const expEl=document.getElementById('complementExplanation');
-  expEl.innerHTML=`Dari <strong>${total}</strong> bola, <strong>${valid}</strong> bola termasuk kejadian A dan
-    <strong>${complement}</strong> bola termasuk komplemen A.
+  expEl.innerHTML=`Dari <strong>${total}</strong> bola, <strong>${valid}</strong> bola termasuk kejadian A dan <strong>${complement}</strong> bola termasuk komplemen A.
     Jadi \\( P(A) = \\dfrac{${valid}}{${total}} \\) dan \\( P(A^{c}) = \\dfrac{${complement}}{${total}} \\).
     Jumlah kedua peluang tersebut selalu sama dengan 1.`;
   renderMathNow(expEl);
@@ -986,7 +1004,7 @@ function calculateExpectedFrequency(){
   const n=Number(document.getElementById('fhN').value);
   const p=Number(document.getElementById('fhP').value);
   const result=document.getElementById('expectedResult');
-  result.style.display='block';
+  result.style.display = 'block';
   if(!Number.isFinite(n)||!Number.isFinite(p)||n<=0||p<0||p>1){
     result.innerHTML='Masukkan banyak percobaan lebih dari 0 dan peluang antara 0 sampai 1.';
     return;
@@ -1005,9 +1023,9 @@ function calculateExpectedFrequency(){
   const fhResult=document.getElementById('expectedResult');
   if(!fhN||!fhP||!fhResult) return;
   [fhN,fhP].forEach(input=>{
-    input.addEventListener('focus',()=>{if(input.value==='0')input.value='';});
-    input.addEventListener('blur',()=>{if(input.value.trim()==='')input.value='0';});
-    input.addEventListener('input',()=>{fhResult.style.display='none';});
+    input.addEventListener('focus',()=>{ if(input.value==='0') input.value=''; });
+    input.addEventListener('blur',()=>{ if(input.value.trim()==='') input.value='0'; });
+    input.addEventListener('input',()=>{ fhResult.style.display='none'; });
   });
 })();
 
@@ -1019,40 +1037,45 @@ if(document.getElementById('materiA')){
   updateComplement();
 }
 
+
 /* ============================================================
    MATERI B — KEJADIAN MAJEMUK
    ============================================================ */
-const mB$=id=>document.getElementById(id);
-function mBShowResult(id,html){mB$(id).innerHTML=html;mB$(id).classList.add("show");}
+const mB$ = id => document.getElementById(id);
+
+function mBShowResult(id,html){ mB$(id).innerHTML = html; mB$(id).classList.add("show"); }
+
 function mBReadInteger(id,min,max){
-  const raw=mB$(id).value.trim();
-  if(raw==="") return null;
-  const v=Number(raw);
-  return Number.isInteger(v)&&v>=min&&v<=max?v:null;
+  const raw = mB$(id).value.trim();
+  if(raw === "") return null;
+  const v = Number(raw);
+  return Number.isInteger(v) && v >= min && v <= max ? v : null;
 }
+
 function mBFraction(n,d){
-  if(d===0) return "tidak terdefinisi";
-  if(n===0) return "0";
-  if(n===d) return "1";
-  const gcd=(a,b)=>b===0?a:gcd(b,a%b);
-  const g=gcd(Math.abs(n),Math.abs(d));
+  if(d === 0) return "tidak terdefinisi";
+  if(n === 0) return "0";
+  if(n === d) return "1";
+  const gcd = (a,b) => b === 0 ? a : gcd(b,a%b);
+  const g = gcd(Math.abs(n),Math.abs(d));
   return `${n/g}/${d/g}`;
 }
-function mBDecimal(v){return (v*100).toLocaleString("id-ID",{maximumFractionDigits:2})+"%";}
+
+function mBDecimal(v){ return (v*100).toLocaleString("id-ID",{maximumFractionDigits:2}) + "%"; }
 
 document.querySelectorAll("#materiB .m-tab").forEach(tab=>{
   tab.addEventListener("click",()=>{
-    document.querySelectorAll("#materiB .m-tab").forEach(t=>{t.classList.remove("active");t.setAttribute("aria-selected","false");});
-    document.querySelectorAll("#materiB .m-topic").forEach(t=>{t.classList.remove("active");});
+    document.querySelectorAll("#materiB .m-tab").forEach(t=>{ t.classList.remove("active"); t.setAttribute("aria-selected","false"); });
+    document.querySelectorAll("#materiB .m-topic").forEach(t=>{ t.classList.remove("active"); });
     tab.classList.add("active");
     tab.setAttribute("aria-selected","true");
     mB$(tab.dataset.topic).classList.add("active");
   });
 });
 
-/* B1 */
-let mB1Step=-1;
-const mB1Explanations=[
+/* B1 — Saling Lepas */
+let mB1Step = -1;
+const mB1Explanations = [
 `<strong>Pengamatan 1 — Mengenali kejadian A dan B.</strong><p>Lingkaran A menggambarkan kejadian memperoleh hadiah buku. Lingkaran B menggambarkan kejadian memperoleh hadiah tumbler.</p>`,
 `<strong>Pengamatan 2 — Kedua lingkaran tidak beririsan.</strong><p>Lingkaran A dan B terpisah. Tidak ada anggota yang dimiliki kedua kejadian sekaligus.</p><div class="m-math">\\( A \\cap B = \\emptyset \\)</div>`,
 `<strong>Pengamatan 3 — Kedua kejadian tidak dapat terjadi bersamaan.</strong><p>Dalam contoh undian, satu kupon hanya dapat memenangkan satu hadiah.</p>`,
@@ -1065,47 +1088,54 @@ function mB1Reset(){
   mB$("mB1CircleA").setAttribute("r","68");
   mB$("mB1CircleB").setAttribute("r","68");
   mB$("mB1EmptyIntersection").setAttribute("opacity","0");
-  mB1Step=-1;
-  mB$("mB1DiagramText").innerHTML='Tekan "Amati diagram" untuk memulai Pengamatan 1.';
-  mB$("mB1Animate").textContent="▶ Amati diagram";
+  mB1Step = -1;
+  mB$("mB1DiagramText").innerHTML = 'Tekan "Amati diagram" untuk memulai Pengamatan 1.';
+  mB$("mB1Animate").textContent = "▶ Amati diagram";
 }
 
 mB$("mB1Animate").addEventListener("click",()=>{
-  mB1Step=(mB1Step+1)%mB1Explanations.length;
-  mB$("mB1CircleA").setAttribute("cx",mB1Step>=1?"125":"145");
-  mB$("mB1CircleB").setAttribute("cx",mB1Step>=1?"375":"355");
-  mB$("mB1CircleA").setAttribute("r",mB1Step>=2?"73":"68");
-  mB$("mB1CircleB").setAttribute("r",mB1Step>=2?"73":"68");
-  mB$("mB1EmptyIntersection").setAttribute("opacity",mB1Step>=1?"1":"0");
-  mB$("mB1DiagramText").innerHTML=mB1Explanations[mB1Step];
+  mB1Step = (mB1Step+1) % mB1Explanations.length;
+  mB$("mB1CircleA").setAttribute("cx", mB1Step >= 1 ? "125" : "145");
+  mB$("mB1CircleB").setAttribute("cx", mB1Step >= 1 ? "375" : "355");
+  mB$("mB1CircleA").setAttribute("r", mB1Step >= 2 ? "73" : "68");
+  mB$("mB1CircleB").setAttribute("r", mB1Step >= 2 ? "73" : "68");
+  mB$("mB1EmptyIntersection").setAttribute("opacity", mB1Step >= 1 ? "1" : "0");
+  mB$("mB1DiagramText").innerHTML = mB1Explanations[mB1Step];
   renderMathNow(mB$("mB1DiagramText"));
-  mB$("mB1Animate").textContent=mB1Step===3?"↻ Ulangi penjelasan":"Lanjutkan pengamatan";
+  mB$("mB1Animate").textContent = mB1Step === 3 ? "↻ Ulangi penjelasan" : "Lanjutkan pengamatan";
 });
 
 mB$("mB1ResetDiagram").addEventListener("click",mB1Reset);
 
 mB$("mB1Calculate").addEventListener("click",()=>{
-  const total=mBReadInteger("mB1Total",1,100000000);
-  const a=mBReadInteger("mB1A",0,100000000);
-  const b=mBReadInteger("mB1B",0,100000000);
-  if([total,a,b].some(v=>v===null)){mBShowResult("mB1Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>");renderMathNow(mB$("mB1Result"));return;}
-  if(a+b>total){mBShowResult("mB1Result","<strong>Angka belum sesuai.</strong><p>Jumlah kupon buku dan tumbler tidak boleh melebihi jumlah seluruh kupon.</p>");renderMathNow(mB$("mB1Result"));return;}
-  const union=(a+b)/total;
+  const total = mBReadInteger("mB1Total",1,100000000);
+  const a = mBReadInteger("mB1A",0,100000000);
+  const b = mBReadInteger("mB1B",0,100000000);
+  if([total,a,b].some(v=>v===null)){
+    mBShowResult("mB1Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>");
+    renderMathNow(mB$("mB1Result")); return;
+  }
+  if(a+b > total){
+    mBShowResult("mB1Result","<strong>Angka belum sesuai.</strong><p>Jumlah kupon buku dan tumbler tidak boleh melebihi jumlah seluruh kupon.</p>");
+    renderMathNow(mB$("mB1Result")); return;
+  }
+  const union = (a+b)/total;
   mBShowResult("mB1Result",`
     <h3>Langkah penyelesaian</h3>
-    <p>\\( n(S)=${total},\\ n(A)=${a},\\ n(B)=${b} \\).</p>
+    <p>\\( n(S) = ${total},\\ n(A) = ${a},\\ n(B) = ${b} \\).</p>
     <div class="m-math">\\( P(A) = \\dfrac{${a}}{${total}} = ${fmtDec(a/total)} \\)</div>
     <div class="m-math">\\( P(B) = \\dfrac{${b}}{${total}} = ${fmtDec(b/total)} \\)</div>
     <div class="m-math">\\( P(A \\cap B) = 0 \\)</div>
     <div class="m-math">\\( P(A \\cup B) = \\dfrac{${a}}{${total}} + \\dfrac{${b}}{${total}} = \\dfrac{${a+b}}{${total}} = ${fmtDec(union)} \\)</div>
     <p><strong>Jadi, peluang mendapatkan buku atau tumbler adalah \\( ${fmtFrac(a+b,total)} \\) atau ${(union*100).toFixed(2)}%.</strong></p>
   `);
-  document.getElementById("mBFinalConclusion").hidden=false;
+  document.getElementById("mBFinalConclusion").hidden = false;
   renderMathNow(mB$("mB1Result"));
 });
 
-/* B2 */
-let mB2Started=false;
+/* B2 — Tidak Saling Lepas */
+let mB2Started = false;
+
 function mB2Reset(){
   mB$("mB2CircleA").setAttribute("cx","145");
   mB$("mB2CircleB").setAttribute("cx","355");
@@ -1119,11 +1149,12 @@ function mB2Reset(){
   mB$("mB2CircleB").setAttribute("fill-opacity",".72");
   mB$("mB2CircleA").setAttribute("r","72");
   mB$("mB2CircleB").setAttribute("r","72");
-  mB$("mB2DiagramText").textContent='Tekan "Mulai animasi" untuk melihat kedua kejadian bergerak hingga beririsan.';
-  ["mB2ObserveA","mB2ObserveB","mB2ObserveI"].forEach(id=>{mB$(id).disabled=true;});
-  mB$("mB2Start").disabled=false;
-  mB2Started=false;
+  mB$("mB2DiagramText").textContent = 'Tekan "Mulai animasi" untuk melihat kedua kejadian bergerak hingga beririsan.';
+  ["mB2ObserveA","mB2ObserveB","mB2ObserveI"].forEach(id=>{ mB$(id).disabled = true; });
+  mB$("mB2Start").disabled = false;
+  mB2Started = false;
 }
+
 mB$("mB2Start").addEventListener("click",()=>{
   mB$("mB2CircleA").setAttribute("cx","190");
   mB$("mB2CircleB").setAttribute("cx","310");
@@ -1132,49 +1163,60 @@ mB$("mB2Start").addEventListener("click",()=>{
   mB$("mB2Intersection").setAttribute("opacity","1");
   mB$("mB2LabelA").setAttribute("x","165");
   mB$("mB2LabelB").setAttribute("x","335");
-  mB$("mB2DiagramText").innerHTML="<strong>Kedua kejadian mulai beririsan.</strong><p>Daerah irisan menunjukkan anggota yang termasuk A dan B sekaligus.</p>";
+  mB$("mB2DiagramText").innerHTML = "<strong>Kedua kejadian mulai beririsan.</strong><p>Daerah irisan menunjukkan anggota yang termasuk A dan B sekaligus.</p>";
   renderMathNow(mB$("mB2DiagramText"));
-  ["mB2ObserveA","mB2ObserveB","mB2ObserveI"].forEach(id=>{mB$(id).disabled=false;});
-  mB$("mB2Start").disabled=true;
-  mB2Started=true;
+  ["mB2ObserveA","mB2ObserveB","mB2ObserveI"].forEach(id=>{ mB$(id).disabled = false; });
+  mB$("mB2Start").disabled = true;
+  mB2Started = true;
 });
+
 mB$("mB2Reset").addEventListener("click",mB2Reset);
+
 mB$("mB2ObserveA").addEventListener("click",()=>{
   if(!mB2Started) return;
   mB$("mB2CircleA").setAttribute("r","78");
   mB$("mB2CircleB").setAttribute("r","72");
   mB$("mB2CircleA").setAttribute("fill-opacity","1");
   mB$("mB2CircleB").setAttribute("fill-opacity",".22");
-  mB$("mB2DiagramText").innerHTML="<strong>Mengamati kejadian A.</strong><p>Seluruh bagian A ditampilkan lebih tebal.</p>";
+  mB$("mB2DiagramText").innerHTML = "<strong>Mengamati kejadian A.</strong><p>Seluruh bagian A ditampilkan lebih tebal.</p>";
   renderMathNow(mB$("mB2DiagramText"));
 });
+
 mB$("mB2ObserveB").addEventListener("click",()=>{
   if(!mB2Started) return;
   mB$("mB2CircleA").setAttribute("r","72");
   mB$("mB2CircleB").setAttribute("r","78");
   mB$("mB2CircleA").setAttribute("fill-opacity",".22");
   mB$("mB2CircleB").setAttribute("fill-opacity","1");
-  mB$("mB2DiagramText").innerHTML="<strong>Mengamati kejadian B.</strong><p>Seluruh bagian B ditampilkan lebih tebal.</p>";
+  mB$("mB2DiagramText").innerHTML = "<strong>Mengamati kejadian B.</strong><p>Seluruh bagian B ditampilkan lebih tebal.</p>";
   renderMathNow(mB$("mB2DiagramText"));
 });
+
 mB$("mB2ObserveI").addEventListener("click",()=>{
   if(!mB2Started) return;
   mB$("mB2CircleA").setAttribute("r","72");
   mB$("mB2CircleB").setAttribute("r","72");
   mB$("mB2CircleA").setAttribute("fill-opacity",".18");
   mB$("mB2CircleB").setAttribute("fill-opacity",".18");
-  mB$("mB2DiagramText").innerHTML="<strong>Mengamati irisan A ∩ B.</strong><div class='m-math'>\\(P(A \\cup B) = P(A) + P(B) - P(A \\cap B)\\)</div>";
+  mB$("mB2DiagramText").innerHTML = "<strong>Mengamati irisan A ∩ B.</strong><div class='m-math'>\\(P(A \\cup B) = P(A) + P(B) - P(A \\cap B)\\)</div>";
   renderMathNow(mB$("mB2DiagramText"));
 });
+
 mB$("mB2Calculate").addEventListener("click",()=>{
-  const total=mBReadInteger("mB2Total",1,100000000);
-  const a=mBReadInteger("mB2A",0,100000000);
-  const b=mBReadInteger("mB2B",0,100000000);
-  const i=mBReadInteger("mB2I",0,100000000);
-  if([total,a,b,i].some(v=>v===null)){mBShowResult("mB2Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>");renderMathNow(mB$("mB2Result"));return;}
-  if(a>total||b>total||i>Math.min(a,b)||a+b-i>total){mBShowResult("mB2Result","<strong>Data belum masuk akal.</strong><p>Periksa jumlah anggota klub dan irisan.</p>");renderMathNow(mB$("mB2Result"));return;}
-  const union=a+b-i;
-  const pUnion=union/total;
+  const total = mBReadInteger("mB2Total",1,100000000);
+  const a = mBReadInteger("mB2A",0,100000000);
+  const b = mBReadInteger("mB2B",0,100000000);
+  const i = mBReadInteger("mB2I",0,100000000);
+  if([total,a,b,i].some(v=>v===null)){
+    mBShowResult("mB2Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>");
+    renderMathNow(mB$("mB2Result")); return;
+  }
+  if(a > total || b > total || i > Math.min(a,b) || a+b-i > total){
+    mBShowResult("mB2Result","<strong>Data belum masuk akal.</strong><p>Periksa jumlah anggota klub dan irisan.</p>");
+    renderMathNow(mB$("mB2Result")); return;
+  }
+  const union = a+b-i;
+  const pUnion = union/total;
   mBShowResult("mB2Result",`
     <h3>Langkah penyelesaian</h3>
     <div class="m-math">\\( P(A) = \\dfrac{${a}}{${total}} = ${fmtDec(a/total)} \\)</div>
@@ -1183,115 +1225,127 @@ mB$("mB2Calculate").addEventListener("click",()=>{
     <div class="m-math">\\( P(A \\cup B) = \\dfrac{${a}}{${total}} + \\dfrac{${b}}{${total}} - \\dfrac{${i}}{${total}} = \\dfrac{${union}}{${total}} = ${fmtDec(pUnion)} \\)</div>
     <p><strong>Jadi, peluangnya \\( ${fmtFrac(union,total)} \\) atau ${(pUnion*100).toFixed(2)}%.</strong></p>
   `);
-  document.getElementById("mBFinalConclusion").hidden=false;
+  document.getElementById("mBFinalConclusion").hidden = false;
   renderMathNow(mB$("mB2Result"));
 });
 
-/* B3 */
-const mBIndCoin=mB$("mBIndCoin");
-const mBIndDie=mB$("mBIndDie");
-let mBIndTrials=0,mBIndHeads=0,mBIndSix=0,mBIndBoth=0,mBIndBusy=false,mBIndHistory=[];
+/* B3 — Saling Bebas */
+const mBIndCoin = mB$("mBIndCoin");
+const mBIndDie = mB$("mBIndDie");
+let mBIndTrials = 0;
+let mBIndHeads = 0;
+let mBIndSix = 0;
+let mBIndBoth = 0;
+let mBIndBusy = false;
+let mBIndHistory = [];
 
 function mBCreateDieFaces(cube){
-  cube.innerHTML="";
-  const sides=[["front",1],["back",6],["right",3],["left",4],["top",2],["bottom",5]];
+  cube.innerHTML = "";
+  const sides = [["front",1],["back",6],["right",3],["left",4],["top",2],["bottom",5]];
   sides.forEach(([side,n])=>{
-    const face=document.createElement("div");
-    face.className="m-face "+side;
-    face.dataset.n=n;
+    const face = document.createElement("div");
+    face.className = "m-face " + side;
+    face.dataset.n = n;
     for(let i=0;i<n;i++){
-      const pip=document.createElement("span");
-      pip.className="m-pip";
+      const pip = document.createElement("span");
+      pip.className = "m-pip";
       face.appendChild(pip);
     }
     cube.appendChild(face);
   });
 }
+
 function mBSetDieFace(cube,n){
-  const rotations={1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
-  const [x,y]=rotations[n];
+  const rotations = {1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
+  const [x,y] = rotations[n];
   cube.classList.remove("rolling");
-  cube.style.transform=`scale(.76) rotateX(${x}deg) rotateY(${y}deg)`;
+  cube.style.transform = `scale(.76) rotateX(${x}deg) rotateY(${y}deg)`;
 }
+
 function mBRollDie(cube,n,duration=800){
   return new Promise(resolve=>{
-    const rotations={1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
-    const [x,y]=rotations[n];
+    const rotations = {1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
+    const [x,y] = rotations[n];
     cube.classList.remove("rolling");
     void cube.offsetWidth;
     cube.style.setProperty("--end-x",`${x}deg`);
     cube.style.setProperty("--end-y",`${y}deg`);
     cube.classList.add("rolling");
-    setTimeout(()=>{cube.classList.remove("rolling");mBSetDieFace(cube,n);resolve();},duration);
+    setTimeout(()=>{ cube.classList.remove("rolling"); mBSetDieFace(cube,n); resolve(); },duration);
   });
 }
-if(mBIndDie){mBCreateDieFaces(mBIndDie);mBSetDieFace(mBIndDie,1);}
+
+if(mBIndDie){ mBCreateDieFaces(mBIndDie); mBSetDieFace(mBIndDie,1); }
 
 function mBUpdateIndependent(){
-  mB$("mBIndTotal").textContent=mBIndTrials;
-  mB$("mBIndCoinCount").textContent=mBIndHeads;
-  mB$("mBIndDieCount").textContent=mBIndSix;
-  mB$("mBIndBothCount").textContent=mBIndBoth;
-  const freq=mBIndTrials?mBIndBoth/mBIndTrials:0;
+  mB$("mBIndTotal").textContent = mBIndTrials;
+  mB$("mBIndCoinCount").textContent = mBIndHeads;
+  mB$("mBIndDieCount").textContent = mBIndSix;
+  mB$("mBIndBothCount").textContent = mBIndBoth;
+  const frequency = mBIndTrials ? mBIndBoth/mBIndTrials*100 : 0;
   const freqEl=mB$("mBIndFrequency");
-  freqEl.innerHTML=mBIndTrials
-    ? `Frekuensi relatif kejadian bersama: \\( \\dfrac{${mBIndBoth}}{${mBIndTrials}} = ${(freq*100).toFixed(2)}\\% \\)`
+  freqEl.innerHTML = mBIndTrials
+    ? `Frekuensi relatif kejadian bersama: \\( \\dfrac{${mBIndBoth}}{${mBIndTrials}} = ${frequency.toLocaleString("id-ID",{maximumFractionDigits:2})}\\% \\)`
     : `Frekuensi relatif kejadian bersama: \\( \\dfrac{0}{0} = 0\\% \\)`;
   renderMathNow(freqEl);
-  mB$("mBIndHistory").innerHTML=mBIndHistory.length
+  mB$("mBIndHistory").innerHTML = mBIndHistory.length
     ? mBIndHistory.map((x,i)=>`<span class="m-independent-chip ${x.both?"both":""}">${i+1}. ${x.coin==="G"?"Gambar":"Angka"}, dadu ${x.die}${x.both?" ✓":""}</span>`).join("")
     : "Belum ada percobaan.";
 }
 
 function mBIndependentTrial(times){
   if(mBIndBusy) return;
-  mBIndBusy=true;
-  ["mBIndOnce","mBIndTen","mBIndReset"].forEach(id=>{mB$(id).disabled=true;});
-  let done=0;
+  mBIndBusy = true;
+  ["mBIndOnce","mBIndTen","mBIndReset"].forEach(id=>{ mB$(id).disabled = true; });
+  let done = 0;
   function next(){
-    const coin=Math.random()<.5?"A":"G";
-    const die=1+Math.floor(Math.random()*6);
-    const both=coin==="G"&&die===6;
+    const coin = Math.random() < .5 ? "A" : "G";
+    const die = 1 + Math.floor(Math.random()*6);
+    const both = coin === "G" && die === 6;
     mBIndCoin.classList.remove("flipping");
     void mBIndCoin.offsetWidth;
     mBIndCoin.classList.add("flipping");
     mBRollDie(mBIndDie,die,times===1?800:300).then(()=>{
       mBIndCoin.classList.remove("flipping");
-      mBIndCoin.style.transform=coin==="G"?"rotateY(180deg)":"rotateY(0deg)";
+      mBIndCoin.style.transform = coin === "G" ? "rotateY(180deg)" : "rotateY(0deg)";
       mBIndTrials++;
-      if(coin==="G") mBIndHeads++;
-      if(die===6) mBIndSix++;
+      if(coin === "G") mBIndHeads++;
+      if(die === 6) mBIndSix++;
       if(both) mBIndBoth++;
       mBIndHistory.push({coin,die,both});
       mBUpdateIndependent();
-      mB$("mBIndResult").textContent=`Percobaan ${mBIndTrials}: Koin ${coin==="G"?"Gambar":"Angka"}, dadu ${die}.`+(both?" Kedua kejadian terjadi!":"");
+      mB$("mBIndResult").textContent = `Percobaan ${mBIndTrials}: Koin ${coin==="G"?"Gambar":"Angka"}, dadu ${die}.` + (both ? " Kedua kejadian terjadi!" : "");
       done++;
-      if(done<times){setTimeout(next,120);}
-      else{mBIndBusy=false;["mBIndOnce","mBIndTen","mBIndReset"].forEach(id=>{mB$(id).disabled=false;});}
+      if(done < times){ setTimeout(next,120); }
+      else{ mBIndBusy = false; ["mBIndOnce","mBIndTen","mBIndReset"].forEach(id=>{ mB$(id).disabled = false; }); }
     });
   }
   next();
 }
-mB$("mBIndOnce").addEventListener("click",()=>{mBIndependentTrial(1);});
-mB$("mBIndTen").addEventListener("click",()=>{mBIndependentTrial(10);});
+
+mB$("mBIndOnce").addEventListener("click",()=>{ mBIndependentTrial(1); });
+mB$("mBIndTen").addEventListener("click",()=>{ mBIndependentTrial(10); });
 mB$("mBIndReset").addEventListener("click",()=>{
   if(mBIndBusy) return;
-  mBIndTrials=0;mBIndHeads=0;mBIndSix=0;mBIndBoth=0;mBIndHistory=[];
-  mB$("mBIndResult").textContent="Koin dan dadu siap dilempar.";
-  mBIndCoin.style.transform="rotateY(0deg)";
+  mBIndTrials = 0; mBIndHeads = 0; mBIndSix = 0; mBIndBoth = 0; mBIndHistory = [];
+  mB$("mBIndResult").textContent = "Koin dan dadu siap dilempar.";
+  mBIndCoin.style.transform = "rotateY(0deg)";
   mBSetDieFace(mBIndDie,1);
   mBUpdateIndependent();
 });
 
 mB$("mB3Calculate").addEventListener("click",()=>{
-  const rawA=mB$("mB3A").value.trim();
-  const rawB=mB$("mB3B").value.trim();
-  const a=Number(rawA), b=Number(rawB);
-  if(rawA===""||rawB===""||!Number.isFinite(a)||!Number.isFinite(b)||a<0||a>100||b<0||b>100){
+  const rawA = mB$("mB3A").value.trim();
+  const rawB = mB$("mB3B").value.trim();
+  const a = Number(rawA);
+  const b = Number(rawB);
+  if(rawA === "" || rawB === "" || !Number.isFinite(a) || !Number.isFinite(b) || a < 0 || a > 100 || b < 0 || b > 100){
     mBShowResult("mB3Result","<strong>Periksa kembali angka.</strong><p>Masukkan peluang dalam persen dari 0 sampai 100.</p>");
-    renderMathNow(mB$("mB3Result"));return;
+    renderMathNow(mB$("mB3Result")); return;
   }
-  const pa=a/100, pb=b/100, both=pa*pb;
+  const pa = a/100;
+  const pb = b/100;
+  const both = pa*pb;
   mBShowResult("mB3Result",`
     <h3>Langkah Penyelesaian</h3>
     <div class="m-math">\\( P(A) = ${a}\\% = ${pa} \\)</div>
@@ -1299,34 +1353,36 @@ mB$("mB3Calculate").addEventListener("click",()=>{
     <div class="m-math">\\( P(A \\cap B) = P(A) \\times P(B) = ${pa} \\times ${pb} = ${both.toFixed(4)} \\)</div>
     <p><strong>Jadi, peluang kedua kejadian terjadi secara bersamaan adalah ${(both*100).toFixed(2)}%.</strong></p>
   `);
-  document.getElementById("mBFinalConclusion").hidden=false;
+  document.getElementById("mBFinalConclusion").hidden = false;
   renderMathNow(mB$("mB3Result"));
 });
 
-/* B4 */
+/* B4 — Peluang Bersyarat: Kalkulator */
 mB$("mB4ProbabilityCalculate").addEventListener("click",()=>{
-  const rawA=mB$("mB4PA").value.trim();
-  const rawB=mB$("mB4PB").value.trim();
-  const rawAB=mB$("mB4PAB").value.trim();
-  const pa=Number(rawA), pb=Number(rawB), pab=Number(rawAB);
-  if(rawA===""||rawB===""||rawAB===""||!Number.isFinite(pa)||!Number.isFinite(pb)||!Number.isFinite(pab)){
+  const rawA = mB$("mB4PA").value.trim();
+  const rawB = mB$("mB4PB").value.trim();
+  const rawAB = mB$("mB4PAB").value.trim();
+  const pa = Number(rawA);
+  const pb = Number(rawB);
+  const pab = Number(rawAB);
+  if(rawA === "" || rawB === "" || rawAB === "" || !Number.isFinite(pa) || !Number.isFinite(pb) || !Number.isFinite(pab)){
     mBShowResult("mB4ProbabilityResult","<strong>Periksa kembali data.</strong><p>Lengkapi semua nilai peluang terlebih dahulu.</p>");
-    renderMathNow(mB$("mB4ProbabilityResult"));return;
+    renderMathNow(mB$("mB4ProbabilityResult")); return;
   }
-  if(pa<0||pa>1||pb<0||pb>1||pab<0||pab>1){
+  if(pa < 0 || pa > 1 || pb < 0 || pb > 1 || pab < 0 || pab > 1){
     mBShowResult("mB4ProbabilityResult","<strong>Nilai tidak valid.</strong><p>Setiap peluang harus berada antara 0 dan 1.</p>");
-    renderMathNow(mB$("mB4ProbabilityResult"));return;
+    renderMathNow(mB$("mB4ProbabilityResult")); return;
   }
-  if(pab>pa||pab>pb||pa+pb-pab>1){
+  if(pab > pa || pab > pb || pa+pb-pab > 1){
     mBShowResult("mB4ProbabilityResult","<strong>Data peluang tidak memenuhi aturan.</strong><p>Periksa kembali nilai P(A), P(B), dan P(A ∩ B).</p>");
-    renderMathNow(mB$("mB4ProbabilityResult"));return;
+    renderMathNow(mB$("mB4ProbabilityResult")); return;
   }
-  const resultA=pb>0?pab/pb:null;
-  const resultB=pa>0?pab/pa:null;
-  const htmlA=resultA!==null
+  const resultA = pb > 0 ? pab/pb : null;
+  const resultB = pa > 0 ? pab/pa : null;
+  const htmlA = resultA !== null
     ? `<div class="m-math">\\( P(A \\mid B) = \\dfrac{${pab}}{${pb}} = ${resultA.toFixed(4)} \\approx ${(resultA*100).toFixed(2)}\\% \\)</div>`
     : `<p>P(A | B) tidak terdefinisi karena P(B) = 0.</p>`;
-  const htmlB=resultB!==null
+  const htmlB = resultB !== null
     ? `<div class="m-math">\\( P(B \\mid A) = \\dfrac{${pab}}{${pa}} = ${resultB.toFixed(4)} \\approx ${(resultB*100).toFixed(2)}\\% \\)</div>`
     : `<p>P(B | A) tidak terdefinisi karena P(A) = 0.</p>`;
   mBShowResult("mB4ProbabilityResult",`
@@ -1339,304 +1395,322 @@ mB$("mB4ProbabilityCalculate").addEventListener("click",()=>{
     <div class="m-math">\\( P(B \\mid A) = \\dfrac{P(A \\cap B)}{P(A)} \\)</div>
     ${htmlB}
   `);
-  document.getElementById("mBFinalConclusion").hidden=false;
+  document.getElementById("mBFinalConclusion").hidden = false;
   renderMathNow(mB$("mB4ProbabilityResult"));
 });
+
 mB$("mB4ProbabilityReset").addEventListener("click",()=>{
-  ["mB4PA","mB4PB","mB4PAB"].forEach(id=>{mB$(id).value="";});
+  ["mB4PA","mB4PB","mB4PAB"].forEach(id=>{ mB$(id).value = ""; });
   mB$("mB4ProbabilityResult").classList.remove("show");
-  mB$("mB4ProbabilityResult").innerHTML="";
+  mB$("mB4ProbabilityResult").innerHTML = "";
 });
 
+/* B4 — Soal Penerapan */
 mB$("mB4Calculate").addEventListener("click",()=>{
-  const total=mBReadInteger("mB4Total",1,100000000);
-  const a=mBReadInteger("mB4A",0,100000000);
-  const b=mBReadInteger("mB4B",0,100000000);
-  const intersection=mBReadInteger("mB4Intersection",0,100000000);
+  const total = mBReadInteger("mB4Total",1,100000000);
+  const a = mBReadInteger("mB4A",0,100000000);
+  const b = mBReadInteger("mB4B",0,100000000);
+  const intersection = mBReadInteger("mB4Intersection",0,100000000);
+
   if([total,a,b,intersection].some(v=>v===null)){
     mBShowResult("mB4Result","<strong>Periksa kembali angka.</strong><p>Isi semua kolom dengan bilangan bulat yang valid.</p>");
-    renderMathNow(mB$("mB4Result"));return;
+    renderMathNow(mB$("mB4Result")); return;
   }
-  if(a>total||b>total||intersection>Math.min(a,b)||a+b-intersection>total){
+  if(a > total || b > total || intersection > Math.min(a,b) || a+b-intersection > total){
     mBShowResult("mB4Result","<strong>Data belum sesuai.</strong><p>Jumlah anggota masing-masing ekstrakurikuler tidak boleh melebihi jumlah seluruh siswa. Jumlah yang mengikuti keduanya tidak boleh melebihi jumlah A maupun B.</p>");
-    renderMathNow(mB$("mB4Result"));return;
+    renderMathNow(mB$("mB4Result")); return;
   }
-  if(a===0||b===0){
+  if(a === 0 || b === 0){
     mBShowResult("mB4Result",`<strong>Salah satu peluang bersyarat tidak terdefinisi.</strong>
       <p>${a===0?"P(A) = 0 sehingga P(B | A) tidak terdefinisi.":""}
       ${b===0?"P(B) = 0 sehingga P(A | B) tidak terdefinisi.":""}</p>`);
-    renderMathNow(mB$("mB4Result"));return;
+    renderMathNow(mB$("mB4Result")); return;
   }
-  const pA=a/total, pB=b/total, pI=intersection/total;
-  const condA=intersection/b, condB=intersection/a;
+
+  const pA = a/total;
+  const pB = b/total;
+  const pI = intersection/total;
+  const conditionalA = intersection/b;
+  const conditionalB = intersection/a;
+
   mBShowResult("mB4Result",`
     <h3>Langkah Penyelesaian</h3>
     <p><strong>Diketahui:</strong></p>
     <div class="m-math">\\( n(S) = ${total},\\quad n(A) = ${a},\\quad n(B) = ${b},\\quad n(A \\cap B) = ${intersection} \\)</div>
     <hr>
     <h3>A. Peluang A dengan syarat B terjadi</h3>
-    <div class="m-math">\\( P(B) = \\dfrac{${b}}{${total}},\\quad P(A \\cap B) = \\dfrac{${intersection}}{${total}} \\)</div>
+    <p>Ditanyakan P(A | B).</p>
+    <div class="m-math">\\( P(B) = \\dfrac{${b}}{${total}} = ${fmtDec(pB)} \\)</div>
+    <div class="m-math">\\( P(A \\cap B) = \\dfrac{${intersection}}{${total}} = ${fmtDec(pI)} \\)</div>
     <div class="m-math">\\( P(A \\mid B) = \\dfrac{P(A \\cap B)}{P(B)} = \\dfrac{\\dfrac{${intersection}}{${total}}}{\\dfrac{${b}}{${total}}} = \\dfrac{${intersection}}{${b}} = ${fmtFrac(intersection,b)} \\)</div>
-    <p><strong>Jadi, peluang mengikuti sains jika diketahui mengikuti matematika adalah \\( ${fmtFrac(intersection,b)} \\) atau ${(condA*100).toFixed(2)}%.</strong></p>
+    <p><strong>Jadi, peluang mengikuti sains jika diketahui mengikuti matematika adalah \\( ${fmtFrac(intersection,b)} \\) atau ${(conditionalA*100).toFixed(2)}%.</strong></p>
     <hr>
     <h3>B. Peluang B dengan syarat A terjadi</h3>
-    <div class="m-math">\\( P(A) = \\dfrac{${a}}{${total}},\\quad P(A \\cap B) = \\dfrac{${intersection}}{${total}} \\)</div>
+    <p>Ditanyakan P(B | A).</p>
+    <div class="m-math">\\( P(A) = \\dfrac{${a}}{${total}} = ${fmtDec(pA)} \\)</div>
     <div class="m-math">\\( P(B \\mid A) = \\dfrac{P(A \\cap B)}{P(A)} = \\dfrac{\\dfrac{${intersection}}{${total}}}{\\dfrac{${a}}{${total}}} = \\dfrac{${intersection}}{${a}} = ${fmtFrac(intersection,a)} \\)</div>
-    <p><strong>Jadi, peluang mengikuti matematika jika diketahui mengikuti sains adalah \\( ${fmtFrac(intersection,a)} \\) atau ${(condB*100).toFixed(2)}%.</strong></p>
+    <p><strong>Jadi, peluang mengikuti matematika jika diketahui mengikuti sains adalah \\( ${fmtFrac(intersection,a)} \\) atau ${(conditionalB*100).toFixed(2)}%.</strong></p>
   `);
-  document.getElementById("mBFinalConclusion").hidden=false;
+  document.getElementById("mBFinalConclusion").hidden = false;
   renderMathNow(mB$("mB4Result"));
 });
+
 
 /* ============================================================
    MATERI C — LAB PELUANG
    ============================================================ */
-const mCMissions={
-  1:{dice:1,description:"Kejadian yang diteliti adalah munculnya angka 3.",event:([a])=>a===3},
-  2:{dice:1,description:"Kejadian yang diteliti adalah munculnya angka genap.",event:([a])=>a%2===0},
-  3:{dice:1,description:"Kejadian yang diteliti adalah munculnya angka lebih dari 4.",event:([a])=>a>4},
-  4:{dice:2,description:"Kejadian yang diteliti adalah jumlah dua angka sama dengan 5.",event:([a,b])=>a+b===5},
-  5:{dice:2,description:"Kejadian yang diteliti adalah jumlah dua angka lebih dari 7.",event:([a,b])=>a+b>7},
-  6:{dice:2,description:"Kejadian yang diteliti adalah jumlah dua angka kurang dari 8.",event:([a,b])=>a+b<8},
-  7:{dice:2,description:"Kejadian yang diteliti adalah kedua dadu menunjukkan angka sama.",event:([a,b])=>a===b},
-  8:{dice:2,description:"Kejadian yang diteliti adalah jumlah dua angka genap.",event:([a,b])=>(a+b)%2===0},
-  9:{dice:2,description:"Kejadian yang diteliti adalah dadu pertama lebih besar daripada dadu kedua.",event:([a,b])=>a>b}
+const mCMissions = {
+  1: {dice:1, description:"Kejadian yang diteliti adalah munculnya angka 3.", event:([a])=>a===3},
+  2: {dice:1, description:"Kejadian yang diteliti adalah munculnya angka genap.", event:([a])=>a%2===0},
+  3: {dice:1, description:"Kejadian yang diteliti adalah munculnya angka lebih dari 4.", event:([a])=>a>4},
+  4: {dice:2, description:"Kejadian yang diteliti adalah jumlah dua angka sama dengan 5.", event:([a,b])=>a+b===5},
+  5: {dice:2, description:"Kejadian yang diteliti adalah jumlah dua angka lebih dari 7.", event:([a,b])=>a+b>7},
+  6: {dice:2, description:"Kejadian yang diteliti adalah jumlah dua angka kurang dari 8.", event:([a,b])=>a+b<8},
+  7: {dice:2, description:"Kejadian yang diteliti adalah kedua dadu menunjukkan angka sama.", event:([a,b])=>a===b},
+  8: {dice:2, description:"Kejadian yang diteliti adalah jumlah dua angka genap.", event:([a,b])=>(a+b)%2===0},
+  9: {dice:2, description:"Kejadian yang diteliti adalah dadu pertama lebih besar daripada dadu kedua.", event:([a,b])=>a>b}
 };
 
-const mCMissionSelect=document.getElementById("mCMission");
-const mCDiceGrid=document.getElementById("mCDiceGrid");
-const mCObservationBody=document.getElementById("mCObservationBody");
-const mCSampleCount=document.getElementById("mCSampleCount");
-const mCObservedCount=document.getElementById("mCObservedCount");
-const mCRemainingCount=document.getElementById("mCRemainingCount");
-const mCAnswerArea=document.getElementById("mCAnswerArea");
-const mCNAInput=document.getElementById("mCNA");
-const mCPAInput=document.getElementById("mCPA");
-const mCFeedback=document.getElementById("mCFeedback");
-const mCPreviousButton=document.getElementById("mCPreviousMission");
-const mCNextButton=document.getElementById("mCNextMission");
+const mCMissionSelect = document.getElementById("mCMission");
+const mCDiceGrid = document.getElementById("mCDiceGrid");
+const mCObservationBody = document.getElementById("mCObservationBody");
+const mCSampleCount = document.getElementById("mCSampleCount");
+const mCObservedCount = document.getElementById("mCObservedCount");
+const mCRemainingCount = document.getElementById("mCRemainingCount");
+const mCAnswerArea = document.getElementById("mCAnswerArea");
+const mCNAInput = document.getElementById("mCNA");
+const mCPAInput = document.getElementById("mCPA");
+const mCFeedback = document.getElementById("mCFeedback");
+const mCPreviousButton = document.getElementById("mCPreviousMission");
+const mCNextButton = document.getElementById("mCNextMission");
 
-let mCMissionId=1;
-let mCOutcomes=[];
-let mCObserved=new Set();
-let mCRollingKeys=new Set();
-let mCDisplayedResults=new Map();
+let mCMissionId = 1;
+let mCOutcomes = [];
+let mCObserved = new Set();
+let mCRollingKeys = new Set();
+let mCDisplayedResults = new Map();
 
-function mCKeyOf(outcome){return outcome.join("-");}
-function mCLabelOf(outcome){return outcome.length===1?String(outcome[0]):`(${outcome[0]}, ${outcome[1]})`;}
+function mCKeyOf(outcome){ return outcome.join("-"); }
+function mCLabelOf(outcome){ return outcome.length===1 ? String(outcome[0]) : `(${outcome[0]}, ${outcome[1]})`; }
 
 function mCMakeOutcomes(){
-  mCOutcomes=[];
-  const n=mCMissions[mCMissionId].dice;
-  if(n===1){for(let a=1;a<=6;a++) mCOutcomes.push([a]);}
-  else{for(let a=1;a<=6;a++) for(let b=1;b<=6;b++) mCOutcomes.push([a,b]);}
+  mCOutcomes = [];
+  const n = mCMissions[mCMissionId].dice;
+  if(n===1){ for(let a=1;a<=6;a++) mCOutcomes.push([a]); }
+  else{ for(let a=1;a<=6;a++) for(let b=1;b<=6;b++) mCOutcomes.push([a,b]); }
   mCDisplayedResults.clear();
-  mCOutcomes.forEach(o=>{mCDisplayedResults.set(mCKeyOf(o),o.map(()=>1));});
+  mCOutcomes.forEach(o=>{ mCDisplayedResults.set(mCKeyOf(o), o.map(()=>1)); });
 }
-function mCMakeFace(faceName,number){
-  const face=document.createElement("div");
-  face.className=`m-face ${faceName}`;
-  face.dataset.number=number;
+
+function mCMakeFace(faceName, number){
+  const face = document.createElement("div");
+  face.className = `m-face ${faceName}`;
+  face.dataset.number = number;
   for(let i=0;i<number;i++){
-    const pip=document.createElement("span");
-    pip.className="m-pip";
+    const pip = document.createElement("span");
+    pip.className = "m-pip";
     face.appendChild(pip);
   }
   return face;
 }
-const mCFaceDefinitions=[["front",1],["back",6],["right",3],["left",4],["top",5],["bottom",2]];
-function mCMakeDie(number,uniqueId){
-  const stage=document.createElement("div");
-  stage.className="m-die-stage";
-  const cube=document.createElement("div");
-  cube.className="m-die-cube";
-  cube.id=uniqueId;
-  mCFaceDefinitions.forEach(([faceName,defaultNumber])=>{
-    const faceNumber=faceName==="front"?number:defaultNumber;
-    cube.appendChild(mCMakeFace(faceName,faceNumber));
+
+const mCFaceDefinitions = [["front",1],["back",6],["right",3],["left",4],["top",5],["bottom",2]];
+
+function mCMakeDie(number, uniqueId){
+  const stage = document.createElement("div");
+  stage.className = "m-die-stage";
+  const cube = document.createElement("div");
+  cube.className = "m-die-cube";
+  cube.id = uniqueId;
+  mCFaceDefinitions.forEach(([faceName, defaultNumber])=>{
+    const faceNumber = faceName === "front" ? number : defaultNumber;
+    cube.appendChild(mCMakeFace(faceName, faceNumber));
   });
-  cube.style.transform="rotateX(0deg) rotateY(0deg)";
+  cube.style.transform = "rotateX(0deg) rotateY(0deg)";
   stage.appendChild(cube);
   return stage;
 }
+
 function mCCreateCard(outcome){
-  const key=mCKeyOf(outcome);
-  const isObserved=mCObserved.has(key);
-  const isRolling=mCRollingKeys.has(key);
-  const savedFaces=mCDisplayedResults.get(key)||outcome.map(()=>1);
-  const card=document.createElement("div");
-  card.className="m-dice-card";
-  const pair=document.createElement("div");
-  pair.className="m-dice-pair";
-  pair.appendChild(mCMakeDie(savedFaces[0],`mCDie-${key}-a`));
-  if(outcome.length===2){pair.appendChild(mCMakeDie(savedFaces[1],`mCDie-${key}-b`));}
-  const status=document.createElement("div");
-  status.className="m-card-status";
-  if(isRolling){status.textContent="Dadu sedang dikocok...";}
-  else if(isObserved){status.textContent=`Hasil: ${savedFaces.join(" dan ")}`;}
-  else{status.textContent="Belum dikocok";}
-  const button=document.createElement("button");
-  button.className=isObserved?"m-secondary":"m-primary";
-  button.textContent=isObserved?"Kocok Lagi":"Kocok";
-  button.disabled=mCRollingKeys.size>0;
-  button.addEventListener("click",()=>{mCRollCard(outcome);});
-  card.appendChild(pair);card.appendChild(status);card.appendChild(button);
+  const key = mCKeyOf(outcome);
+  const isObserved = mCObserved.has(key);
+  const isRolling = mCRollingKeys.has(key);
+  const savedFaces = mCDisplayedResults.get(key) || outcome.map(()=>1);
+  const card = document.createElement("div");
+  card.className = "m-dice-card";
+  const pair = document.createElement("div");
+  pair.className = "m-dice-pair";
+  pair.appendChild(mCMakeDie(savedFaces[0], `mCDie-${key}-a`));
+  if(outcome.length===2){ pair.appendChild(mCMakeDie(savedFaces[1], `mCDie-${key}-b`)); }
+  const status = document.createElement("div");
+  status.className = "m-card-status";
+  if(isRolling){ status.textContent = "Dadu sedang dikocok..."; }
+  else if(isObserved){ status.textContent = `Hasil: ${savedFaces.join(" dan ")}`; }
+  else{ status.textContent = "Belum dikocok"; }
+  const button = document.createElement("button");
+  button.className = isObserved ? "m-secondary" : "m-primary";
+  button.textContent = isObserved ? "Kocok Lagi" : "Kocok";
+  button.disabled = mCRollingKeys.size > 0;
+  button.addEventListener("click", ()=>{ mCRollCard(outcome); });
+  card.appendChild(pair);
+  card.appendChild(status);
+  card.appendChild(button);
   return card;
 }
+
 function mCRenderGrid(){
-  mCDiceGrid.innerHTML="";
-  mCOutcomes.forEach(o=>{mCDiceGrid.appendChild(mCCreateCard(o));});
+  mCDiceGrid.innerHTML = "";
+  mCOutcomes.forEach(o=>{ mCDiceGrid.appendChild(mCCreateCard(o)); });
 }
+
 function mCRenderTable(){
-  mCObservationBody.innerHTML="";
-  const mission=mCMissions[mCMissionId];
+  mCObservationBody.innerHTML = "";
+  const mission = mCMissions[mCMissionId];
   mCOutcomes.forEach(outcome=>{
-    const key=mCKeyOf(outcome);
+    const key = mCKeyOf(outcome);
     if(!mCObserved.has(key)) return;
-    const isEvent=mission.event(outcome);
-    const row=document.createElement("tr");
+    const isEvent = mission.event(outcome);
+    const row = document.createElement("tr");
     if(isEvent) row.classList.add("m-event-row");
-    const numberCell=document.createElement("td");
-    numberCell.textContent=mCObservationBody.children.length+1;
-    const resultCell=document.createElement("td");
-    resultCell.textContent=mCLabelOf(outcome);
-    const eventCell=document.createElement("td");
-    eventCell.textContent=isEvent?"Termasuk kejadian":"Bukan kejadian";
-    const statusCell=document.createElement("td");
-    statusCell.textContent="Sudah diamati";
-    row.append(numberCell,resultCell,eventCell,statusCell);
+    const numberCell = document.createElement("td");
+    numberCell.textContent = mCObservationBody.children.length + 1;
+    const resultCell = document.createElement("td");
+    resultCell.textContent = mCLabelOf(outcome);
+    const eventCell = document.createElement("td");
+    eventCell.textContent = isEvent ? "Termasuk kejadian" : "Bukan kejadian";
+    const statusCell = document.createElement("td");
+    statusCell.textContent = "Sudah diamati";
+    row.append(numberCell, resultCell, eventCell, statusCell);
     mCObservationBody.appendChild(row);
   });
-  if(mCObserved.size===0){
-    mCObservationBody.innerHTML=`<tr><td colspan="4">Belum ada hasil pengamatan.</td></tr>`;
+  if(mCObserved.size === 0){
+    mCObservationBody.innerHTML = `<tr><td colspan="4">Belum ada hasil pengamatan.</td></tr>`;
   }
   mCUpdateStatistics();
 }
+
 function mCUpdateStatistics(){
-  mCSampleCount.textContent=mCOutcomes.length;
-  mCObservedCount.textContent=mCObserved.size;
-  mCRemainingCount.textContent=mCOutcomes.length-mCObserved.size;
-  const allObserved=mCObserved.size===mCOutcomes.length;
-  mCAnswerArea.style.display=allObserved?"block":"none";
-  mCPreviousButton.disabled=!allObserved||mCMissionId===1;
-  mCNextButton.disabled=!allObserved||mCMissionId===9;
+  mCSampleCount.textContent = mCOutcomes.length;
+  mCObservedCount.textContent = mCObserved.size;
+  mCRemainingCount.textContent = mCOutcomes.length - mCObserved.size;
+  const allObserved = mCObserved.size === mCOutcomes.length;
+  mCAnswerArea.style.display = allObserved ? "block" : "none";
+  mCPreviousButton.disabled = !allObserved || mCMissionId === 1;
+  mCNextButton.disabled = !allObserved || mCMissionId === 9;
 }
-function mCRenderAll(){mCRenderGrid();mCRenderTable();}
+
+function mCRenderAll(){ mCRenderGrid(); mCRenderTable(); }
+
 function mCRollCard(outcome){
-  if(mCRollingKeys.size>0) return;
-  const key=mCKeyOf(outcome);
+  if(mCRollingKeys.size > 0) return;
+  const key = mCKeyOf(outcome);
   mCRollingKeys.add(key);
   mCRenderGrid();
-  const cubeA=document.getElementById(`mCDie-${key}-a`);
-  const cubeB=outcome.length===2?document.getElementById(`mCDie-${key}-b`):null;
-  const cubes=[cubeA,cubeB].filter(Boolean);
-  const animationTimer=setInterval(()=>{
+  const cubeA = document.getElementById(`mCDie-${key}-a`);
+  const cubeB = outcome.length === 2 ? document.getElementById(`mCDie-${key}-b`) : null;
+  const cubes = [cubeA, cubeB].filter(Boolean);
+  const animationTimer = setInterval(()=>{
     cubes.forEach(cube=>{
-      cube.style.transform=`rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
+      cube.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
     });
-  },90);
+  }, 90);
   setTimeout(()=>{
     clearInterval(animationTimer);
-    mCDisplayedResults.set(key,[...outcome]);
+    mCDisplayedResults.set(key, [...outcome]);
     mCObserved.add(key);
     mCRollingKeys.delete(key);
     mCRenderAll();
-  },1500);
+  }, 1500);
 }
+
 function mCRollNext(){
-  if(mCRollingKeys.size>0) return;
-  const nextOutcome=mCOutcomes.find(o=>!mCObserved.has(mCKeyOf(o)));
-  if(nextOutcome){mCRollCard(nextOutcome);}
-  else{alert("Semua kemungkinan hasil sudah diamati.");}
+  if(mCRollingKeys.size > 0) return;
+  const nextOutcome = mCOutcomes.find(o => !mCObserved.has(mCKeyOf(o)));
+  if(nextOutcome){ mCRollCard(nextOutcome); }
+  else{ alert("Semua kemungkinan hasil sudah diamati."); }
 }
+
 function mCResetMission(){
-  if(mCRollingKeys.size>0) return;
+  if(mCRollingKeys.size > 0) return;
   mCObserved.clear();
-  mCNAInput.value="";
-  mCPAInput.value="";
-  mCFeedback.textContent="";
+  mCNAInput.value = "";
+  mCPAInput.value = "";
+  mCFeedback.textContent = "";
   mCDisplayedResults.clear();
-  mCOutcomes.forEach(o=>{mCDisplayedResults.set(mCKeyOf(o),o.map(()=>1));});
+  mCOutcomes.forEach(o=>{ mCDisplayedResults.set(mCKeyOf(o), o.map(()=>1)); });
   mCRenderAll();
 }
+
 function mCSetupMission(){
-  mCMissionId=Number(mCMissionSelect.value);
+  mCMissionId = Number(mCMissionSelect.value);
   mCObserved.clear();
   mCRollingKeys.clear();
-  const mission=mCMissions[mCMissionId];
-  document.getElementById("mCMissionDescription").textContent=mission.description;
-  document.getElementById("mCDiceDescription").textContent=mission.dice===1?"Pada misi ini terdapat 6 kemungkinan hasil dari satu dadu.":"Pada misi ini terdapat 36 kemungkinan hasil dari dua dadu.";
-  mCNAInput.value="";
-  mCPAInput.value="";
-  mCFeedback.textContent="";
+  const mission = mCMissions[mCMissionId];
+  document.getElementById("mCMissionDescription").textContent = mission.description;
+  document.getElementById("mCDiceDescription").textContent = mission.dice === 1 ? "Pada misi ini terdapat 6 kemungkinan hasil dari satu dadu." : "Pada misi ini terdapat 36 kemungkinan hasil dari dua dadu.";
+  mCNAInput.value = "";
+  mCPAInput.value = "";
+  mCFeedback.textContent = "";
   mCMakeOutcomes();
   mCRenderAll();
 }
+
 function mCNavigateMission(nextId){
-  if(mCRollingKeys.size>0) return;
-  if(nextId<1||nextId>9) return;
-  if(mCObserved.size!==mCOutcomes.length) return;
-  mCMissionSelect.value=String(nextId);
+  if(mCRollingKeys.size > 0) return;
+  if(nextId < 1 || nextId > 9) return;
+  if(mCObserved.size !== mCOutcomes.length) return;
+  mCMissionSelect.value = String(nextId);
   mCSetupMission();
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.scrollTo({top:0, behavior:"smooth"});
 }
+
 function mCCheckAnswers(){
-  const nText=mCNAInput.value.trim();
-  const pText=mCPAInput.value.trim();
-  if(nText===""||pText===""){
-    mCFeedback.textContent="Silakan lengkapi kedua jawaban terlebih dahulu.";
-    mCFeedback.style.color="#b45309";
+  const nText = mCNAInput.value.trim();
+  const pText = mCPAInput.value.trim();
+  if(nText === "" || pText === ""){
+    mCFeedback.textContent = "Silakan lengkapi kedua jawaban terlebih dahulu.";
+    mCFeedback.style.color = "#b45309";
     return;
   }
-  const nAnswer=Number(nText);
-  const normalized=pText.replace(",",".");
+  const nAnswer = Number(nText);
+  const normalized = pText.replace(",", ".");
   let pAnswer;
   if(normalized.includes("/")){
-    const parts=normalized.split("/");
-    if(parts.length!==2||parts.some(p=>p.trim()==="")||!Number.isFinite(Number(parts[0]))||!Number.isFinite(Number(parts[1]))||Number(parts[1])===0){
-      mCFeedback.textContent="Format pecahan belum tepat.";
-      mCFeedback.style.color="#b45309";
+    const parts = normalized.split("/");
+    if(parts.length !== 2 || parts.some(p=>p.trim()==="") || !Number.isFinite(Number(parts[0])) || !Number.isFinite(Number(parts[1])) || Number(parts[1]) === 0){
+      mCFeedback.textContent = "Format pecahan belum tepat.";
+      mCFeedback.style.color = "#b45309";
       return;
     }
-    pAnswer=Number(parts[0])/Number(parts[1]);
+    pAnswer = Number(parts[0]) / Number(parts[1]);
   }else{
-    pAnswer=Number(normalized);
-    if(pAnswer>1&&pAnswer<=100){pAnswer=pAnswer/100;}
+    pAnswer = Number(normalized);
+    if(pAnswer > 1 && pAnswer <= 100){ pAnswer = pAnswer / 100; }
   }
-  const mission=mCMissions[mCMissionId];
-  const correctN=mCOutcomes.filter(o=>mission.event(o)).length;
-  const correctP=correctN/mCOutimes?0:0;
-  const correctProb=correctN/mCOutcomes.length;
-  const countCorrect=Number.isInteger(nAnswer)&&nAnswer===correctN;
-  const probabilityCorrect=Number.isFinite(pAnswer)&&Math.abs(pAnswer-correctProb)<0.0001;
-  if(countCorrect&&probabilityCorrect){
-    mCFeedback.textContent="Benar! Jawabanmu tepat.";
-    mCFeedback.style.color="#23866b";
+  const mission = mCMissions[mCMissionId];
+  const correctN = mCOutcomes.filter(o=>mission.event(o)).length;
+  const correctP = correctN / mCOutcomes.length;
+  const countCorrect = Number.isInteger(nAnswer) && nAnswer === correctN;
+  const probabilityCorrect = Number.isFinite(pAnswer) && Math.abs(pAnswer - correctP) < 0.0001;
+  if(countCorrect && probabilityCorrect){
+    mCFeedback.textContent = "Benar! Jawabanmu tepat.";
+    mCFeedback.style.color = "#23866b";
   }else{
-    mCFeedback.textContent="Jawaban belum tepat. Periksa kembali banyak anggota kejadian dan peluang teoretisnya.";
-    mCFeedback.style.color="#b3425a";
+    mCFeedback.textContent = "Jawaban belum tepat. Periksa kembali banyak anggota kejadian dan peluang teoretisnya.";
+    mCFeedback.style.color = "#b3425a";
   }
 }
 
-document.getElementById("mCRollNext").addEventListener("click",mCRollNext);
-document.getElementById("mCResetButton").addEventListener("click",mCResetMission);
-document.getElementById("mCCheckButton").addEventListener("click",mCCheckAnswers);
-mCPreviousButton.addEventListener("click",()=>{mCNavigateMission(mCMissionId-1);});
-mCNextButton.addEventListener("click",()=>{mCNavigateMission(mCMissionId+1);});
-mCMissionSelect.addEventListener("change",()=>{if(mCRollingKeys.size===0){mCSetupMission();}});
+document.getElementById("mCRollNext").addEventListener("click", mCRollNext);
+document.getElementById("mCResetButton").addEventListener("click", mCResetMission);
+document.getElementById("mCCheckButton").addEventListener("click", mCCheckAnswers);
+mCPreviousButton.addEventListener("click", ()=>{ mCNavigateMission(mCMissionId - 1); });
+mCNextButton.addEventListener("click", ()=>{ mCNavigateMission(mCMissionId + 1); });
+mCMissionSelect.addEventListener("change", ()=>{ if(mCRollingKeys.size === 0){ mCSetupMission(); } });
 
 if(document.getElementById("materiC")){
   mCSetupMission();
 }
-
-/* Re-render KaTeX untuk elemen dinamis yang sudah terisi */
-window.addEventListener('load',()=>{
-  ['headsRelative','tailsRelative','eventFormula','complementFormula',
-   'eventExplanation','complementExplanation','mBIndFrequency'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) renderMathNow(el);
-  });
-});
 </script>
 
 </body>
